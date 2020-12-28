@@ -592,7 +592,13 @@ h2#references {
   text-align: center;
 }
 
-#our-team li,
+#our-team li {
+  display: inline-block;
+  margin: 0 3% 3% 3rem;
+  width: 30%;
+  vertical-align: top;
+}
+
 #our-team .social-icons li {
   display: inline-block;
   margin: 0 3%;
