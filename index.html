@@ -202,16 +202,95 @@
         </nav>
 
         <h2 id="what-is-satellite">1) What is Satellite?</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+          <p>
+            Satellite is an open-source GraphQL Backed-as-a-Service (BaaS) that enables teams to easily deploy and manage GraphQL backends for web applications.
+          </p>
+
+          <p>
+            Satellite abstracts away the complexity of setting up the infrastructure for a backend and the unique challenges of configuring a GraphQL server. It allows the application developer to define their entire backend using only a GraphQL schema. And with its multi-tenant architecture based on Kubernetes, Satellite allows developers to create and use as many backends as they need. Satellite is a great fit for new applications, where ease of use and speed of deployment is the top priority.
+          </p>
+
+          <p>
+            In this case study, we describe how we designed and built Satellite, the specific tradeoffs we made, and some of the technical challenges we encountered. In order to fully understand Satellite's design, first we'll discuss the general architecture of a modern web application - and one specifc application that drove the development of GraphQL.
+          </p>
+
         <h2 id="web-app-architecture">2) Web App Architecture</h2>
+
         <h3 id="frontend-vs-backend">2.1) Frontend vs Backend</h3>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-        <h3 id="api-s-in-web-applications">2.2) API&#39;s in Web Applications</h3>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-        <h3 id="facebook-s-news-feed-api">2.3) Facebook&#39;s News Feed API</h3>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+        <p>
+          Web applications can be thought of has having two parts - the frontend and the backend. The front is responsible for the application's appearance and handling user interactions on the application. To put it simply, the front is what the user sees when using the application. On the other side of an application is the backend, which provides the business logic and persistent data handling operations needed to power the frontend.
+        </p>
+
+        <p>
+          [diagram]
+        </p>
+
+        <h3 id="api-s-in-web-applications">2.2) How do the Frontend and Backend Communicate?</h3>
+
+        <p>
+          In modern applications, a common practice is to completely separate the frontend from the backend. Applications using this kind of architecture require some way for the frontend and backend to communicate. This communication is done through something called an API. The backend produces the API that the frontend consumes. This kind of architecture allows frontend and backend teams to work independently, and facilitates development of different frontend client applications using the same backend.
+        </p>
+ 
+        <p>
+          [diagram]
+        </p>
+
+        <h3 id="facebook-s-news-feed-api">2.3) Designing a Better API: Facebook's News Feed</h3>
+
+        <p>
+          One recent innovation in API development occurred at Facebook with their news feed API.
+        </p>
+
+        <p>
+          In 2011 Facebook decided to completely re-write their native iOS app, and immediately hit issues when trying to re-use the existing API for their News Feed feature.
+        </p>
+
+        <h4>2.3.1) Why the Existing API Didn't Work</h4>
+
+        <p>
+          This was the first time they had tried to develop an application like this - where the backend was responsible for just returning data, and the front-end was responsible for all of the user interaction. And for Facebook’s News Feed, it isn’t as simple as retrieving a story and all of the information for that particular story. Each story is interconnected, nested, and recursive. The existing APIs weren’t designed to allow developers to expose a rich, news feed-like experience on mobile. They didn’t have a hierarchical nature, or let developers select the exact data they needed. They were, in fact, designed to return HTML back to a web browser.
+        </p>
+        
+        <p>
+          What this meant was that the client application would need to make several round-trips to the API to get the information it wanted. For example, it might have to first get one story, and from that story figure out what other stories it needed to request to complete the feed, and keep repeating that process over and over until it got all the information it needed. Not only did this result in a large amount of round-trips, but each response would contain a lot of data that wasn’t needed. Both of these factors combined resulted in unacceptable network performance for the new app.
+        </p>
+
+        <p>
+          [diagram]
+        </p>
+
+        <h4>2.3.2) Why Facebook Created GraphQL</h4>
+        
+        <p>
+          At this point, it was clear to Facebook that they needed to design a better API for the News Feed feature to improve the mobile experience. Nick Schrock, one of the co-creators of this new API which we now know of as GraphQL, had this to say about their design philosophy:
+        </p>
+
+        <blockquote>
+          "We tried to design what we thought was the ideal API for front-end developers, and then work backwards to the technology."
+          <br>
+          - Nick Schrock, GraphQL co-creator
+        </blockquote>
+
+        <p>
+          The key feature of GraphQL  is that it allows the front-end client to specify exactly the information it needs for a given request - eliminating the issues of over-fetching and preventing the need for multiple round trips. This networking performance improvement was critical for mobile applications, which have limited bandwidth and require fast response times.
+        </p>
+
+        <p>
+          [diagram]
+        </p>
+
+        <p>
+          One other key feature of GraphQL that has lead to its widespread adoption and multitude of client-side tools is that a GraphQL API uses a strongly typed system to describe its capabilities. This allows clients to use a process called introspection to see exactly what they are able to do with the API, making GraphQL effectively self-documenting.
+        </p>
+
+        <h4>2.3.3) Widespread Adoption of GraphQL</h4>
+
+        <p>
+          GraphQL was initially developed by Facebook to solve a very specific problem - rebuilding their newsfeed API. Used as an internal tool by Facebook from 2012 until 2015, it ended up spreading and covering most of their mobile application due to its strengths. An open-source version of GraphQL was released in 2015. Soon after it was open-sourced, GraphQL began being used by many other companies like AirBNB, Twitter, Netflix, and Github, and has continued to grow in adoption ever since.
+        </p>
+        
         <h2 id="what-is-graphql">3) What is GraphQL?</h2>
         <h3 id="the-graphql-specification">3.1) The GraphQL Specification</h3>
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
