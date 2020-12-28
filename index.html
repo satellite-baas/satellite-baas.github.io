@@ -320,11 +320,159 @@
         </p>
         
         <h2 id="graphql-backends">4) GraphQL Backends</h2>
+        <p>
+          Now that we have an understanding of how the frontend and backend communicate in a modern web application, the kind of problem that Facebook created GraphQL to solve, and a general idea of how GraphQL works, you might be interested in creating your next application using a GraphQL API. While GraphQL certainly has its place in enabling frontend development, there’s a lot to consider when it comes to building the backend of an application in general, and a GraphQL application in particular.
+        </p>
+
         <h3 id="backend-architecture">4.1) Backend Architecture</h3>
+
+        <p>
+          First, let's take a look at the general setup for a backend:
+        </p>
+
+        <p>
+          [diagram]
+        </p>
+        
+        <p>
+          Typically, a backend is built with a 3-tier architecture. The different "tiers" in this kind of architecture serve the following purposes:
+        </p>
+
+        <p>
+          <b>Web Server</b>: The web server acts as the internet-facing entry point to the backend. Web servers are highly optimized to handle requests involving <em>static</em> data - such as static file serving and caching - and can typically handle very large volumes of requests for this kind of data [some kind of citation here]. For requests that the web server cannot fulfill directly, the web server acts as a reverse-proxy, forwarding requests to the rest of the backend.
+        </p>
+
+        <p>
+          <b>Application Server</b>: The application server is where requests for <em>dynamic</em> data end up, and it is responsible for processing and fulfilling those requests. The application server is where the business logic that powers the application resides, and this logic is responsible for determining what information to send back in response. Because application servers have no way of persisting data, they will need to access some kind of underlying data store for requests that need access to this persistent data.
+        </p>
+
+        <p>
+          <b>Database</b>: The database satisfies the need for an application to have some way to persist the long-lived data of the application. Interaction with an application's database is handled through the application server, as described above.
+        </p>
+
         <h3 id="backend-features">4.2) Backend Features</h3>
+        <p>
+          Now that we understand what kind of architecture a backend requires, we can start to imagine all of the different things that a backend might need to do. There’s a wide range of different tasks an application might need its backend to perform, all of which require configuration and programming to enable.
+        </p>
+
+        <p>
+          [diagram]
+        </p>
+        
+        <p>
+          For the backend of a GraphQL application, one of the key features is actually producing the GraphQL API.
+        </p>
+
         <h3 id="what-are-the-challenges-of-a-graphql-api">4.3) What are the Challenges of a GraphQL API?</h3>
+
+        <p>
+          In addition to the complex architecture of a backend, the challenges associated with producing a GraphQL API are frequently mentioned by both individual developers, and described by companies who have went down the path of adopting GraphQL in their production applications.
+        </p>
+
+        <p>
+          Arnaud Luaret, author of the book "The Design of Web APIs", mentions the new challenges that a GraphQL API brings [citation]:
+        </p>
+
+        <blockquote>
+          “GraphQL does not ease an API provider’s job and brings new challenges”
+          <br>
+          - Arnaud Lauret, author of The Design of Web APIs
+        </blockquote>
+        
+        <p>
+          In PayPal's Engineering Blog Article "Scaling GraphQL at Paypal", a similar challenge is mentioned - GraphQL is different than what develops may be used to [citation]:
+        </p>
+
+        <blockquote>
+          “Ensure that architects and API designers are on board with GraphQL ... More than likely, they have designed REST APIs for years. GraphQL is different.”
+          <br>
+          -Scaling GraphQL at Paypal - Paypal Engineering Blog
+        </blockquote>
+
         <h3 id="how-is-a-graphql-api-produced">4.4) How is a GraphQL API Produced?</h3>
+
+        <p>
+          To produce a GraphQL API, we need to run a piece of software called a GraphQL server. As we mentioned earlier, A GraphQL server is a specialized software package that can receive and respond to GraphQL requests. The behavior of a GraphQL server is defined using two inputs: A GraphQL schema, and Resolver functions. At a high level, the GraphQL schema defines “what” the GraphQL server can do using the GraphQL type system, and the resolver functions tell it how to do it.
+        </p>
+
+        <p>
+          A detailed look at a GraphQL server is shown here, where the GraphQL API is defined using a GraphQL schema, and the API invokes the necessary resolver functions to carry out the actions needed to produce the response, such as querying a database: 
+          </p>
+
+        <p>
+          [diagram]
+        </p>
+
+        <p>
+          Next, we'll take a look at the GraphQL schema and resolver functions in a little more detail, to better appreciate what goes into creating them.
+        </p>
+
+        <h4>4.4.1) GraphQL Schema</h4>
+
+        <p>
+          The GraphQL schema defines the functionality available to client applications that connect to the GraphQL server. The schema is made up of types, which have one or more fields.
+        </p>
+
+        <p>
+          A basic GraphQL schema is shown here.  It has several types - the “Person” type is an object type.  Object types make up the “things” of your API - you could think of them as entities, or objects.  Each type will also have fields - for the Person here, there is a name and phone field, which are a string and integer. You can think of fields like the properties of your objects.
+        </p>
+
+        <p>
+          [diagram]
+        </p>
+
+        <p>
+          There are actually many more types than just object types.  Two very important ones are the query and mutation types.  These describe what actions you should be able to do with your object types.  Queries are all about simply retrieving data, while mutations involve some kind of change to the data. Here we have a query to find a person by name, and a mutation to create a new person.
+        </p>
+
+        <p>
+          Keep in mind that these definitions of queries and mutations don’t say anything about *how* the API gets the job done - it's only describing what the API should be able to do!
+        </p>
+
+        <h4>4.4.2) GraphQL Resolvers</h4>
+
+        <p>
+          Resolvers are functions that allow the GraphQL server to know how to respond to requests.
+        </p>
+
+        <p>
+          Unlike the GraphQL schema, which has to comply with the requirements of the GraphQL specification, GraphQL resolvers are flexible.  They are just functions, and you can do anything with them that you would do with any other function.  The only requirement is that the function needs to return a value which corresponds to the field specified by the schema.
+        </p>
+
+        <p>
+          As shown in this example, resolvers correspond to the respective query and mutation types that were defined in the GraphQL schema.
+        </p>
+
+        <p>
+          [diagram]
+        </p>
+
         <h3 id="how-can-we-reduce-the-complexity-of-a-graphql-backend">4.5) How Can we Reduce the Complexity of a GraphQL Backend?</h3>
+
+        <p>
+          We can now see the big picture of everything that goes into creating a GraphQL backend. In addition to all of the architecture and configuration required for for a standard backend, we also have the inputs needed to produce the GraphQL API - the schema and resolver functions.
+        </p>
+
+        <p>
+          [diagram]
+        </p>
+
+        <p>
+          For a front end developer trying to get a GraphQL application up and running quickly, that’s a lot to think about. Because of this, we wondered if there might be a way to make it easier for front-end developers to get a relatively straightforward GraphQL backend up and running quickly.
+        </p>
+
+        <p>
+          Ideally, the developer wouldn’t have to think about things like the architecture of the backend, the configuration for standard backend features, or even the lower-level GraphQL configuration like defining resolver functions.
+        </p>
+
+        <p>
+          As we searched for an answer, we found a promising potential solution - something called a Backend-as-a-Service. Basically, a backend as a service provides an abstraction over all of the functionality and complexity of the backend, which seemed like good answer to the question of how we could make it easier to get a GraphQL backend up and running quickly.
+        </p>
+
+        <p>
+          Next, we'll take a look at exactly what a Backend-as-a-service is, and what we found when we evaluated the existing options.
+        </p>
+
         <h2 id="backend-as-a-service">5) Backend-as-a-Service</h2>
         <h3 id="what-is-a-backend-as-a-service-baas">5.1) What is a Backend-as-a-Service (BaaS)?</h3>
         <h3 id="why-use-a-baas">5.2) Why Use a BaaS?</h3>
