@@ -282,7 +282,7 @@
         </p>
 
         <p>
-          One other key feature of GraphQL that has lead to its widespread adoption and multitude of client-side tools is that a GraphQL API uses a strongly typed system to describe its capabilities. This allows clients to use a process called introspection to see exactly what they are able to do with the API, making GraphQL effectively self-documenting.
+          One other important aspect of GraphQL that has lead to the multitude of client-side tools available is that a GraphQL API uses a strongly typed system to describe its capabilities. This allows clients to use a process called introspection to see exactly what they are able to do with the API, making GraphQL effectively self-documenting.
         </p>
 
         <h4>2.3.3) Widespread Adoption of GraphQL</h4>
@@ -292,12 +292,33 @@
         </p>
         
         <h2 id="what-is-graphql">3) What is GraphQL?</h2>
+
+        <p>
+          At a very high level, GraphQL is referred to as a “query language for APIs”. While this general term is helpful for placing where GraphQL fits as a tool for developing web applications, a more specific definition is necessary to get an idea of what kinds of things a developer will have to deal with when building a GraphQL application.
+        </p>
+
         <h3 id="the-graphql-specification">3.1) The GraphQL Specification</h3>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+        <p>
+          GraphQL is actually a specification that describes its type system and query language [cite: http://spec.graphql.org/draft/]. Both of these will be covered in more detail layer on, but for now keep in mind that this specification can be implemented in any programming language - its not specific to any one particular application or architecture. There are, in fact, service-side implementations of the GraphQL specification in just about any programming language you might be interested in [cite: https://graphql.org/code/]. These server-side software implementations are known as GraphQL servers.
+        </p>
+
         <h3 id="graphql-servers">3.2) GraphQL Servers</h3>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+        <p>
+          GraphQL servers communicate with clients using the standard HTTP protocol [cite: https://graphql.org/code/]. The GraphQL server is responsible for parsing the request into an abstract syntax tree so that the request can be traversed programmatically. The GraphQL server then walks this tree and determines how to respond to the request. Once the GraphQL server has assembled the request, it is returned to the client as a JSON object - once again over standard HTTP.
+        </p>
+
         <h3 id="interacting-with-a-graphql-api">3.3) Interacting with a GraphQL API</h3>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+        <p>
+          The overall sequence of a GraphQL API interaction is made possible by this implementation of the type system on the server, and the use of the query language by both the client and server. The data available on the server is described using the type system, which allows clients to ask for exactly the information they want, which then leads to the client getting exactly that information in response.
+        </p>
+
+        <p>
+          [diagram]
+        </p>
+        
         <h2 id="graphql-backends">4) GraphQL Backends</h2>
         <h3 id="backend-architecture">4.1) Backend Architecture</h3>
         <h3 id="backend-features">4.2) Backend Features</h3>
