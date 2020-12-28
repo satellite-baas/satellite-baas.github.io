@@ -474,10 +474,114 @@
         </p>
 
         <h2 id="backend-as-a-service">5) Backend-as-a-Service</h2>
+       
         <h3 id="what-is-a-backend-as-a-service-baas">5.1) What is a Backend-as-a-Service (BaaS)?</h3>
+
+        <p>
+          A backend-as-a-service encapsulates all of the underlying architecture that a backend needs - the web server, app server, and database - and also provides the essential functionality of a backend pre-configured such as SSL certificates, front-end hosting, and data persistence. The functionality of the backend is made available to frontend applications through an API.
+        </p>
+
+        <p>
+          [diagram]
+        </p>
+
+        <p>
+          With a backend as a service, you can simply ask for a backend to be created, and get and endpoint to access all of that backend's functionality.
+        </p>
+
         <h3 id="why-use-a-baas">5.2) Why Use a BaaS?</h3>
+
+        <p>
+          Why would somebody use a BaaS? As we&rsquo;ve seen, a backend as a service facilitates frontend development, abstracting away the complexity of the backend, allowing for faster application development.
+        </p>
+
+        <p>
+          This abstraction comes at a cost though. For one, the BaaS itself still requires setup and maintenance. Also, with these kinds of services, as you gain more abstraction you have to sacrifice control.
+        </p>
+
+        <p>
+          [diagram]
+        </p>
+
+        <p>
+          The lowest level of abstraction is provided by something called an <b>Infrastructure-as-a-Service</b>. With this option, the developer is responsible for configuring everything from the operating system and up, making it very low on abstraction, but high on control.
+        </p>
+
+        <p>
+          A <b>Platform-as-a-Service</b> provides more abstraction than an infrastructure as a service, but less than a BaaS. With a platform as a service, the developer has to provide all of the application code for the backend, but the platform handles operating system configuration and deployment.
+        </p>
+
+        <p>
+          Finally, with a <b>Backend-as-a-Service</b>, we are the highest level of abstraction. The developer no longer needs to provide any backend code or handle any backend configuration. But along with that high amount of abstraction, they aren't able to control much if anything about how the BaaS works internally.
+        </p>
+
+
         <h3 id="existing-graphql-baas">5.3) Existing GraphQL BaaS</h3>
+
+        <p>
+          With all of the benefits that a BaaS offers for front-end development, it is no surprise that there are several existing options to chose from for a GraphQL BaaS. Broadly speaking, these existing options can be grouped into two categories: Manage services, and open-source solutions.
+        </p>
+
+       <h4>5.3.1) Managed Services</h4>
+        
+        <p>
+          There are a number of managed services available for a GraphQL BaaS.  These are paid, proprietary services and are fully supported by the provider. Using these paid services completely abstracts away the complexity of setting up and managing the backend of your application. In general, they are easy to use - with some caveats.  AWS Amplify, for example, has a tight integration with other AWS services [citation], making it a great option if you are fully committed to using AWS services for your entire application - although it is more difficult to use for non-AWS services. And since there is no need to deploy anything to use these managed services, there is zero complexity involved in their deployment.
+        </p>
+        
+        <p>
+          These managed services also tend to have a large amount of features, with services like 8Base [citation] and Nhost [citation] providing just about any feature you could ever want from your backend even beyond the GraphQL API. Slash GraphQL [citation] has comparatively fewer features, but still has a number of advanced options such as the ability to run custom logic via serverless lambda functions.
+        </p>
+        
+        <h4>5.3.2) Open-Source Solutions</h4>
+        
+        <p>
+          For open-source options, probably the most popular is the Parse platform [citation]. Parse is a self-hosted platform that provides a backend with all of the features you could need for your application - including a GraphQL API. Unlike the managed services, you can host Parse anywhere you want, and you have full control over your data and infrastructure. 
+        </p>
+        
+        <p>
+          Another, less well-known GraphQL backend-as-a-service is Spacecloud [citation]. Spacecloud offers a similar wide range of features as the Parse platform and also lets you self-host it wherever you want.
+        </p>
+
         <h3 id="why-not-use-an-existing-graphql-baas">5.4) Why Not Use an Existing GraphQL BaaS?</h3>
+        
+        <p>
+          The existing GraphQL backend-as-a-service options definitely have a lot of positive features, but they naturally have their own set of tradeoffs as well.
+        </p>
+
+        <p>
+          Although managed services don’t require any effort to deploy and are generally easy to use, they are obviously not fully open source. With these services, you don’t have any control over how your application and its data is hosted, and you run the risk of vendor lock-in if your application ever outgrows the BaaS.
+        </p>
+
+        <p>
+          With the existing open source options, you get to maintain control of your data, but have to deal with more complicated deployment and usage. You will need to worry about things like selecting and configuring a database with both Parse and Spacecloud, for example. And with their wide range of features and options, it can take quite a bit of time to get started with the existing open source options once they are deployed.
+        </p>
+
+        <h3 id="where-does-satellite-fit">5.4) Where Does Satellite Fit?</h3>
+
+        <p>
+          After reviewing the existing BaaS options, we saw that there was an opportunity for an easy to deploy and use, self-hosted GraphQL backend as a service. We were inspired by the ease of use of managed services, and the ability to self-host the open-source solutions and maintain full control of your application.
+        </p>
+
+        <p>
+          [diagram]
+        </p>
+
+        <p>
+          We can see here where Satellite fits compared to existing open-source platforms like Parse and Spacecloud, as well as compared to the various managed GraphQL BaaS services.
+        </p>
+
+        <p>
+          Compared to the other GraphQL BaaS options that are available, we chose to build Satellite with fewer features in order to keep it easy use.  We wanted to keep Satellite lean in order to minimize complexity of deployment, and make the essential features of a GraphQL backend intuitive to use. Like other existing open-source options, Satellite is entirely open source, and you can host it anywhere you’d like.
+        </p>
+
+        <p>
+          Since Satellite doesn’t have a huge amount of features, it isn’t going to be a perfect fit for every application. If your application needs a fully supported, one-stop-shop for all the features that a backend could provide in one place, Satellite isn’t going to be a great solution for you. But for developers who need an open-source solution to quickly get a GraphQL backend running with only the essential features needed to support their web application, Satellite might be a viable option to consider.
+        </p>
+
+        <p>
+          In the next section, we will describe how we designed Satellite - including the challenges we faced, and the decisions we made to overcome those challenges.
+        </p>
+
         <h2 id="the-core-app">6) The Core App</h2>
         <div class="img-wrapper">
           <img
