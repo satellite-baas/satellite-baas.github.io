@@ -223,9 +223,12 @@
           Web applications can be thought of has having two parts - the frontend and the backend. The frontend is responsible for the application's appearance and handling user interactions with the application. To put it simply, the frontend is what the user sees when using the application. On the other side of an application is the backend, which provides the business logic and persistent data handling operations needed to power the frontend.
         </p>
 
-        <p>
-          [diagram]
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/2_1-front-back.svg"
+            alt="The two parts of a web application."
+          />
+        </div>
 
         <h3 id="api-s-in-web-applications">2.2) How do the Frontend and Backend Communicate?</h3>
 
@@ -233,9 +236,12 @@
           In modern applications, a common practice is to completely separate the frontend from the backend. Applications using this kind of architecture require some way for the frontend and backend to communicate. This communication is done through something called an API. The backend produces the API that the frontend consumes. This kind of architecture allows frontend and backend teams to work independently, and facilitates development of different frontend client applications using the same backend.
         </p>
  
-        <p>
-          [diagram]
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/2_2-api-ex.svg"
+            alt="Frontend to backend communication with an API."
+          />
+        </div>
 
         <h3 id="facebook-s-news-feed-api">2.3) Designing a Better API: Facebook's News Feed</h3>
 
@@ -252,13 +258,16 @@
         <p>
           This was the first time they had tried to develop an application like this - where the backend was responsible for just returning data, and the front-end was responsible for all of the user interaction. And for Facebook’s News Feed, it isn’t as simple as retrieving a story and all of the information for that particular story. Each story is interconnected, nested, and recursive. The existing APIs weren’t designed to allow developers to expose a rich, news feed-like experience on mobile. They didn’t have a hierarchical nature, or let developers select the exact data they needed. They were, in fact, designed to return HTML back to a web browser.
         </p>
+
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/2_3_1-facebook-api-1.svg"
+            alt="An inefficient API interaction."
+          />
+        </div>
         
         <p>
           What this meant was that the client application would need to make several round-trips to the API to get the information it wanted. For example, it might have to first get one story, and from that story figure out what other stories it needed to request to complete the feed, and keep repeating that process over and over until it got all the information it needed. Not only did this result in a large amount of round-trips, but each response would contain a lot of data that wasn’t needed. Both of these factors combined resulted in unacceptable network performance for the new app.
-        </p>
-
-        <p>
-          [diagram]
         </p>
 
         <h4>2.3.2) Why Facebook Created GraphQL</h4>
@@ -277,9 +286,12 @@
           The key feature of GraphQL  is that it allows the front-end client to specify exactly the information it needs for a given request - eliminating the issues of over-fetching and preventing the need for multiple round trips. This networking performance improvement was critical for mobile applications, which have limited bandwidth and require fast response times.
         </p>
 
-        <p>
-          [diagram]
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/2_3_2-facebook-api-2.svg"
+            alt="An API interaction with GraphQL."
+          />
+        </div>
 
         <p>
           One other important aspect of GraphQL that has lead to the multitude of client-side tools available is that a GraphQL API uses a strongly typed system to describe its capabilities. This allows clients to use a process called introspection to see exactly what they are able to do with the API, making GraphQL effectively self-documenting.
@@ -315,9 +327,12 @@
           The overall sequence of a GraphQL API interaction is made possible by this implementation of the type system on the server, and the use of the query language by both the client and server. The data available on the server is described using the type system, which allows clients to ask for exactly the information they want, which then leads to the client getting exactly that information in response.
         </p>
 
-        <p>
-          [diagram]
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/3_3-graphql-overview.svg"
+            alt="GraphQL - Describe your data, ask for what you want, and get predictable results."
+          />
+        </div>
         
         <h2 id="graphql-backends">4) GraphQL Backends</h2>
         <p>
@@ -330,9 +345,12 @@
           First, let's take a look at the general setup for a backend:
         </p>
 
-        <p>
-          [diagram]
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/4_1-normal-server.svg"
+            alt="The 3-tier architecture of a backend."
+          />
+        </div>
         
         <p>
           Typically, a backend is built with a 3-tier architecture. The different "tiers" in this kind of architecture serve the following purposes:
@@ -355,9 +373,12 @@
           Now that we understand what kind of architecture a backend requires, we can start to imagine all of the different things that a backend might need to do. There’s a wide range of different tasks an application might need its backend to perform, all of which require configuration and programming to enable.
         </p>
 
-        <p>
-          [diagram]
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/4_2-backend-features.svg"
+            alt="A few of the many different features that a backend is responsible for."
+          />
+        </div>
         
         <p>
           For the backend of a GraphQL application, one of the key features is actually producing the GraphQL API.
@@ -397,11 +418,14 @@
 
         <p>
           A detailed look at a GraphQL server is shown here, where the GraphQL API is defined using a GraphQL schema, and the API invokes the necessary resolver functions to carry out the actions needed to produce the response, such as querying a database: 
-          </p>
-
-        <p>
-          [diagram]
         </p>
+
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/4_4-graphql-server.svg"
+            alt="A GraphQL server."
+          />
+        </div>
 
         <p>
           Next, we'll take a look at the GraphQL schema and resolver functions in a little more detail, to better appreciate what goes into creating them.
@@ -417,9 +441,12 @@
           A basic GraphQL schema is shown here.  It has several types - the “Person” type is an object type.  Object types make up the “things” of your API - you could think of them as entities, or objects.  Each type will also have fields - for the Person here, there is a name and phone field, which are a string and integer. You can think of fields like the properties of your objects.
         </p>
 
-        <p>
-          [diagram]
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/4_4_1-graphql-schema.svg"
+            alt="A GraphQL schema."
+          />
+        </div>
 
         <p>
           There are actually many more types than just object types.  Two very important ones are the query and mutation types.  These describe what actions you should be able to do with your object types.  Queries are all about simply retrieving data, while mutations involve some kind of change to the data. Here we have a query to find a person by name, and a mutation to create a new person.
@@ -443,9 +470,12 @@
           As shown in this example, resolvers correspond to the respective query and mutation types that were defined in the GraphQL schema.
         </p>
 
-        <p>
-          [diagram]
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/4_4_2-graphql-resolver.svg"
+            alt="Some GraphQL resolvers."
+          />
+        </div>
 
         <h3 id="how-can-we-reduce-the-complexity-of-a-graphql-backend">4.5) How Can we Reduce the Complexity of a GraphQL Backend?</h3>
 
@@ -453,9 +483,12 @@
           We can now see the big picture of everything that goes into creating a GraphQL backend. In addition to all of the architecture and configuration required for for a standard backend, we also have the inputs needed to produce the GraphQL API - the schema and resolver functions.
         </p>
 
-        <p>
-          [diagram]
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/4_5_1-full-backend.svg"
+            alt="All of the architecture and inputs required to make a GraphQL backend."
+          />
+        </div>
 
         <p>
           For a front end developer trying to get a GraphQL application up and running quickly, that’s a lot to think about. Because of this, we wondered if there might be a way to make it easier for front-end developers to get a relatively straightforward GraphQL backend up and running quickly.
@@ -481,9 +514,12 @@
           A backend-as-a-service encapsulates all of the underlying architecture that a backend needs - the web server, app server, and database - and also provides the essential functionality of a backend pre-configured such as SSL certificates, front-end hosting, and data persistence. The functionality of the backend is made available to frontend applications through an API.
         </p>
 
-        <p>
-          [diagram]
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/5_1-backend-as-a-service.svg"
+            alt="A backend as a service."
+          />
+        </div>
 
         <p>
           With a backend as a service, you can simply ask for a backend to be created, and get and endpoint to access all of that backend's functionality.
@@ -499,9 +535,12 @@
           This abstraction comes at a cost though. For one, the BaaS itself still requires setup and maintenance. Also, with these kinds of services, as you gain more abstraction you have to sacrifice control.
         </p>
 
-        <p>
-          [diagram]
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/5_2-abstraction-vs-control.svg"
+            alt="BaaS tradeoffs - abstraction vs. control."
+          />
+        </div>
 
         <p>
           The lowest level of abstraction is provided by something called an <b>Infrastructure-as-a-Service</b>. With this option, the developer is responsible for configuring everything from the operating system and up, making it very low on abstraction, but high on control.
@@ -562,9 +601,12 @@
           After reviewing the existing BaaS options, we saw that there was an opportunity for an easy to deploy and use, self-hosted GraphQL backend as a service. We were inspired by the ease of use of managed services, and the ability to self-host the open-source solutions and maintain full control of your application.
         </p>
 
-        <p>
-          [diagram]
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/5_4_option-comparison-table.svg"
+            alt="How Satellite compares to existing BaaS options."
+          />
+        </div>
 
         <p>
           We can see here where Satellite fits compared to existing open-source platforms like Parse and Spacecloud, as well as compared to the various managed GraphQL BaaS services.
@@ -588,9 +630,12 @@
           The Satellite core application represents a single instance of a backend. It provides client applications a GraphQL API for accessing the underlying data store, and static file serving for front-end hosting.
         </p>
 
-        <p>
-          [diagram]
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/6_1-core-architecture-simple.svg"
+            alt="Satellite's core application architecture - high level."
+          />
+        </div>
 
         <p>
           These features are made possible using several components under the hood. An nginx webserver is used for serving static files and routing incoming requests, a NodeJS express application server provides a way for administrative actions to be made on the Satellite instance, and a Dgraph Graph Database is used as the data store.
@@ -630,7 +675,12 @@
           But what would this look like? Would it even be possible? 
         </p>
 
-        [diagram]
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/6_1_2-schema-to-schema.svg"
+            alt="Generating a database schema from a simple GraphQL schema."
+          />
+        </div>
 
         <p>
           Taking a very simple GraphQL schema consisting of only a single object type like we see here, it's easy enough to see how this would work. For a GraphQL schema with a single object type with a few fields, we could generate a database schema defining a table corresponding to the object, with all of the necessary columns to represent the fields of the object.
@@ -662,9 +712,12 @@
           Once again, would it even be possible to do this? We again considered our very simple GraphQL schema to consider what this resolver function generator might look like:
         </p>
 
-        <p>
-          [diagram]
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/6_2_2-schema-to-resolvers.svg"
+            alt="Generating a resolver functions from a simple GraphQL schema."
+          />
+        </div>
 
         <p>
           We would need 4 resolvers for each object type in the schema - one for reading the data with a Query type, and 3 mutations for creating, updating, and deleting. This was starting to get significantly more complicated, but still seemed doable, since all of the resolvers followed a similar pattern, and we should be able to generate the correct function signatures and required databases actions to make it work - at least for a very simple schema like this. Our imagined schema converter would no longer be a matter of converting strings - now it would need to generate functions as well, but we still felt confident enough to proceed down this path.
@@ -676,9 +729,12 @@
           We could now envision a hypothetical architecture for our GraphQL backend, requiring only the very simple GraphQL schema we’ve been considering so far as an input.
         </p>
 
-        <p>
-          [diagram]
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/6_2_3-hypothetical-architecture.svg"
+            alt="A hypothethical architecture for Satellite."
+          />
+        </div>
 
         <p>
           The GraphQL schema would be provided to the schema converter, which would generate a database schema and create the database, and also generate the necessary resolvers to initialize the GraphQL server. The GraphQL server would then produce the GraphQL API that could receive and respond to GraphQL requests from frontend applications.
@@ -694,9 +750,12 @@
           When we started experimenting with more complicated schema, the difficulty in creating the database schema and resolver functions increased dramatically. For an only slightly-more-complicated example like we see here, we would need to define multiple tables, foreign keys, and constraints in order to make the database work for the data represented by the GraphQL schema. 
         </p>
 
-        <p>
-          [diagram]
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/6_3-complicated-schema.svg"
+            alt="More complicated converison - the results are uncertain."
+          />
+        </div>
 
         <p>
           Although we were confident that it would still be theoretically possible to pull this off, we thought that now it would be a good time to take a step back and consider alternatives.
@@ -724,9 +783,12 @@
           Dgraph is less well-known that neo4j, but has a native GraphQL integration, meaning you don’t have to install any other addons - you get the GraphQL API directly from the database.
         </p>
 
-        <p>
-          [diagram - neo4j and dgraph check and x]
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/6_4_2-graph-databases.svg"
+            alt="Two graph databases - Neo4j and Dgraph."
+          />
+        </div>
 
         <p>
           Because of its native GraphQL support, we ultimately chose Dgraph for the database of Satellite.
@@ -738,9 +800,12 @@
           We could now simplify our hypothetical architecture.
         </p>
 
-        <p>
-          [diagram]
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/6_4_2-simplified-architecture.svg"
+            alt="Simplified (hypothethical) architecture."
+          />
+        </div>
 
         <p>
           With Dgraph accepting a GraphQL schema as an input, we would no longer need a schema converter to generate a database schema and resolvers or a separate application server to serve the API, so we were able to remove those components from the architecture.
@@ -758,9 +823,12 @@
           In addition to the GraphQL endpoint, Dgraph exposes administrative endpoints for interacting with its GraphQL schema, such as updating the schema and inspecting the currently loaded schema.  We knew that the front-end developer would need to access these administrative endpoints as they worked with Satellite, but that these endpoints shouldn’t be accessible from the public internet. As it was, we had no way of making only the GraphQL endpoint public to the internet, while keeping the admin endpoint private.
         </p>
 
-        <p>
-          [diagram]
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/6_5_1-dgraph-admin-endpoints.svg"
+            alt="Dgraph's administrative endpoints."
+          />
+        </div>
 
         <p>
           Also, we currently have no way to upload or serve static files - files that a front-end developer would likely need for their web applications.
@@ -776,9 +844,12 @@
           The two components we needed were an nginx webserver to serve static files and act as an a reverse proxy to the GraphQL API endpoint of Dgraph, and a NodeJS application to provide a way for the developer to upload their static files and perform administrative actions to Dgraph’s admin endpoint.
         </p>
 
-        <p>
-          [diagram - nginx and node checks]
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/6_5_2-protecting-endpoints.svg"
+            alt="Nginx and NodeJS to separate the administrative endpoints from the public endpoints."
+          />
+        </div>
 
         <p>
           Nginx was an obvious choice for an efficient and battle-tested webserver to act as the internet-facing entry point to a Satellite backend - and NodeJS running a simple express application worked perfectly for providing a private API that the front-end developer could access to upload their static files and work with the GraphQL schema loaded to Dgraph.
@@ -790,9 +861,12 @@
           This brings us to the final architecture for the Satellite core application, which we can now see in more detail.
         </p>
 
-        <p>
-          [diagram]
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/6_6-core-architecture-detailed.svg"
+            alt="Satellite's core application architecture - in more detail."
+          />
+        </div>
 
         <p>
           The nginx webserver acts as a web-facing entry-point to the backend, reverse proxying GraphQL requests to Dgraph or serving static files.  The NodeJS application provides a private entry-point for the developer to perform administrative actions to their backend, like uploading static files, or updating their GraphQL schema.
@@ -814,9 +888,12 @@
           Containers provide a way to package an application with its dependencies in an isolated and consistent way.  This means that if you start, for example, a NodeJS container, that container has all of the requirements to run NodeJS packaged with it, and you no longer have to worry about manually installing it and setting everything up. The isolation of containers means that whatever is going on inside the container doesn’t interfere with the host system - so if you run a container with one version of Node on it, it won’t interfere with your host installation of Node.
         </p>
 
-        <p>
-          [diagram]
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/6_7_1-containers.svg"
+            alt="A depiction of how Docker containers interact with the host operating system."
+          />
+        </div>
 
         <p>
           Another good thing about containers is that they are lighter weight than some other options like virtual machines. Virtual machines actually require running an entire guest operating system, while containers run directly within the host operating system and use less resources. This makes containers faster to deploy. And since Docker is the most popular way to package applications using containers, we chose to use Docker containers to package the components of Satellite.
@@ -832,9 +909,12 @@
           Our final optimization for running a single Satellite was to eliminate this need for starting each container individually.  We wanted to make it possible to start the application with only a single command. Fortunately, Docker provides a tool called Docker Compose, which is designed specifically for defining and running multi-container Docker applications. Compose uses a YAML file to declaratively describe the containers you want to run, which the Docker Compose tool uses to launch the containers with the required configurations.
         </p>
 
-        <p>
-          [diagram]
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/6_7_2-container-coordination.svg"
+            alt="Coordinating containers with docker compose."
+          />
+        </div>
 
         <p>
           Our docker compose configuration for launching a single, containerized Satellite looked something like what is pictured here. As you can see, the compose file also allows for specifying various other options that are required for Satellite to run, such as environment variables and storage volumes used by the containers to store their data.
