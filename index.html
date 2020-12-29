@@ -332,7 +332,7 @@
         <h3 id="interacting-with-a-graphql-api">3.3) Interacting with a GraphQL API</h3>
 
         <p>
-          The overall sequence of a GraphQL API interaction is made possible by this implementation of the type system on the server, and the use of the query language by both the client and server. The data available on the server is described using the type system, which allows clients to ask for exactly the information they want, which then leads to the client getting exactly that information in response.
+          The overall sequence the interaction between the frontend client and the GraphQL API server running on the backend is made possible by this implementation of the type system on the server, and the use of the query language by both the client and server. The data available on the server is described using the type system, which allows clients to see exactly what information they can ask for. The clients are then able to ask for exactly that information, and receive only that information in response
         </p>
 
         <div class="img-wrapper">
@@ -341,10 +341,18 @@
             alt="GraphQL - Describe your data, ask for what you want, and get predictable results."
           />
         </div>
+
+        <p>
+          Enabling this kind of interaction for frontend clients is great for dealing with the kind of situations that Facebook encountered when they were re-building their News Feed API, but how would somebody go about setting up the backend for a GraphQL API? We'll answer that question in the next section.
+        </p>
         
         <h2 id="graphql-backends">4) GraphQL Backends</h2>
         <p>
-          With an idea of what kind of problem GraphQL was created to solve and a general understanding of how it works, you might be interested in creating your next application using a GraphQL API. While GraphQL certainly has its place in enabling frontend development, there’s a lot to consider when it comes to building the backend of an application in general, and the backend for a GraphQL application in particular.
+          Now that we have a general idea of how GraphQL works, you might be interested in creating your next application using a GraphQL API. While GraphQL certainly has its place in enabling frontend development, there’s a lot to consider when it comes to building the backend of an application in general, and a GraphQL application in particular.
+        </p>
+
+        <p>
+          First, we'll cover the overall architecture required for a web application backend.
         </p>
 
         <h3 id="backend-architecture">4.1) Backend Architecture</h3>
@@ -364,25 +372,27 @@
           Typically, a backend is built with a 3-tier architecture [<a href="#footnote-5">5</a>]. The different "tiers" in this kind of architecture serve the following purposes:
         </p>
 
-        <p>
-          <b>Web Server</b>: The web server acts as the internet-facing entry point to the backend. Web servers are highly optimized to handle requests involving <em>static</em> data - such as static file serving and caching - and can typically handle very large volumes of requests for this kind of data [some kind of citation here]. For requests that the web server cannot fulfill directly, the web server acts as a reverse-proxy, forwarding requests to the rest of the backend.
-        </p>
+        <ul>
+          <li>
+            <b>Web Server</b>: The web server acts as the internet-facing entry point to the backend. Web servers are highly optimized to handle requests involving <em>static</em> data - such as static file serving and caching - and can typically handle very large volumes of requests for this kind of data. For requests that the web server cannot fulfill directly, the web server acts as a reverse-proxy, forwarding requests to the rest of the backend.
+          </li>
+
+          <li>
+            <b>Application Server</b>: The application server is where requests for <em>dynamic</em> data end up, and it is responsible for processing and fulfilling those requests. The application server is where the business logic that powers the application resides, and this logic is responsible for determining what information to send back in response. Because application servers have no way of persisting data, they will need to access some kind of underlying data store for requests that need access to this persistent data.
+          </li>
+
+          <li>
+            <b>Database</b>: The database satisfies the need for an application to have some way to persist the long-lived data of the application. Interaction with an application's database is handled through the application server, as described above.
+          </li>
+        </ul>
 
         <p>
-          <b>Application Server</b>: The application server is where requests for <em>dynamic</em> data end up, and it is responsible for processing and fulfilling those requests. The application server is where the business logic that powers the application resides, and this logic is responsible for determining what information to send back in response. Because application servers have no way of persisting data, they will need to access some kind of underlying data store for requests that need access to this persistent data.
-        </p>
-
-        <p>
-          <b>Database</b>: The database satisfies the need for an application to have some way to persist the long-lived data of the application. Interaction with an application's database is handled through the application server, as described above.
-        </p>
-
-        <p>
-          With this kind of architecture, we have the foundation for building virtually any feature our application might need.
+          With this kind of architecture, we have the foundation for building the backend functionality to support any feature our application might need.
         </p>
 
         <h3 id="backend-features">4.2) Backend Features</h3>
         <p>
-          Now that we understand what kind of architecture a backend requires, we can start to imagine all of the different things that a backend might need to do. There’s a wide range of different tasks an application might need its backend to perform, all of which require specific configuration and programming - including things like providing SSL termination to enable secure communications, managing relatime connections, providing hosting for frontend assets, and so on, as pictured below:
+          Now that we understand what kind of architecture a backend requires, we can start to imagine all of the different things that a backend might need to do. There’s a wide range of different tasks an application might need its backend to perform, all of which require specific configuration and programming - including things like providing SSL termination to enable secure communications, managing realtime connections, providing hosting for frontend assets, and so on, as pictured here:
         </p>
 
         <div class="img-wrapper">
@@ -393,7 +403,7 @@
         </div>
         
         <p>
-          For the backend of a GraphQL application, one of the most challenging tasks can be actually producing the GraphQL API.
+          While any one of these tasks is a topic unto itself, for the backend of a GraphQL application, producing the GraphQL is a subject we need to explore further.
         </p>
 
         <h3 id="what-are-the-challenges-of-a-graphql-api">4.3) What are the Challenges of a GraphQL API?</h3>
@@ -403,7 +413,7 @@
         </p>
 
         <p>
-          Arnaud Luaret, author of the book "The Design of Web APIs", mentions the new challenges that a GraphQL API brings [<a href="#footnote-6">6</a>]:
+          Arnaud Lauret, author of the book "The Design of Web APIs", mentions the new challenges that a GraphQL API brings [<a href="#footnote-6">6</a>]:
         </p>
 
         <blockquote>
@@ -429,7 +439,7 @@
         <h3 id="how-is-a-graphql-api-produced">4.4) How is a GraphQL API Produced?</h3>
 
         <p>
-          To produce a GraphQL API, we need to run a piece of software called a GraphQL server. As we mentioned earlier, A GraphQL server is a specialized software package that can receive and respond to GraphQL requests. The behavior of a GraphQL server is defined using two inputs: A GraphQL schema, and Resolver functions. At a high level, the GraphQL schema defines “what” the GraphQL server can do using the GraphQL type system, and the resolver functions tell it how to do it [<a href="#footnote-8">8</a>].
+          To produce a GraphQL API, we need to run a piece of software called a GraphQL server. As we mentioned earlier, A GraphQL server is a specialized software package that can receive and respond to GraphQL requests. The behavior of a GraphQL server is defined using two inputs: A GraphQL schema, and resolver functions. At a high level, the GraphQL schema defines “what” the GraphQL server can do using the GraphQL type system, and the resolver functions tell it how to do it [<a href="#footnote-8">8</a>].
         </p>
 
         <p>
@@ -454,7 +464,7 @@
         </p>
 
         <p>
-          A basic GraphQL schema is shown here.  It has several types - the “Person” type is an object type.  Object types make up the “things” of your API - you could think of them as entities, or objects.  Each type will also have fields - for the Person here, there is a name and phone field, which are a string and integer. You can think of fields like the properties of your objects.
+          A basic GraphQL schema is shown here.  It has several types - the “Person” type is an object type.  Object types make up the “things” of your API, which you can think of as entities, or objects.  Each type will also have fields.  In this example, there is a name and phone field, which are a string and integer. You can think of fields like the properties of your objects.
         </p>
 
         <div class="img-wrapper">
@@ -465,11 +475,11 @@
         </div>
 
         <p>
-          There are actually many more types than just object types.  Two very important ones are the query and mutation types.  These describe what actions you should be able to do with your object types.  Queries are all about simply retrieving data, while mutations involve some kind of change to the data. Here we have a query to find a person by name, and a mutation to create a new person.
+          There are actually many more types than just object types.  Two very important ones are the query and mutation types.  These describe what actions you should be able to do with your object types.  Queries are all about simply retrieving data, while mutations involve some kind of change to the data. In our current example, we have a query to find a person by name, and a mutation to create a new person.
         </p>
 
         <p>
-          Keep in mind that these definitions of queries and mutations don’t say anything about *how* the API gets the job done - it's only describing what the API should be able to do!
+          Keep in mind that these definitions of queries and mutations don’t say anything about <em>how</em> the API gets the job done - it's only describing what the API should be able to do!
         </p>
 
         <h4>4.4.2) GraphQL Resolvers</h4>
@@ -493,10 +503,14 @@
           />
         </div>
 
+        <p>
+          With the GraphQL schema and resolver functions defined, we have everything we need to initialize the GraphQL server to produce the GraphQL API on the backend.
+        </p>
+
         <h3 id="how-can-we-reduce-the-complexity-of-a-graphql-backend">4.5) How Can we Reduce the Complexity of a GraphQL Backend?</h3>
 
         <p>
-          We can now see the big picture of everything that goes into creating a GraphQL backend. In addition to all of the architecture and configuration required for for a standard backend, we also have the inputs needed to produce the GraphQL API - the schema and resolver functions.
+          We can now see the big picture of everything that goes into creating a GraphQL backend. In addition to all of the architecture and configuration required for for a standard backend, we also have the inputs needed to produce the GraphQL API: The schema and resolver functions.
         </p>
 
         <div class="img-wrapper">
