@@ -185,7 +185,7 @@ img {
   margin: 5rem auto 5rem auto;
 }
 
-#river-logo {
+#satellite-logo {
   font-family: var(--font-family-header);
   font-weight: bold;
   font-size: 1.5rem;
@@ -832,7 +832,7 @@ small {
 
   /* Logos */
 
-  #river-logo {
+  #satellite-logo {
     width: 40px;
     top: 18px;
     right: 40px;
@@ -1044,7 +1044,7 @@ small {
 }
 
 @media (max-width: 400px) {
-  #river-logo {
+  #satellite-logo {
     width: 33px;
     right: 40px;
   }

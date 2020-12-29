@@ -1,7 +1,7 @@
 /* global document, window, hljs, $ */
 
 document.addEventListener('DOMContentLoaded', () => {
-  const riverLogo = document.querySelector('#river-logo');
+  const satelliteLogo = document.querySelector('#satellite-logo');
   const nav = document.querySelector('nav');
   const navLinks = document.querySelectorAll('#site-navigation a');
   const main = document.querySelector('main');
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     $([document.documentElement, document.body]).animate(
       {
-        scrollTop: $('#what-is-river').offset().top,
+        scrollTop: $('#what-is-satellite').offset().top,
       },
       2000
     );
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const isNarrowScreen = () => getWindowWidth() < 1100;
 
   const logos = [...document.querySelectorAll('.logo-links img')]
-    .filter((logo) => !/river/.test(logo.id))
+    .filter((logo) => !/satellite/.test(logo.id))
     .map((logo) => logo.id.split('-')[0]);
 
   const snakeCaseify = (text) => text.toLowerCase().split(/ +/).join('-');
@@ -226,17 +226,17 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const handleNavColors = () => {
-    const onHeader = isOnHeader('river');
-    const onTeam = isOnTeamSection('river');
+    const onHeader = isOnHeader('satellite');
+    const onTeam = isOnTeamSection('satellite');
     const onMain = !(onHeader || onTeam);
     const isWideScreen = !isNarrowScreen();
 
     if (isWideScreen && !onMain && topNavVisible) {
       styleNavColors('#f7f7f7', '#0779e4', '#28c9ae');
-      changeImgSrc('river-logo', 'images/logos/river_logo-full.png'); // black
+      changeImgSrc('satellite-logo', 'images/logos/satellite_logo-full.png'); // black
     } else {
       styleNavColors('#f7f7f7', '#0779e4', '#28c9ae');
-      changeImgSrc('river-logo', 'images/logos/river_logo-full.png');
+      changeImgSrc('satellite-logo', 'images/logos/satellite_logo-full.png');
     }
   };
 
@@ -291,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  riverLogo.addEventListener('click', handleNavDisplay);
+  satelliteLogo.addEventListener('click', handleNavDisplay);
   main.addEventListener('mouseenter', hideNav);
   ourTeam.addEventListener('mouseenter', hideNav);
   header.addEventListener('mouseenter', hideNav);
