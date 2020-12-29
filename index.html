@@ -250,7 +250,7 @@
         <h3 id="facebook-s-news-feed-api">2.3) Designing a Better API: Facebook's News Feed</h3>
 
         <p>
-          This story starts in 2011, when Facebook decided to completely re-write their native iOS app. They were motivated by the desire to provide a better experience for users on mobile, and immediately hit issues when trying to re-use the existing API for their News Feed feature in the native app [https://www.youtube.com/watch?v=783ccP__No8].
+          This story starts in 2011, when Facebook decided to completely re-write their native iOS app. They were motivated by the desire to provide a better experience for users on mobile, and immediately hit issues when trying to re-use the existing API for their News Feed feature in the native app [<a href="#footnote-1">1</a>].
         </p>
 
         <h4>2.3.1) Why the Existing API Didn't Work</h4>
@@ -294,13 +294,13 @@
         </div>
 
         <p>
-          One other important aspect of GraphQL that has lead to the multitude of client-side tools available is that a GraphQL API uses a strongly typed system to describe its capabilities. This allows clients to use a process called introspection to see exactly what they are able to do with the API, making GraphQL effectively self-documenting [https://www.researchgate.net/publication/337431422_A_GraphQL_approach_to_Healthcare_Information_Exchange_with_HL7_FHIR].
+          One other important aspect of GraphQL that has lead to the multitude of client-side tools available is that a GraphQL API uses a strongly typed system to describe its capabilities. This allows clients to use a process called introspection to see exactly what they are able to do with the API, making GraphQL effectively self-documenting [<a href="#footnote-2">2</a>].
         </p>
 
         <h4>2.3.3) Widespread Adoption of GraphQL</h4>
 
         <p>
-          GraphQL was initially developed by Facebook to solve a very specific problem - rebuilding their newsfeed API. Used as an internal tool by Facebook from 2012 until 2015, it ended up spreading and covering most of their mobile application due to its strengths. An open-source version of GraphQL was released in 2015. Soon after it was open-sourced, GraphQL began being used by many other companies like AirBNB, Twitter, Netflix, and Github, and has continued to grow in adoption ever since [https://www.graphql.com/case-studies/].
+          GraphQL was initially developed by Facebook to solve a very specific problem - rebuilding their newsfeed API. Used as an internal tool by Facebook from 2012 until 2015, it ended up spreading and covering most of their mobile application due to its strengths. An open-source version of GraphQL was released in 2015. Soon after it was open-sourced, GraphQL began being used by many other companies like AirBNB, Twitter, Netflix, and Github, and has continued to grow in adoption ever since [<a href="#footnote-3">3</a>].
         </p>
         
         <h2 id="what-is-graphql">3) What is GraphQL?</h2>
@@ -312,7 +312,7 @@
         <h3 id="the-graphql-specification">3.1) The GraphQL Specification</h3>
 
         <p>
-          GraphQL is actually a specification that describes its type system and query language [http://spec.graphql.org/draft/]. Both of these will be covered in more detail layer on, but for now keep in mind that this specification can be implemented in any programming language - its not specific to any one particular application or architecture. There are, in fact, service-side implementations of the GraphQL specification in just about any programming language you might be interested in. These server-side software implementations are known as GraphQL servers.
+          GraphQL is actually a specification that describes its type system and query language [<a href="#footnote-4">4</a>]. Both of these will be covered in more detail layer on, but for now keep in mind that this specification can be implemented in any programming language - its not specific to any one particular application or architecture. There are, in fact, service-side implementations of the GraphQL specification in just about any programming language you might be interested in. These server-side software implementations are known as GraphQL servers.
         </p>
 
         <h3 id="graphql-servers">3.2) GraphQL Servers</h3>
@@ -353,7 +353,7 @@
         </div>
         
         <p>
-          Typically, a backend is built with a 3-tier architecture [https://www.ibm.com/cloud/learn/three-tier-architecture]. The different "tiers" in this kind of architecture serve the following purposes:
+          Typically, a backend is built with a 3-tier architecture [<a href="#footnote-5">5</a>]. The different "tiers" in this kind of architecture serve the following purposes:
         </p>
 
         <p>
@@ -395,7 +395,7 @@
         </p>
 
         <p>
-          Arnaud Luaret, author of the book "The Design of Web APIs", mentions the new challenges that a GraphQL API brings [Lauret, A. (2019). The Design of Web APIs. Shelter Island, NY: Manning Publications.]:
+          Arnaud Luaret, author of the book "The Design of Web APIs", mentions the new challenges that a GraphQL API brings [<a href="#footnote-6">6</a>]:
         </p>
 
         <blockquote>
@@ -405,7 +405,7 @@
         </blockquote>
         
         <p>
-          In an article from PayPal's engineering blog, a similar challenge is mentioned - GraphQL is different than what developers may be used to [https://medium.com/paypal-engineering/scaling-graphql-at-paypal-b5b5ac098810]:
+          In an article from PayPal's engineering blog, a similar challenge is mentioned - GraphQL is different than what developers may be used to [<a href="#footnote-7">7</a>]:
         </p>
 
         <blockquote>
@@ -421,7 +421,7 @@
         <h3 id="how-is-a-graphql-api-produced">4.4) How is a GraphQL API Produced?</h3>
 
         <p>
-          To produce a GraphQL API, we need to run a piece of software called a GraphQL server. As we mentioned earlier, A GraphQL server is a specialized software package that can receive and respond to GraphQL requests. The behavior of a GraphQL server is defined using two inputs: A GraphQL schema, and Resolver functions. At a high level, the GraphQL schema defines “what” the GraphQL server can do using the GraphQL type system, and the resolver functions tell it how to do it [https://fullstackopen.com/en/part8/graph_ql_server].
+          To produce a GraphQL API, we need to run a piece of software called a GraphQL server. As we mentioned earlier, A GraphQL server is a specialized software package that can receive and respond to GraphQL requests. The behavior of a GraphQL server is defined using two inputs: A GraphQL schema, and Resolver functions. At a high level, the GraphQL schema defines “what” the GraphQL server can do using the GraphQL type system, and the resolver functions tell it how to do it [<a href="#footnote-8">8</a>].
         </p>
 
         <p>
@@ -442,7 +442,7 @@
         <h4>4.4.1) GraphQL Schema</h4>
 
         <p>
-          The GraphQL schema defines the functionality available to client applications that connect to the GraphQL server [https://helda.helsinki.fi/bitstream/handle/10138/304677/Touronen_Ville_Pro_gradu_2019.pdf]. The schema is made up of types, which have one or more fields.
+          The GraphQL schema defines the functionality available to client applications that connect to the GraphQL server [<a href="#footnote-9">9</a>]. The schema is made up of types, which have one or more fields.
         </p>
 
         <p>
@@ -471,7 +471,7 @@
         </p>
 
         <p>
-          Unlike the GraphQL schema, which has to comply with the requirements of the GraphQL specification, GraphQL resolvers are flexible.  They are just functions, and you can do anything with them that you would do with any other function.  The only requirement is that the function needs to return a value which corresponds to the field specified by the schema [https://www.apollographql.com/docs/tutorial/resolvers/].
+          Unlike the GraphQL schema, which has to comply with the requirements of the GraphQL specification, GraphQL resolvers are flexible.  They are just functions, and you can do anything with them that you would do with any other function.  The only requirement is that the function needs to return a value which corresponds to the field specified by the schema [<a href="#footnote-10">10</a>].
         </p>
 
         <p>
@@ -519,7 +519,7 @@
         <h3 id="what-is-a-backend-as-a-service-baas">5.1) What is a Backend-as-a-Service (BaaS)?</h3>
 
         <p>
-          A backend-as-a-service encapsulates all of the underlying architecture that a backend needs - the web server, app server, and database - and also provides the essential functionality of a backend pre-configured such as SSL certificates, front-end hosting, and data persistence. The functionality of the backend is made available to frontend applications through an API [https://www.cloudflare.com/learning/serverless/glossary/backend-as-a-service-baas/].
+          A backend-as-a-service encapsulates all of the underlying architecture that a backend needs - the web server, app server, and database - and also provides the essential functionality of a backend pre-configured such as SSL certificates, front-end hosting, and data persistence. The functionality of the backend is made available to frontend applications through an API [<a href="#footnote-11">11</a>].
         </p>
 
         <div class="img-wrapper">
@@ -572,7 +572,7 @@
         <h4>5.3.1) Managed Services</h4>
         
         <p>
-          There are a number of managed services available for a GraphQL BaaS.  These are paid, proprietary services and are fully supported by the provider. Using these paid services completely abstracts away the complexity of setting up and managing the backend of your application. In general, they are easy to use - with some caveats.  <a href="https://aws.amazon.com/amplify/">AWS Amplify</a>, for example, has a tight integration with other AWS services, making it a great option if you are fully committed to using AWS services for your entire application - although it is more difficult to use for non-AWS services. And since there is no need to deploy anything to use these managed services, there is zero complexity involved in their deployment.
+          There are a number of managed services available for a GraphQL BaaS.  These are paid, proprietary services and are fully supported by the provider. Using these paid services completely abstracts away the complexity of setting up and managing the backend of your application. In general, they are easy to use - with some caveats.  <a href="https://aws.amazon.com/amplify/">AWS Amplify</a>, for example, has a close integration with other AWS services, making it a great option if you are fully committed to using AWS services for your entire application - although it is more difficult to use for non-AWS services. And since there is no need to deploy anything to use these managed services, there is zero complexity involved in their deployment.
         </p>
         
         <p>
@@ -713,7 +713,7 @@
         <h4>6.2.2) A Hypothetical Resolver Function Generator</h4>
         
         <p>
-          As a possible solution, at this point we thought we could take a similar approach as we had for converting the GraphQL schema to a database schema - we could try to automatically generate resolver functions for the most common actions you might want to take with your application’s data - creating, reading, updating, and deleting [https://www.infoworld.com/article/2640739/rest-and-crud--the-impedance-mismatch.html] - and automatically initialize the GraphQL server with those generated functions.
+          As a possible solution, at this point we thought we could take a similar approach as we had for converting the GraphQL schema to a database schema - we could try to automatically generate resolver functions for the most common actions you might want to take with your application’s data - creating, reading, updating, and deleting [<a href="#footnote-12">12</a>] - and automatically initialize the GraphQL server with those generated functions.
         </p>
 
         <p>
@@ -778,13 +778,13 @@
         <h4>6.4.1) What are Graph Databases?</h4>
 
         <p>
-          Graph databases are databases specialized to handle highly interconnected data [https://neo4j.com/developer/graph-database/]. They do this by treating their data as a graph - which is similar to how GraphQL treats its data. In fact, some Graph databases even have integrations with GraphQL to generate resolvers - exactly what we were looking for.
+          Graph databases are databases specialized to handle highly interconnected data [<a href="#footnote-13">13</a>]. They do this by treating their data as a graph - which is similar to how GraphQL treats its data. In fact, some Graph databases even have integrations with GraphQL to generate resolvers - exactly what we were looking for.
         </p>
 
         <h4>6.4.2) Graph Databases and GraphQL</h4>
 
         <p>
-          Two graph databases with GraphQL integrations are <a href="https://neo4j.com/labs/grandstack-graphql/">neo4j</a> and <a href="https://dgraph.io/">Dgraph</a>.  Neo4j is probably the most widely used graph database [https://db-engines.com/en/ranking/graph+dbms].  It’s GraphQL integration involves using an add-on to the database, which was a more complicated setup than we were hoping for.
+          Two graph databases with GraphQL integrations are <a href="https://neo4j.com/labs/grandstack-graphql/">neo4j</a> and <a href="https://dgraph.io/">Dgraph</a>.  Neo4j is probably the most widely used graph database [<a href="#footnote-14">14</a>].  It’s GraphQL integration involves using an add-on to the database, which was a more complicated setup than we were hoping for.
         </p>
 
         <p>
@@ -860,7 +860,7 @@
         </div>
 
         <p>
-          Nginx was an obvious choice for an efficient and battle-tested webserver to act as the internet-facing entry point to a Satellite backend [https://www.nginx.com/resources/glossary/nginx/] - and NodeJS running a simple express application worked perfectly for providing a private API that the front-end developer could access to upload their static files and work with the GraphQL schema loaded to Dgraph.
+          Nginx was an obvious choice for an efficient and battle-tested webserver to act as the internet-facing entry point to a Satellite backend [<a href="#footnote-15">15</a>] - and NodeJS running a simple express application worked perfectly for providing a private API that the front-end developer could access to upload their static files and work with the GraphQL schema loaded to Dgraph.
         </p>
 
         <h3 id="the-core-application-final-architecture">6.6) The Core Application Final Architecture</h3>
@@ -893,7 +893,7 @@
         </p>
 
         <p>
-          Containers provide a way to package an application with its dependencies in an isolated and consistent way [https://cloud.google.com/containers].  This means that if you start, for example, a NodeJS container, that container has all of the requirements to run NodeJS packaged with it, and you no longer have to worry about manually installing it and setting everything up. The isolation of containers means that whatever is going on inside the container doesn’t interfere with the host system - so if you run a container with one version of Node on it, it won’t interfere with your host installation of Node.
+          Containers provide a way to package an application with its dependencies in an isolated and consistent way [<a href="#footnote-16">16</a>].  This means that if you start, for example, a NodeJS container, that container has all of the requirements to run NodeJS packaged with it, and you no longer have to worry about manually installing it and setting everything up. The isolation of containers means that whatever is going on inside the container doesn’t interfere with the host system - so if you run a container with one version of Node on it, it won’t interfere with your host installation of Node.
         </p>
 
         <div class="img-wrapper">
@@ -904,7 +904,7 @@
         </div>
 
         <p>
-          Another good thing about containers is that they are lighter weight than some other options like virtual machines [https://www.backblaze.com/blog/vm-vs-containers/]. Virtual machines actually require running an entire guest operating system, while containers run directly within the host operating system and use less resources. This makes containers faster to deploy. And since Docker is the most popular way to package applications using containers, we chose to use Docker containers to package the components of Satellite.
+          Another good thing about containers is that they are lighter weight than some other options like virtual machines [<a href="#footnote-17">17</a>]. Virtual machines actually require running an entire guest operating system, while containers run directly within the host operating system and use less resources. This makes containers faster to deploy. And since Docker is the most popular way to package applications using containers, we chose to use Docker containers to package the components of Satellite.
         </p>
 
         <h4>6.7.2) Container Coordination</h4>
