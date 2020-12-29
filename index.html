@@ -231,13 +231,13 @@
         </div>
 
         <p>
-          Modern applications often completely separate the backend from the frontend.  This kind of split frontend and backend architecture allows frontend and backend teams to work independently, and facilitates development of different frontend client applications using the same backend [<a href="#footnote-0">-1</a>]. While the advantages of this decoupled architecture are enticing, we now need to think more carefully about how the frontend and backend interact - specifically, how they communicate.
+          Modern applications often completely separate the backend from the frontend.  This kind of split frontend and backend architecture allows frontend and backend teams to work independently, and facilitates development of different frontend client applications using the same backend [<a href="#footnote-1">1</a>]. While the advantages of this decoupled architecture are enticing, we now need to think more carefully about how the frontend and backend interact - specifically, how they communicate.
         </p>
 
         <h3 id="api-s-in-web-applications">2.2) How do the Frontend and Backend Communicate?</h3>
 
         <p>
-          In general terms, an API, or Application Programming Interface, provides a way for computer systems to interact with each other. There are many different types of APIs, all of which provide some way for one system to access the functionality of another system. Having said that, it makes sense that the frontend of a web application would communicate with the backend through the use of an API [<a href="#footnote-0">0</a>]. The communication between the frontend and backend takes place over HTTP, and these kind of APIs are commonly referred to as web APIs. For a web API allowing communication between a frontend client and a backend, the backend produces the API, which the frontend client consumes.
+          In general terms, an API, or Application Programming Interface, provides a way for computer systems to interact with each other. There are many different types of APIs, all of which provide some way for one system to access the functionality of another system. Having said that, it makes sense that the frontend of a web application would communicate with the backend through the use of an API [<a href="#footnote-2">2</a>]. The communication between the frontend and backend takes place over HTTP, and these kind of APIs are commonly referred to as web APIs. For a web API allowing communication between a frontend client and a backend, the backend produces the API, which the frontend client consumes.
         </p>
  
         <div class="img-wrapper">
@@ -254,7 +254,7 @@
         <h3 id="facebook-s-news-feed-api">2.3) Designing a Better API: Facebook's News Feed</h3>
 
         <p>
-          This story starts in 2011, when Facebook decided to completely re-write their iOS app. Previously, their mobile app had essentially been a wrapper around the Facebook webpage, and they determined they needed to create a new, native app in order to provide the kind of experience they wanted for their mobile users. This kind of app design required the frontend to be separated from the backend, and for the two sides to communicate with an API. This was the first time Facebook had tried to develop and app like this, and they immediately hit issues when trying to re-use the existing API for the News Feed feature [<a href="#footnote-1">1</a>].
+          This story starts in 2011, when Facebook decided to completely re-write their iOS app. Previously, their mobile app had essentially been a wrapper around the Facebook webpage, and they determined they needed to create a new, native app in order to provide the kind of experience they wanted for their mobile users. This kind of app design required the frontend to be separated from the backend, and for the two sides to communicate with an API. This was the first time Facebook had tried to develop and app like this, and they immediately hit issues when trying to re-use the existing API for the News Feed feature [<a href="#footnote-3">3</a>].
         </p>
 
         <h4>2.3.1) Why the Existing API Didn't Work</h4>
@@ -298,13 +298,13 @@
         </div>
 
         <p>
-          One other important aspect of GraphQL that has lead to the multitude of client-side tools available is that a GraphQL API uses a strongly typed system to describe its capabilities. This allows clients to use a process called introspection to see exactly what they are able to do with the API, making GraphQL effectively self-documenting [<a href="#footnote-2">2</a>].
+          One other important aspect of GraphQL that has lead to the multitude of client-side tools available is that a GraphQL API uses a strongly typed system to describe its capabilities. This allows clients to use a process called introspection to see exactly what they are able to do with the API, making GraphQL effectively self-documenting [<a href="#footnote-4">4</a>].
         </p>
 
         <h4>2.3.3) Widespread Adoption of GraphQL</h4>
 
         <p>
-          Because of its unique features, GraphQL caught on quickly at Facebook, and ended up being used throughout most of their mobile application. It was used as an internal tool from 2012 until 2015, at which point an open-source version was released. Soon after it was open-sourced, GraphQL began being used by many other companies like AirBNB, Twitter, Netflix, and Github, and has continued to grow in adoption ever since [<a href="#footnote-3">3</a>].
+          Because of its unique features, GraphQL caught on quickly at Facebook, and ended up being used throughout most of their mobile application. It was used as an internal tool from 2012 until 2015, at which point an open-source version was released. Soon after it was open-sourced, GraphQL began being used by many other companies like AirBNB, Twitter, Netflix, and Github, and has continued to grow in adoption ever since [<a href="#footnote-5">5</a>].
         </p>
 
         <p>
@@ -320,7 +320,7 @@
         <h3 id="the-graphql-specification">3.1) The GraphQL Specification</h3>
 
         <p>
-          GraphQL is actually a specification that describes its type system and query language [<a href="#footnote-4">4</a>]. Both of these will be covered in more detail later, but for now keep in mind that this specification can be implemented in any programming language - its not specific to any one particular application or architecture. There are, in fact, service-side implementations of the GraphQL specification in just about any programming language you might be interested in. These server-side software implementations are known as GraphQL servers.
+          GraphQL is actually a specification that describes its type system and query language [<a href="#footnote-6">6</a>]. Both of these will be covered in more detail later, but for now keep in mind that this specification can be implemented in any programming language - its not specific to any one particular application or architecture. There are, in fact, service-side implementations of the GraphQL specification in just about any programming language you might be interested in. These server-side software implementations are known as GraphQL servers.
         </p>
 
         <h3 id="graphql-servers">3.2) GraphQL Servers</h3>
@@ -369,7 +369,7 @@
         </div>
         
         <p>
-          Typically, a backend is built with a 3-tier architecture [<a href="#footnote-5">5</a>]. The different "tiers" in this kind of architecture serve the following purposes:
+          Typically, a backend is built with a 3-tier architecture [<a href="#footnote-7">7</a>]. The different "tiers" in this kind of architecture serve the following purposes:
         </p>
 
         <ul>
@@ -413,7 +413,7 @@
         </p>
 
         <p>
-          Arnaud Lauret, author of the book "The Design of Web APIs", mentions the new challenges that a GraphQL API brings [<a href="#footnote-6">6</a>]:
+          Arnaud Lauret, author of the book "The Design of Web APIs", mentions the new challenges that a GraphQL API brings [<a href="#footnote-8">8</a>]:
         </p>
 
         <blockquote>
@@ -423,7 +423,7 @@
         </blockquote>
         
         <p>
-          In an article from PayPal's engineering blog, a similar challenge is mentioned - GraphQL is different than what developers may be used to [<a href="#footnote-7">7</a>]:
+          In an article from PayPal's engineering blog, a similar challenge is mentioned - GraphQL is different than what developers may be used to [<a href="#footnote-9">9</a>]:
         </p>
 
         <blockquote>
@@ -439,7 +439,7 @@
         <h3 id="how-is-a-graphql-api-produced">4.4) How is a GraphQL API Produced?</h3>
 
         <p>
-          To produce a GraphQL API, we need to run a piece of software called a GraphQL server. As we mentioned earlier, A GraphQL server is a specialized software package that can receive and respond to GraphQL requests. The behavior of a GraphQL server is defined using two inputs: A GraphQL schema, and resolver functions. At a high level, the GraphQL schema defines “what” the GraphQL server can do using the GraphQL type system, and the resolver functions tell it how to do it [<a href="#footnote-8">8</a>].
+          To produce a GraphQL API, we need to run a piece of software called a GraphQL server. As we mentioned earlier, A GraphQL server is a specialized software package that can receive and respond to GraphQL requests. The behavior of a GraphQL server is defined using two inputs: A GraphQL schema, and resolver functions. At a high level, the GraphQL schema defines “what” the GraphQL server can do using the GraphQL type system, and the resolver functions tell it how to do it [<a href="#footnote-10">10</a>].
         </p>
 
         <p>
@@ -460,7 +460,7 @@
         <h4>4.4.1) GraphQL Schema</h4>
 
         <p>
-          The GraphQL schema defines the functionality available to client applications that connect to the GraphQL server [<a href="#footnote-9">9</a>]. The schema is made up of types, which have one or more fields.
+          The GraphQL schema defines the functionality available to client applications that connect to the GraphQL server [<a href="#footnote-11">11</a>]. The schema is made up of types, which have one or more fields.
         </p>
 
         <p>
@@ -489,7 +489,7 @@
         </p>
 
         <p>
-          Unlike the GraphQL schema, which has to comply with the requirements of the GraphQL specification, GraphQL resolvers are flexible.  They are just functions, and you can do anything with them that you would do with any other function.  The only requirement is that the function needs to return a value which corresponds to the field specified by the schema [<a href="#footnote-10">10</a>].
+          Unlike the GraphQL schema, which has to comply with the requirements of the GraphQL specification, GraphQL resolvers are flexible.  They are just functions, and you can do anything with them that you would do with any other function.  The only requirement is that the function needs to return a value which corresponds to the field specified by the schema [<a href="#footnote-12">12</a>].
         </p>
 
         <p>
@@ -541,7 +541,7 @@
         <h3 id="what-is-a-backend-as-a-service-baas">5.1) What is a Backend-as-a-Service (BaaS)?</h3>
 
         <p>
-          A backend-as-a-service encapsulates all of the underlying architecture that a backend needs - the web server, app server, and database - and also provides the essential functionality of a backend pre-configured such as SSL certificates, front-end hosting, and data persistence. The functionality of the backend is made available to frontend applications through an API [<a href="#footnote-11">11</a>].
+          A backend-as-a-service encapsulates all of the underlying architecture that a backend needs - the web server, app server, and database - and also provides the essential functionality of a backend pre-configured such as SSL certificates, front-end hosting, and data persistence. The functionality of the backend is made available to frontend applications through an API [<a href="#footnote-13">13</a>].
         </p>
 
         <div class="img-wrapper">
@@ -737,7 +737,7 @@
         <h4>6.2.2) A Hypothetical Resolver Function Generator</h4>
         
         <p>
-          As a possible solution, at this point we thought we could take a similar approach as we had for converting the GraphQL schema to a database schema: We could try to automatically generate resolver functions for the most common actions you might want to take with your application’s data - creating, reading, updating, and deleting [<a href="#footnote-12">12</a>] - and automatically initialize the GraphQL server with those generated functions.
+          As a possible solution, at this point we thought we could take a similar approach as we had for converting the GraphQL schema to a database schema: We could try to automatically generate resolver functions for the most common actions you might want to take with your application’s data - creating, reading, updating, and deleting [<a href="#footnote-14">14</a>] - and automatically initialize the GraphQL server with those generated functions.
         </p>
 
         <p>
@@ -798,7 +798,7 @@
         </div>
 
         <p>
-          In addition to the more complex database schema generation, we'd have to think much harder about resolver generation. So far, we've been taking advantage of something called the <i>default resolver</i>. Technically, every field in a GraphQL schema must have a resolver function defined to return a value for that field. With most GraphQL server implementations, the server will fall back to the default resolver if there is not a resolver function explicitly defined [<a href="#footnote-12">12.1</a>]. If a specific resolver is not defined, the default resolver simply returns a property from the returned object with the relevant field name. If we were to explicitly define resolvers for every field of the simple schema we were originally considering, the resulting set of functions would actually need to look like this:
+          In addition to the more complex database schema generation, we'd have to think much harder about resolver generation. So far, we've been taking advantage of something called the <i>default resolver</i>. Technically, every field in a GraphQL schema must have a resolver function defined to return a value for that field. With most GraphQL server implementations, the server will fall back to the default resolver if there is not a resolver function explicitly defined [<a href="#footnote-15">15</a>]. If a specific resolver is not defined, the default resolver simply returns a property from the returned object with the relevant field name. If we were to explicitly define resolvers for every field of the simple schema we were originally considering, the resulting set of functions would actually need to look like this:
         </p>
 
         <div class="img-wrapper">
@@ -825,13 +825,13 @@
         <h4>6.4.1) What are Graph Databases?</h4>
 
         <p>
-          Graph databases are databases specialized to handle highly interconnected data [<a href="#footnote-13">13</a>]. They do this by treating their data as a graph - which is similar to how GraphQL treats its data. In fact, some Graph databases even have integrations with GraphQL to generate resolvers, which is exactly what we were looking for.
+          Graph databases are databases specialized to handle highly interconnected data [<a href="#footnote-16">16</a>]. They do this by treating their data as a graph - which is similar to how GraphQL treats its data. In fact, some Graph databases even have integrations with GraphQL to generate resolvers, which is exactly what we were looking for.
         </p>
 
         <h4>6.4.2) Graph Databases and GraphQL</h4>
 
         <p>
-          Two graph databases with GraphQL integrations are <a href="https://neo4j.com/labs/grandstack-graphql/">neo4j</a> and <a href="https://dgraph.io/">Dgraph</a>.  Neo4j is probably the most widely used graph database [<a href="#footnote-14">14</a>].  It’s GraphQL integration involves using an add-on to the database, which was a more complicated setup than we were hoping for.
+          Two graph databases with GraphQL integrations are <a href="https://neo4j.com/labs/grandstack-graphql/">neo4j</a> and <a href="https://dgraph.io/">Dgraph</a>.  Neo4j is probably the most widely used graph database [<a href="#footnote-17">17</a>].  It’s GraphQL integration involves using an add-on to the database, which was a more complicated setup than we were hoping for.
         </p>
 
         <p>
@@ -907,7 +907,7 @@
         </div>
 
         <p>
-          Nginx was an obvious choice for an efficient and battle-tested webserver to act as the internet-facing entry point to a Satellite backend [<a href="#footnote-15">15</a>], and NodeJS running a simple express application worked perfectly for providing a private API that the front-end developer could access to upload their static files and work with the GraphQL schema loaded to Dgraph.
+          Nginx was an obvious choice for an efficient and battle-tested webserver to act as the internet-facing entry point to a Satellite backend [<a href="#footnote-18">18</a>], and NodeJS running a simple express application worked perfectly for providing a private API that the front-end developer could access to upload their static files and work with the GraphQL schema loaded to Dgraph.
         </p>
 
         <h3 id="the-core-application-final-architecture">6.6) The Core Application Final Architecture</h3>
@@ -944,7 +944,7 @@
         </p>
 
         <p>
-          Containers provide a way to package an application with its dependencies in an isolated and consistent way [<a href="#footnote-16">16</a>].  This means that if you start, for example, a NodeJS container, that container has all of the requirements to run NodeJS packaged with it, and you no longer have to worry about manually installing it and setting everything up. The isolation of containers means that whatever is going on inside the container doesn’t interfere with the host system - so if you run a container with one version of Node on it, it won’t interfere with your host installation of Node.
+          Containers provide a way to package an application with its dependencies in an isolated and consistent way [<a href="#footnote-19">19</a>].  This means that if you start, for example, a NodeJS container, that container has all of the requirements to run NodeJS packaged with it, and you no longer have to worry about manually installing it and setting everything up. The isolation of containers means that whatever is going on inside the container doesn’t interfere with the host system - so if you run a container with one version of Node on it, it won’t interfere with your host installation of Node.
         </p>
 
         <div class="img-wrapper">
@@ -955,7 +955,7 @@
         </div>
 
         <p>
-          Another good thing about containers is that they are lighter weight than some other options like virtual machines [<a href="#footnote-17">17</a>]. Virtual machines actually require running an entire guest operating system, while containers run directly within the host operating system and use less resources. This makes containers faster to deploy. And since Docker is the most popular way to package applications using containers, we chose to use Docker containers to package the components of Satellite.
+          Another good thing about containers is that they are lighter weight than some other options like virtual machines [<a href="#footnote-20">20</a>]. Virtual machines actually require running an entire guest operating system, while containers run directly within the host operating system and use less resources. This makes containers faster to deploy. And since Docker is the most popular way to package applications using containers, we chose to use Docker containers to package the components of Satellite.
         </p>
 
         <h4>6.7.2) Container Coordination</h4>
@@ -985,7 +985,7 @@
         <h2 id="references">8) References</h2>
 
         <ol>
-          <li id="footnote-0">
+          <li id="footnote-1">
             <a
               href="https://blog.csssr.com/en/article/split-stack-web-development"
               target="_blank"
@@ -993,11 +993,11 @@
             >
           </li>
 
-          <li id="footnote-0">
+          <li id="footnote-2">
             Ejsmont, Artur. Web Scalability for Startup Engineers: Tips & Techniques for Scaling Your Web Application. McGraw-Hill Education, 2015.
           </li>
 
-          <li id="footnote-1">
+          <li id="footnote-3">
             <a
               href="https://www.youtube.com/watch?v=783ccP__No8"
               target="_blank"
@@ -1005,11 +1005,11 @@
             >
           </li>
 
-          <li id="footnote-2">
+          <li id="footnote-4">
             Mukhiya, Suresh & Rabbi, Fazle & Pun, Ka I Violet & Rutle, Adrian & Lamo, Yngve. (2019). A GraphQL approach to Healthcare Information Exchange with HL7 FHIR. Procedia Computer Science. 160. 338-345. 10.1016/j.procs.2019.11.082.
           </li>
 
-          <li id="footnote-3">
+          <li id="footnote-5">
             <a
               href="https://www.graphql.com/case-studies/"
               target="_blank"
@@ -1017,7 +1017,7 @@
             >
           </li>
 
-          <li id="footnote-4">
+          <li id="footnote-6">
             <a
               href="http://spec.graphql.org/draft/"
               target="_blank"
@@ -1025,7 +1025,7 @@
             >
           </li>
 
-          <li id="footnote-5">
+          <li id="footnote-7">
             <a
               href="https://www.ibm.com/cloud/learn/three-tier-architecture"
               target="_blank"
@@ -1033,11 +1033,11 @@
             >
           </li>
 
-          <li id="footnote-6">
+          <li id="footnote-8">
             Lauret, A. (2019). The Design of Web APIs. Shelter Island, NY: Manning Publications.
           </li>
           
-          <li id="footnote-7">
+          <li id="footnote-9">
             <a
               href="https://medium.com/paypal-engineering/scaling-graphql-at-paypal-b5b5ac098810"
               target="_blank"
@@ -1045,7 +1045,7 @@
             >
           </li>
           
-          <li id="footnote-8">
+          <li id="footnote-10">
             <a
               href="https://fullstackopen.com/en/part8/graph_ql_server"
               target="_blank"
@@ -1053,7 +1053,7 @@
             >
           </li>
           
-          <li id="footnote-9">
+          <li id="footnote-11">
             <a
               href="https://helda.helsinki.fi/handle/10138/304677"
               target="_blank"
@@ -1061,7 +1061,7 @@
             >
           </li>
           
-          <li id="footnote-10">
+          <li id="footnote-12">
             <a
               href="https://www.apollographql.com/docs/tutorial/resolvers/"
               target="_blank"
@@ -1069,7 +1069,7 @@
             >
           </li>
           
-          <li id="footnote-11">
+          <li id="footnote-13">
             <a
               href="https://www.cloudflare.com/learning/serverless/glossary/backend-as-a-service-baas/"
               target="_blank"
@@ -1077,7 +1077,7 @@
             >
           </li>
 
-          <li id="footnote-12">
+          <li id="footnote-14">
             <a
               href="https://www.infoworld.com/article/2640739/rest-and-crud--the-impedance-mismatch.html"
               target="_blank"
@@ -1085,7 +1085,7 @@
             >
           </li>
 
-          <li id="footnote-12">
+          <li id="footnote-15">
             <a
               href="https://www.graphql-tools.com/docs/resolvers/"
               target="_blank"
@@ -1093,7 +1093,7 @@
             >
           </li>
 
-          <li id="footnote-13">
+          <li id="footnote-16">
             <a
               href="https://neo4j.com/developer/graph-database/"
               target="_blank"
@@ -1101,7 +1101,7 @@
             >
           </li>
 
-          <li id="footnote-14">
+          <li id="footnote-17">
             <a
               href="https://db-engines.com/en/ranking/graph+dbms"
               target="_blank"
@@ -1109,7 +1109,7 @@
             >
           </li>
 
-          <li id="footnote-15">
+          <li id="footnote-18">
             <a
               href="https://www.nginx.com/resources/glossary/nginx/"
               target="_blank"
@@ -1117,7 +1117,7 @@
             >
           </li>
 
-          <li id="footnote-16">
+          <li id="footnote-19">
             <a
               href="https://cloud.google.com/containers"
               target="_blank"
@@ -1125,7 +1125,7 @@
             >
           </li>
 
-          <li id="footnote-17">
+          <li id="footnote-20">
             <a
               href="https://www.backblaze.com/blog/vm-vs-containers/"
               target="_blank"
