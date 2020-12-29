@@ -212,7 +212,7 @@
           </p>
 
           <p>
-            In this case study, we describe how we designed and built Satellite, the specific tradeoffs we made, and some of the technical challenges we encountered. In order to fully understand Satellite's design, first we'll discuss the general architecture of a modern web application - and one specifc application that drove the development of GraphQL.
+            In this case study, we describe how we designed and built Satellite, the specific tradeoffs we made, and some of the technical challenges we encountered. In order to fully understand Satellite's design, first we'll discuss the general architecture of a modern web application - and how challenges of Facebook's News Feed API drove the development of GraphQL.
           </p>
 
         <h2 id="web-app-architecture">2) Web App Architecture</h2>
@@ -229,6 +229,10 @@
             alt="The two parts of a web application."
           />
         </div>
+
+        <p>
+          Modern applications might even completely separate the backend from the frontend.  This kind of split frontend and backend architecture allows frontend and backend teams to work independently, and facilitates development of different frontend client applications using the same backend [0]. While the advantages of this decoupled architecture are enticing, we now need to think more carefully about how the frontend and backend interact - specifically, how they communicate.
+        </p>
 
         <h3 id="api-s-in-web-applications">2.2) How do the Frontend and Backend Communicate?</h3>
 
@@ -934,6 +938,14 @@
         <h2 id="references">8) References</h2>
 
         <ol>
+          <li id="footnote-0">
+            <a
+              href="https://blog.csssr.com/en/article/split-stack-web-development"
+              target="_blank"
+              >https://blog.csssr.com/en/article/split-stack-web-development</a
+            >
+          </li>
+
           <li id="footnote-1">
             <a
               href="https://www.youtube.com/watch?v=783ccP__No8"
