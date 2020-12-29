@@ -308,25 +308,25 @@
         </p>
 
         <p>
-          Now that we understand the types of problems that GraphQL was created to solve, we can took a closer look at what GraphQL is and how it works.
+          Now that we understand the types of problems that GraphQL was created to solve, we can take a closer look at what GraphQL is and how it works.
         </p>
         
         <h2 id="what-is-graphql">3) What is GraphQL?</h2>
 
         <p>
-          At a very high level, GraphQL is referred to as a “query language for APIs”. While this general term is helpful for placing where GraphQL fits as a tool for developing web applications, a more specific definition is necessary to get an idea of what kinds of things a developer will have to deal with when building a GraphQL application.
+          At a very high level, GraphQL is referred to as a “query language for APIs”. While this general term is helpful for placing where GraphQL fits as a tool for developing web applications, a more specific definition is necessary to get an idea of what kinds of things a developer will encounter when building a GraphQL application.
         </p>
 
         <h3 id="the-graphql-specification">3.1) The GraphQL Specification</h3>
 
         <p>
-          GraphQL is actually a specification that describes its type system and query language [<a href="#footnote-4">4</a>]. Both of these will be covered in more detail layer on, but for now keep in mind that this specification can be implemented in any programming language - its not specific to any one particular application or architecture. There are, in fact, service-side implementations of the GraphQL specification in just about any programming language you might be interested in. These server-side software implementations are known as GraphQL servers.
+          GraphQL is actually a specification that describes its type system and query language [<a href="#footnote-4">4</a>]. Both of these will be covered in more detail later, but for now keep in mind that this specification can be implemented in any programming language - its not specific to any one particular application or architecture. There are, in fact, service-side implementations of the GraphQL specification in just about any programming language you might be interested in. These server-side software implementations are known as GraphQL servers.
         </p>
 
         <h3 id="graphql-servers">3.2) GraphQL Servers</h3>
 
         <p>
-          GraphQL servers communicate with clients using the standard HTTP protocol. The GraphQL server is responsible for parsing the request into an abstract syntax tree so that the request can be traversed programmatically. The GraphQL server then walks this tree and determines how to respond to the request. Once the GraphQL server has assembled the request, it is returned to the client as a JSON object - once again over standard HTTP.
+          Like most web APIs, GraphQL servers receive requests from clients over the standard HTTP protocol. The GraphQL server's capabilities are defined using the GraphQL type system, and the server is responsible for parsing incoming requests into an abstract syntax tree (AST) that can be traversed programmatically. The GraphQL server then walks the AST to determine how to assembled the response to the request. Once the GraphQL server has assembled the response, it is returned to the client as a JSON object - once again over standard HTTP.
         </p>
 
         <h3 id="interacting-with-a-graphql-api">3.3) Interacting with a GraphQL API</h3>
