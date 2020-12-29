@@ -791,7 +791,33 @@
         </p>
 
         <p>
-          When we started experimenting with more complicated schema, the difficulty in creating the database schema and resolver functions increased dramatically. For a more complicated example like we see here, we would need to define multiple tables, foreign keys, and constraints in order to make the database work for the data represented by the GraphQL schema. A schema like this is showing relationships, which are common when using GraphQL, so it wasn't something we could ignore.
+          When we started experimenting with more complicated schema, the difficulty in creating the database schema and resolver functions increased significantly. The schema below shows some of the more complex behaviors that can be defined using the GraphQL type system:
+        </p>
+
+        <ul>
+          <li>
+            The type <code>Person</code> has the fields <code>name</code>, <code>address</code>, and <code>friends</code>:
+
+            <ul>
+              <li>
+                <code>name</code> has the <em>scalar</em> type of <code>String</code>. Scalar types are what we have been looking at so far. These types repesent a peice of concrete data.
+              </li>
+              <li>
+                <code>address</code> has the type of <code>Address</code>. The type <code>Address</code> is also defined in the schema. This is a <em>user defined</em> type.
+              </li>
+              <li>
+                <code>friends</code> refers to a <em>list</em> of user defined types - a list of <code>Person</code> types.
+              </li>
+            </ul>
+          </li>
+
+          <li>
+            The type <code>Address</code> is similar to what we've seen so far, with all of its fields being scalar types.
+          </li>
+        </ul>
+
+        <p>
+          A schema like this allows the GraphQL API to handle relationships, one of the key features of GraphQL, so it wasn't something we could ignore. But what would our imagined schema converter look like now?
         </p>
 
         <div class="img-wrapper">
@@ -800,6 +826,10 @@
             alt="More complicated converison - the results are uncertain."
           />
         </div>
+
+        <p>
+          For starters, generating the database schema from a GraphQL schema like this would be more complicated. The schema converter would need to define multiple tables, foreign keys, and constraints in order to make the database work for the data represented by the GraphQL schema.
+        </p>
 
         <p>
           In addition to the more complex database schema generation, we'd have to think much harder about resolver generation. So far, we've been taking advantage of something called the <i>default resolver</i>. Technically, every field in a GraphQL schema must have a resolver function defined to return a value for that field. With most GraphQL server implementations, the server will fall back to the default resolver if there is not a resolver function explicitly defined [<a href="#footnote-15">15</a>]. If a specific resolver is not defined, the default resolver simply returns a property from the returned object with the relevant field name. For example, if we were to <em>explicitly</em> define resolvers for every field of the simple schema we were originally considering, the resulting set of functions would look like this:
@@ -817,11 +847,11 @@
         </p>
 
         <p>
-          The reason this is a problem for more complicated schema like we are now considering is that the types of a field can actually be <em>other user-defined types</em>. Our more complicated example has the type <code>Person</code> with a field <code>address</code>, which is of type <code>Address</code>, and the type <code>Address</code> is defined elsewhere in the schema. This is all perfectly valid and indeed common in a GraphQL schema definition. And with a schema like this, we can't rely on the default resolver for each field of every type. Our schema converter would need to be smart enough to know that it must traverse each type recursively to identify non-scalar fields and generate resolver functions for those fields as well.
+          Clearly, when considering schema with fields that aren't simple scalar types, we would no longer be able to rely on the default resolver. Our schema converter would need to be smart enough to know that it must traverse each type recursively to identify non-scalar fields and generate resolver functions for those fields as well. An algorithm like this would actually be similar in concept to how a GraphQL server converts an incoming request into an AST.
         </p>
 
         <p>
-          Although we were confident that it would still be theoretically possible to pull this off, we thought that now it would be a good time to take a step back and consider alternatives.
+          We were still confident that we could pull this off, but we'd have to "reinvent the wheel" so to speak by parsing the GraphQL schema into a data structure that our schema converter would traverse recursively and generate resolver functions for each scalar data types. Then, the GraphQL server would traverse incoming requests and invoke these functions. So rather than reinventing the wheel, we thought that it would be a good time to take a step back and consider alternatives.
         </p>
 
         <h3 id="graph-databases">6.4) Graph Databases</h3>
