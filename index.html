@@ -231,13 +231,13 @@
         </div>
 
         <p>
-          Modern applications might even completely separate the backend from the frontend.  This kind of split frontend and backend architecture allows frontend and backend teams to work independently, and facilitates development of different frontend client applications using the same backend [0]. While the advantages of this decoupled architecture are enticing, we now need to think more carefully about how the frontend and backend interact - specifically, how they communicate.
+          Modern applications often completely separate the backend from the frontend.  This kind of split frontend and backend architecture allows frontend and backend teams to work independently, and facilitates development of different frontend client applications using the same backend [<a href="#footnote-0">-1</a>]. While the advantages of this decoupled architecture are enticing, we now need to think more carefully about how the frontend and backend interact - specifically, how they communicate.
         </p>
 
         <h3 id="api-s-in-web-applications">2.2) How do the Frontend and Backend Communicate?</h3>
 
         <p>
-          In modern applications, a common practice is to completely separate the frontend from the backend. Applications using this kind of architecture require some way for the frontend and backend to communicate, which is done through something called an API (application programming interface). The backend produces the API that the frontend consumes. This kind of architecture allows frontend and backend teams to work independently, and facilitates development of different frontend client applications using the same backend.
+          In general terms, an API, or Application Programming Interface, provides a way for computer systems to interact with each other. There are many different types of APIs, all of which provide some way for one system to access the functionality of another system. Having said that, it makes sense that the frontend of a web application would communicate with the backend through the use of an API [<a href="#footnote-0">0</a>]. The communication between the frontend and backend takes place over HTTP, and these kind of APIs are commonly referred to as web APIs. For a web API allowing communication between a frontend client and a backend, the backend produces the API, which the frontend client consumes.
         </p>
  
         <div class="img-wrapper">
@@ -248,19 +248,19 @@
         </div>
 
         <p>
-          There are a variety of ways to build the API for a web application's backend, and API design is a field of study in of itself. The state-of-the-art for web application APIs has naturally evolved over the years as API designers continuously strive to find better solutions to the challenges they are facing. One recent innovation in API development occurred at Facebook with their news feed API.
+          Just like there are many different types of APIs, there are many different ways to build a web API. The state-of-the-art for web APIs has evolved over the years as API designers continuously strive to find better solutions to the challenges they are facing. In the next section, we'll take a look at one recent innovation which has had a significant impact on web API design: The story of Facebook's News Feed API.
         </p>
 
         <h3 id="facebook-s-news-feed-api">2.3) Designing a Better API: Facebook's News Feed</h3>
 
         <p>
-          This story starts in 2011, when Facebook decided to completely re-write their native iOS app. They were motivated by the desire to provide a better experience for users on mobile, and immediately hit issues when trying to re-use the existing API for their News Feed feature in the native app [<a href="#footnote-1">1</a>].
+          This story starts in 2011, when Facebook decided to completely re-write their iOS app. Previously, their mobile app had essentially been a wrapper around the Facebook webpage, and they determined they needed to create a new, native app in order to provide the kind of experience they wanted for their mobile users. This kind of app design required the frontend to be separated from the backend, and for the two sides to communicate with an API. This was the first time Facebook had tried to develop and app like this, and they immediately hit issues when trying to re-use the existing API for the News Feed feature [<a href="#footnote-1">1</a>].
         </p>
 
         <h4>2.3.1) Why the Existing API Didn't Work</h4>
 
         <p>
-          This was the first time Facebook had tried to develop an application like this - where the backend was responsible for just returning data, and the front-end was responsible for all of the user interaction. For Facebook’s News Feed, it wasn't as simple as retrieving a story and all of the information for that particular story. Each story is interconnected, nested, and recursive. The existing APIs weren’t designed to allow developers to expose a rich, news feed-like experience on mobile. They didn’t have a hierarchical nature, or let developers select the exact data they needed. They were, in fact, designed to return HTML back to a web browser.
+          For Facebook’s News Feed, it isn’t as simple as retrieving a story and all of the information for that particular story. Each story is interconnected, nested, and recursive. The existing APIs weren’t designed to allow developers to expose a rich, news feed-like experience on mobile. They didn’t have a hierarchical nature, or let developers select the exact data they needed. They were, in fact, designed to return HTML back to a web browser.
         </p>
 
         <div class="img-wrapper">
@@ -304,7 +304,11 @@
         <h4>2.3.3) Widespread Adoption of GraphQL</h4>
 
         <p>
-          GraphQL was initially developed by Facebook to solve a very specific problem - rebuilding their newsfeed API. Used as an internal tool by Facebook from 2012 until 2015, it ended up spreading and covering most of their mobile application due to its strengths. An open-source version of GraphQL was released in 2015. Soon after it was open-sourced, GraphQL began being used by many other companies like AirBNB, Twitter, Netflix, and Github, and has continued to grow in adoption ever since [<a href="#footnote-3">3</a>].
+          Because of its unique features, GraphQL caught on quickly at Facebook, and ended up being used throughout most of their mobile application. It was used as an internal tool from 2012 until 2015, at which point an open-source version was released. Soon after it was open-sourced, GraphQL began being used by many other companies like AirBNB, Twitter, Netflix, and Github, and has continued to grow in adoption ever since [<a href="#footnote-3">3</a>].
+        </p>
+
+        <p>
+          Now that we understand the types of problems that GraphQL was created to solve, we can took a closer look at what GraphQL is and how it works.
         </p>
         
         <h2 id="what-is-graphql">3) What is GraphQL?</h2>
@@ -944,6 +948,10 @@
               target="_blank"
               >https://blog.csssr.com/en/article/split-stack-web-development</a
             >
+          </li>
+
+          <li id="footnote-0">
+            Ejsmont, Artur. Web Scalability for Startup Engineers: Tips & Techniques for Scaling Your Web Application. McGraw-Hill Education, 2015.
           </li>
 
           <li id="footnote-1">
