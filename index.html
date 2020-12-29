@@ -653,13 +653,13 @@
         </p>
 
         <p>
-          In the next section, we will describe how we designed Satellite - including the challenges we faced, and the decisions we made to overcome those challenges.
+          In the next section, we will describe how we designed Satellite, including the challenges we faced and the decisions we made to overcome those challenges.
         </p>
 
         <h2 id="the-core-application">6) The Core Application</h2>
 
         <p>
-          The Satellite core application represents a single instance of a backend. It provides client applications a GraphQL API for accessing the underlying data store, and static file serving for front-end hosting.
+          The Satellite core application represents a single instance of a backend. It provides client applications a GraphQL API for accessing the persistent data store, and static file serving for front-end hosting.
         </p>
 
         <div class="img-wrapper">
@@ -670,7 +670,7 @@
         </div>
 
         <p>
-          These features are made possible using several components under the hood. An nginx webserver is used for serving static files and routing incoming requests, a NodeJS express application server provides a way for administrative actions to be made on the Satellite instance, and a Dgraph Graph Database is used as the data store.
+          These features are made possible using several components under the hood. An nginx webserver is used for serving static files and routing incoming requests, a NodeJS express application server provides a way for administrative actions to be made on the Satellite instance, and a Dgraph Graph Database is used to store persistent data.
         </p>
 
         <p>
@@ -680,7 +680,7 @@
         <h3 id="how-is-an-application-s-data-defined">6.1) How is an Application's Data Defined?</h3>
         
         <p>
-          When we started building Satellite, we were immediately faced with a question - How do we build a GraphQL backend that works for any application, without knowing what kind of data that application will require ahead of time? Essentially, we needed to build a “generic” GraphQL backend that would work for any application.
+          When we started building Satellite, we were immediately faced with a question: How do we build a GraphQL backend that works for any application, without knowing what kind of data that application will require ahead of time? Essentially, we needed to build a “generic” GraphQL backend that would work for any application.
         </p>
 
         <p>
@@ -690,21 +690,25 @@
         <h4>6.1.1) GraphQL Schema vs. Database Schema</h4>
 
         <p>
-          Typically, the backend for a GraphQL application will require some kind of persistent data store. A common database that is good for storing the kind of inter-related data that a GraphQL application will likely use is a relational database. A relational database requires a schema of its own to define how it will store the data - in addition to the GraphQL schema required to define the API.
+          Typically, the backend for a GraphQL application will need to deal with interconnected, related data. A common database that is good for storing this kind of data is a relational database. A relational database requires a schema of its own to define how it will store the data in addition to the GraphQL schema required to define the API.
         </p>
 
         <p>
-          Requiring an additional database schema in addition to the GraphQL schema adds another piece of configuration that must be provided to the backend - something we wanted to minimize in order to keep Satellite easy to use.
+          Requiring an additional database schema in addition to the GraphQL schema adds another piece of configuration that must be provided to the backend, something we wanted to minimize in order to keep Satellite easy to use.
         </p>
 
         <h4>6.1.2) A Hypothetical Database Schema Generator</h4>
 
         <p>
-          To prevent the need for an additional schema definition in order to use Satellite, at this point we thought we could come up with a way to generate a relational database schema from a GraphQL schema.  This would eliminate the need for two schemas, and make it possible to define the backend’s data using only a GraphQL schema.
+          To prevent the need for an additional schema definition in order to use Satellite, at this point we thought we could come up with a way to generate a relational database schema from a GraphQL schema.  This would eliminate the need for two schemas, and make it possible to define the structure of the backend's data using only a GraphQL schema.
         </p>
 
         <p>
           But what would this look like? Would it even be possible? 
+        </p>
+
+        <p>
+          Taking a very simple GraphQL schema consisting of only a single object type like the one shown below, it's easy enough to see how this would work. For a GraphQL schema with a single object type with a few fields, we could generate a database schema defining a table corresponding to the object, with all of the necessary columns to represent the fields of the object.
         </p>
 
         <div class="img-wrapper">
@@ -715,11 +719,7 @@
         </div>
 
         <p>
-          Taking a very simple GraphQL schema consisting of only a single object type like we see here, it's easy enough to see how this would work. For a GraphQL schema with a single object type with a few fields, we could generate a database schema defining a table corresponding to the object, with all of the necessary columns to represent the fields of the object.
-        </p>
-
-        <p>
-          The logic for this hypothetical conversion process should be a relatively straight-forward matter of converting strings - so for now, we were ready to proceed to the next challenge.
+          The logic for this hypothetical conversion process should be a relatively straight-forward matter of converting strings. So for now, we were ready to proceed to the next challenge.
         </p>
 
         <h3 id="how-is-an-application-s-data-accessed">6.2) How is an Application's Data Accessed?</h3>
@@ -731,13 +731,13 @@
         <h4>6.2.1) Resolver Functions in a GraphQL BaaS</h4>
         
         <p>
-          As we’ve mentioned, making the data available for a GraphQL backend requires a GraphQL server to serve the API, that that GraphQL server needs to contain resolver functions to know how to respond to requests. The thing is, writing these resolver functions requires the developer to go "under the hood" and edit the backend’s code - something we needed to avoid in order to keep Satellite easy to use.
+          As we’ve mentioned, making the data available for a GraphQL backend requires a GraphQL server to serve the API, and that GraphQL server needs to contain resolver functions to know how to respond to requests. The challenge is that writing these resolver functions requires the developer to go "under the hood" and edit the backend’s code. To keep Satellite easy to use and preserve the encapsulation of the BaaS, this was going to be a huge problem.
         </p>
 
         <h4>6.2.2) A Hypothetical Resolver Function Generator</h4>
         
         <p>
-          As a possible solution, at this point we thought we could take a similar approach as we had for converting the GraphQL schema to a database schema - we could try to automatically generate resolver functions for the most common actions you might want to take with your application’s data - creating, reading, updating, and deleting [<a href="#footnote-12">12</a>] - and automatically initialize the GraphQL server with those generated functions.
+          As a possible solution, at this point we thought we could take a similar approach as we had for converting the GraphQL schema to a database schema: We could try to automatically generate resolver functions for the most common actions you might want to take with your application’s data - creating, reading, updating, and deleting [<a href="#footnote-12">12</a>] - and automatically initialize the GraphQL server with those generated functions.
         </p>
 
         <p>
@@ -752,13 +752,17 @@
         </div>
 
         <p>
-          We would need 4 resolvers for each object type in the schema - one for reading the data with a Query type, and 3 mutations for creating, updating, and deleting. This was starting to get significantly more complicated, but still seemed doable, since all of the resolvers followed a similar pattern, and we should be able to generate the correct function signatures and required databases actions to make it work - at least for a very simple schema like this. Our imagined schema converter would no longer be a matter of converting strings - now it would need to generate functions as well, but we still felt confident enough to proceed down this path.
+          We would need four resolvers for each object type in the schema: One for reading the data with a Query type, and three mutations for creating, updating, and deleting. This was starting to get significantly more complicated, but still seemed doable, since all of the resolvers followed a similar pattern, and we should be able to generate the correct function signatures and required databases actions to make it work...at least for a very simple schema like this. 
+        </p>
+
+        <p>
+          Our imagined schema converter would no longer be a matter of converting strings - now it would need to generate functions as well. But, we still felt confident enough to proceed down this path.
         </p>
 
         <h4>6.2.3) The Hypothetical Architecture</h4>
         
         <p>
-          We could now envision a hypothetical architecture for our GraphQL backend, requiring only the very simple GraphQL schema we’ve been considering so far as an input.
+          We could now envision a hypothetical architecture for our GraphQL backend, requiring only a GraphQL schema as an input.
         </p>
 
         <div class="img-wrapper">
@@ -772,14 +776,18 @@
           The GraphQL schema would be provided to the schema converter, which would generate a database schema and create the database, and also generate the necessary resolvers to initialize the GraphQL server. The GraphQL server would then produce the GraphQL API that could receive and respond to GraphQL requests from frontend applications.
         </p>
 
+        <p>
+          But like so many things in software engineering, it turned out to be more complicated than we had originally assumed. Keep reading to see how we solved the most significant challenge yet.
+        </p>
+
         <h3 id="what-about-more-complicated-data">6.3) What About More Complicated Data?</h3>
 
         <p>
-          So far we had only looked at a very simple schema - too simple really to make a very interesting application out of. 
+          So far we had only looked at a very simple schema...too simple to make a very interesting application out of. 
         </p>
 
         <p>
-          When we started experimenting with more complicated schema, the difficulty in creating the database schema and resolver functions increased dramatically. For an only slightly-more-complicated example like we see here, we would need to define multiple tables, foreign keys, and constraints in order to make the database work for the data represented by the GraphQL schema. 
+          When we started experimenting with more complicated schema, the difficulty in creating the database schema and resolver functions increased dramatically. For a more complicated example like we see here, we would need to define multiple tables, foreign keys, and constraints in order to make the database work for the data represented by the GraphQL schema. 
         </p>
 
         <div class="img-wrapper">
@@ -790,19 +798,34 @@
         </div>
 
         <p>
+          In addition to the more complex database schema generation, we'd have to think much harder about resolver generation. So far, we've been taking advantage of something called the <i>default resolver</i>. Technically, every field in a GraphQL schema must have a resolver function defined to return a value for that field. With most GraphQL server implementations, the server will fall back to the default resolver if there is not a resolver function explicitly defined [<a href="#footnote-12">12.1</a>]. If a specific resolver is not defined, the default resolver simply returns a property from the returned object with the relevant field name. If we were to explicitly define resolvers for every field of the simple schema we were originally considering, the resulting set of functions would actually need to look like this:
+        </p>
+
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/6_3-full-resolvers.svg"
+            alt="A full set of resolvers, without the implicit default resolvers."
+          />
+        </div>
+
+        <p>
+          Without relying on the default resolver, we need to define a function for every field of a type. Even this isn't a huge problem for a schema with fields that are simple scalar types like String or Int, but where things got messy is with our more complicated schema, where the types of a field can actually be <em>other user-defined types</em>, like we see with the type Person having a field address which is of type Address. To accomodate this, our schema converter would need to be smart enough to know that it must traverse each type recursively to identify non-scalar fields and generate resolver functions for those fields as well.
+        </p>
+
+        <p>
           Although we were confident that it would still be theoretically possible to pull this off, we thought that now it would be a good time to take a step back and consider alternatives.
         </p>
 
         <h3 id="graph-databases">6.4) Graph Databases</h3>
 
         <p>
-          This led us to consider other kinds of databases, and we ultimately ended up at Graph databases.
+          Our search for a simpler way to generate resolver functions from a GraphQL schema led us to consider other kinds of databases, and we ultimately ended up at Graph databases.
         </p>
 
         <h4>6.4.1) What are Graph Databases?</h4>
 
         <p>
-          Graph databases are databases specialized to handle highly interconnected data [<a href="#footnote-13">13</a>]. They do this by treating their data as a graph - which is similar to how GraphQL treats its data. In fact, some Graph databases even have integrations with GraphQL to generate resolvers - exactly what we were looking for.
+          Graph databases are databases specialized to handle highly interconnected data [<a href="#footnote-13">13</a>]. They do this by treating their data as a graph - which is similar to how GraphQL treats its data. In fact, some Graph databases even have integrations with GraphQL to generate resolvers, which is exactly what we were looking for.
         </p>
 
         <h4>6.4.2) Graph Databases and GraphQL</h4>
@@ -823,13 +846,13 @@
         </div>
 
         <p>
-          Because of its native GraphQL support, we ultimately chose Dgraph for the database of Satellite.
+          Because of its native GraphQL support, we ultimately chose Dgraph for the database of Satellite, which greatly simplified our architecture.
         </p>
 
         <h4>6.4.3) Simplified Architecture</h4>
 
         <p>
-          We could now simplify our hypothetical architecture.
+          With Dgraph handling resolver generation and producing the GraphQL API, we could now simplify our hypothetical architecture:
         </p>
 
         <div class="img-wrapper">
@@ -840,14 +863,14 @@
         </div>
 
         <p>
-          With Dgraph accepting a GraphQL schema as an input, we would no longer need a schema converter to generate a database schema and resolvers or a separate application server to serve the API, so we were able to remove those components from the architecture.
+          With Dgraph accepting a GraphQL schema as an input, we would no longer need a schema converter to generate a database schema and resolvers or a separate application server to serve the API, we were able to remove those components from our working design.
+        </p>
+
+        <p>
+          Although the majority of the heavy lifting was done, we still a couple of additional problems to solve before we could get to the final architecture for a single Satellite backend.
         </p>
 
         <h3 id="other-challenges">6.5) Other Challenges</h3>
-
-        <p>
-          Although the majority of the heavy lifting was done, we had a couple of additional problems to solve before we could get to Satellite’s final architecture.
-        </p>
 
         <h4>6.5.1) How Does Satellite Backend Administration Work?</h4>
         
@@ -863,13 +886,13 @@
         </div>
 
         <p>
-          Also, we currently have no way to upload or serve static files - files that a front-end developer would likely need for their web applications.
+          Also, we currently have no way to upload or serve static files that a front-end developer would need for their web applications. We needed some way to resolver both of these issues before we could declare victory.
         </p>
 
         <h4>6.5.2) Protecting the Administrative Endpoints</h4>
         
         <p>
-          To protect these private endpoints, we needed a couple more components.
+          To protect Dgraph's administrative endpoints and deal with static files, we needed a couple more components.
         </p>
 
         <p>
@@ -884,13 +907,13 @@
         </div>
 
         <p>
-          Nginx was an obvious choice for an efficient and battle-tested webserver to act as the internet-facing entry point to a Satellite backend [<a href="#footnote-15">15</a>] - and NodeJS running a simple express application worked perfectly for providing a private API that the front-end developer could access to upload their static files and work with the GraphQL schema loaded to Dgraph.
+          Nginx was an obvious choice for an efficient and battle-tested webserver to act as the internet-facing entry point to a Satellite backend [<a href="#footnote-15">15</a>], and NodeJS running a simple express application worked perfectly for providing a private API that the front-end developer could access to upload their static files and work with the GraphQL schema loaded to Dgraph.
         </p>
 
         <h3 id="the-core-application-final-architecture">6.6) The Core Application Final Architecture</h3>
 
         <p>
-          This brings us to the final architecture for the Satellite core application, which we can now see in more detail.
+          This brings us to the final architecture for the Satellite core application, which we can now see in more detail:
         </p>
 
         <div class="img-wrapper">
@@ -901,19 +924,23 @@
         </div>
 
         <p>
-          The nginx webserver acts as a web-facing entry-point to the backend, reverse proxying GraphQL requests to Dgraph or serving static files.  The NodeJS application provides a private entry-point for the developer to perform administrative actions to their backend, like uploading static files, or updating their GraphQL schema.
+          The nginx webserver acts as a web-facing entry-point to the backend, reverse proxying GraphQL requests to Dgraph or serving static files.  The NodeJS application provides a private entry-point for the developer to perform administrative actions to their backend like uploading static files or updating their GraphQL schema.
+        </p>
+
+        <p>
+          The core architecture of Satellite provides a way to make Satellite easy to use, but what about deployment? We knew that while we couldn't match the ease of deployment of a managed service, we needed to make it as easy as possible to deploy for Satellite to be a viable alternative.  Next, we'll discuss why deployment at this stage in Satellite's development was still a huge problem, and what we did to fix it.
         </p>
 
         <h3 id="how-do-we-simplify-deployment">6.7) How do we Simplify Deployment?</h3>
 
         <p>
-          As it stands, to get a single Satellite application running, you’d have to manually download and configure each component individually, specific to whatever operating system you’re trying to run it on. This would be a very time-consuming and generally just difficult process. The problem we faced now was - How can we package all of the components of a single Satellite application and their dependencies in a way that it can be deployed easily wherever it’s needed?
+          As it stands, to get a single Satellite application running, you’d have to manually download and configure each component individually, specific to whatever operating system you’re trying to run it on. This would be a very time-consuming and difficult process. We were now faced with the challenge of packaging all of the components of a single Satellite application and their dependencies in a way so that it could be deployed easily wherever it’s needed.
         </p>
 
         <h4>6.7.1) Containers</h4>
         
         <p>
-          The answer to this problem was to use containers.
+          After some investigation, we came to the perfect answer to this challenge: Containers.
         </p>
 
         <p>
@@ -938,7 +965,7 @@
         </p>
 
         <p>
-          Our final optimization for running a single Satellite was to eliminate this need for starting each container individually.  We wanted to make it possible to start the application with only a single command. Fortunately, Docker provides a tool called <a href="https://docs.docker.com/compose/">Docker Compose</a>, which is designed specifically for defining and running multi-container Docker applications. Compose uses a YAML file to declaratively describe the containers you want to run, which the Docker Compose tool uses to launch the containers with the required configurations.
+          Our final optimization for deploying a single Satellite was to eliminate this need for starting each container individually.  We wanted to make it possible to start the application with only a single command. Fortunately, Docker provides a tool called <a href="https://docs.docker.com/compose/">Docker Compose</a>, which is designed specifically for defining and running applications consisting of multiple Docker containers. Compose uses a YAML file to declaratively describe the containers you want to run, which the Compose tool uses to launch the containers with the required configurations.
         </p>
 
         <div class="img-wrapper">
@@ -1055,6 +1082,14 @@
               href="https://www.infoworld.com/article/2640739/rest-and-crud--the-impedance-mismatch.html"
               target="_blank"
               >https://www.infoworld.com/article/2640739/rest-and-crud--the-impedance-mismatch.html</a
+            >
+          </li>
+
+          <li id="footnote-12">
+            <a
+              href="https://www.graphql-tools.com/docs/resolvers/"
+              target="_blank"
+              >https://www.graphql-tools.com/docs/resolvers/</a
             >
           </li>
 
