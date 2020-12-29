@@ -791,7 +791,7 @@
         </p>
 
         <p>
-          When we started experimenting with more complicated schema, the difficulty in creating the database schema and resolver functions increased dramatically. For a more complicated example like we see here, we would need to define multiple tables, foreign keys, and constraints in order to make the database work for the data represented by the GraphQL schema. 
+          When we started experimenting with more complicated schema, the difficulty in creating the database schema and resolver functions increased dramatically. For a more complicated example like we see here, we would need to define multiple tables, foreign keys, and constraints in order to make the database work for the data represented by the GraphQL schema. A schema like this is showing relationships, which are common when using GraphQL, so it wasn't something we could ignore.
         </p>
 
         <div class="img-wrapper">
@@ -802,7 +802,7 @@
         </div>
 
         <p>
-          In addition to the more complex database schema generation, we'd have to think much harder about resolver generation. So far, we've been taking advantage of something called the <i>default resolver</i>. Technically, every field in a GraphQL schema must have a resolver function defined to return a value for that field. With most GraphQL server implementations, the server will fall back to the default resolver if there is not a resolver function explicitly defined [<a href="#footnote-15">15</a>]. If a specific resolver is not defined, the default resolver simply returns a property from the returned object with the relevant field name. If we were to explicitly define resolvers for every field of the simple schema we were originally considering, the resulting set of functions would actually need to look like this:
+          In addition to the more complex database schema generation, we'd have to think much harder about resolver generation. So far, we've been taking advantage of something called the <i>default resolver</i>. Technically, every field in a GraphQL schema must have a resolver function defined to return a value for that field. With most GraphQL server implementations, the server will fall back to the default resolver if there is not a resolver function explicitly defined [<a href="#footnote-15">15</a>]. If a specific resolver is not defined, the default resolver simply returns a property from the returned object with the relevant field name. For example, if we were to <em>explicitly</em> define resolvers for every field of the simple schema we were originally considering, the resulting set of functions would look like this:
         </p>
 
         <div class="img-wrapper">
@@ -813,7 +813,11 @@
         </div>
 
         <p>
-          Without relying on the default resolver, we need to define a function for every field of a type. Even this isn't a huge problem for a schema with fields that are simple scalar types like String or Int, but where things got messy is with our more complicated schema, where the types of a field can actually be <em>other user-defined types</em>, like we see with the type Person having a field address which is of type Address. To accomodate this, our schema converter would need to be smart enough to know that it must traverse each type recursively to identify non-scalar fields and generate resolver functions for those fields as well.
+          See the extra resolvers defined for Person? These are usually handled behind the scenes by the default resolver.
+        </p>
+
+        <p>
+          The reason this is a problem for more complicated schema like we are now considering is that the types of a field can actually be <em>other user-defined types</em>. Our more complicated example has the type <code>Person</code> with a field <code>address</code>, which is of type <code>Address</code>, and the type <code>Address</code> is defined elsewhere in the schema. This is all perfectly valid and indeed common in a GraphQL schema definition. And with a schema like this, we can't rely on the default resolver for each field of every type. Our schema converter would need to be smart enough to know that it must traverse each type recursively to identify non-scalar fields and generate resolver functions for those fields as well.
         </p>
 
         <p>
