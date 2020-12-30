@@ -1397,10 +1397,9 @@
 
         <p>
           The first component we needed was a web server to serve static files
-          and act as an a reverse proxy to the GraphQL API endpoint provided by
-          Dgraph. The second was an application to provide a way for the
-          developer to upload their static files. It should also be possible to
-          send administrative actions to Dgraph’s admin endpoint.
+          and act as a reverse proxy to the GraphQL API endpoint that Dgraph
+          provides. We chose Nginx for this since it's an efficient and
+          battle-tested product [<a href="#footnote-18">18</a>].
         </p>
 
         <div class="img-wrapper">
@@ -1411,12 +1410,13 @@
         </div>
 
         <p>
-          Nginx was an obvious choice for an efficient and battle-tested web
-          server to act as the internet-facing entry point to a Satellite
-          backend [<a href="#footnote-18">18</a>]. A simple express application
-          running on NodeJS provides a private API. The front-end developer
-          could access the API to upload their static files and work with the
-          GraphQL schema loaded into Dgraph.
+          The second thing we needed was an application to provide a way for the
+          developer to upload their static files. They should also be able to
+          send administrative actions to Dgraph’s admin endpoint. We
+          accomplished this by building an express application running on NodeJS
+          to provide a private API. The front-end developer can access the API
+          to upload their static files and work with the GraphQL schema loaded
+          into Dgraph.
         </p>
 
         <h3 id="the-core-application-final-architecture">
@@ -1436,18 +1436,18 @@
         </div>
 
         <p>
-          The nginx webserver acts as a web-facing entry-point to the backend,
-          reverse proxying GraphQL requests to Dgraph or serving static files. 
+          The nginx web server acts as a web-facing entry point to the backend.
+          It can reverse-proxy GraphQL requests to Dgraph or serve static files.
           The NodeJS application provides a private entry-point for the
-          developer to perform administrative actions to their backend like
+          developer to perform administrative actions on their backend like
           uploading static files or updating their GraphQL schema.
         </p>
 
         <p>
-          The core architecture of Satellite provides a way to make Satellite
-          easy to use, but what about deployment? We knew that while we couldn't
-          match the ease of deployment of a managed service, we needed to make
-          it as easy as possible to deploy for Satellite to be a viable
+          Satellite's core architecture makes it easy to use, but what about
+          deployment? On one hand, we knew that we couldn't match the simplicity
+          of deployment of a managed service. On the other, we needed to make it
+          as easy as possible to deploy for Satellite to be a viable
           alternative. Next, we'll discuss why deployment at this stage in
           Satellite's development was still a huge problem, and what we did to
           fix it.
@@ -1458,33 +1458,33 @@
         </h3>
 
         <p>
-          As it stands, to get a single Satellite application running, you’d
-          have to manually download and configure each component individually,
-          specific to whatever operating system you’re trying to run it on. This
-          would be a very time-consuming and difficult process. We were now
-          faced with the challenge of packaging all of the components of a
-          single Satellite application and their dependencies in a way so that
-          it could be deployed easily wherever it’s needed.
+          As it stands, to get a Satellite instance running, you’d have to
+          manually download and configure each separate component. The specifics
+          could change depending on which operating system you’re trying to run
+          them on. This would be a very time-consuming and difficult process. We
+          now faced the challenge of packaging all the components needed for a
+          Satellite, plus their dependencies, in a way that made it easy to
+          deploy.
         </p>
 
         <h4>6.7.1) Containers</h4>
 
         <p>
           After some investigation, we came to the perfect answer to this
-          challenge: Containers.
+          challenge: containers.
         </p>
 
         <p>
           Containers provide a way to package an application with its
           dependencies in an isolated and consistent way [<a href="#footnote-19"
             >19</a
-          >].  This means that if you start, for example, a NodeJS container,
-          that container has all of the requirements to run NodeJS packaged with
-          it, and you no longer have to worry about manually installing it and
-          setting everything up. The isolation of containers means that whatever
-          is going on inside the container doesn’t interfere with the host
-          system - so if you run a container with one version of Node on it, it
-          won’t interfere with your host installation of Node.
+          >]. This means that if you start, for example, a NodeJS container,
+          that container has all the requirements to run NodeJS packaged with
+          it. You no longer have to worry about manually installing it and
+          setting everything up. Containers also provide isolation, meaning that
+          whatever is going on in the container doesn’t interfere with the host
+          system. So if you run a container with one version of Node, it won’t
+          interfere with your host installation of Node.
         </p>
 
         <div class="img-wrapper">
@@ -1498,12 +1498,12 @@
           Another good thing about containers is that they are lighter weight
           than some other options like virtual machines [<a href="#footnote-20"
             >20</a
-          >]. Virtual machines actually require running an entire guest
-          operating system, while containers run directly within the host
-          operating system and use less resources. This makes containers faster
-          to deploy. And since Docker is the most popular way to package
-          applications using containers, we chose to use Docker containers to
-          package the components of Satellite.
+          >]. Virtual machines need to run an entire guest operating system,
+          while containers create an isolated environment within the host
+          operating system. Consequently, containers use less resources and are
+          faster to deploy. Since Docker is the most popular way to package
+          applications using containers, we chose to use it to package the
+          components of Satellite.
         </p>
 
         <h4>6.7.2) Container Coordination</h4>
@@ -1511,21 +1511,20 @@
         <p>
           Packaging Satellite using docker containers greatly simplified the
           deployment of each individual component. But since each Satellite
-          consists of multiple components, it still required manually starting
-          and stopping each container for the application.
+          consists of several components, it still required manually starting
+          and stopping each component container.
         </p>
 
         <p>
-          Our final optimization for deploying a single Satellite was to
-          eliminate this need for starting each container individually.  We
-          wanted to make it possible to start the application with only a single
-          command. Fortunately, Docker provides a tool called
-          <a href="https://docs.docker.com/compose/">Docker Compose</a>, which
-          is designed specifically for defining and running applications
-          consisting of multiple Docker containers. Compose uses a YAML file to
-          declaratively describe the containers you want to run, which the
-          Compose tool uses to launch the containers with the required
-          configurations.
+          Our last optimization for deploying a Satellite was to eliminate this
+          need to start each container individually. We wanted to make it
+          possible to start the application with only a single command.
+          Fortunately, Docker provides a tool called
+          <a href="https://docs.docker.com/compose/">Docker Compose</a>. It's
+          designed specifically for defining and running applications consisting
+          of multiple Docker containers. Compose uses a YAML file to describe
+          the containers you want to run along with their configuration. Then it
+          launches the containers to start the application.
         </p>
 
         <div class="img-wrapper">
@@ -1536,11 +1535,12 @@
         </div>
 
         <p>
-          Our docker compose configuration for launching a single, containerized
+          Our Docker Compose configuration for launching a single, containerized
           Satellite looked something like what is pictured here. As you can see,
           the compose file also allows for specifying various other options that
-          are required for Satellite to run, such as environment variables and
-          storage volumes used by the containers to store their data.
+          are required for Satellite to run. It can include things like
+          environment variables and storage volumes used by the containers to
+          store their data.
         </p>
 
         <h2 id="multi-instance-architecture">7) Multi Instance Architecture</h2>
