@@ -205,33 +205,34 @@
         <h2 id="what-is-satellite">1) What is Satellite?</h2>
 
         <p>
-          Satellite is an open-source GraphQL Backed-as-a-Service (BaaS) that
+          Satellite is an open-source GraphQL backend-as-a-service (BaaS). It
           enables teams to easily deploy and manage GraphQL backends for web
           applications.
         </p>
 
         <p>
-          Satellite abstracts away the complexity of setting up the
-          infrastructure for a backend and the unique challenges of configuring
-          a GraphQL server. It allows the application developer to define their
-          entire backend using only a GraphQL schema. And with its multi-tenant
-          architecture based on Kubernetes, Satellite allows developers to
+          Satellite abstracts away the complexity of building a GraphQL backend.
+          It sets up the infrastructure and configures the GraphQL server and
+          database. It allows the application developer to define their entire
+          backend using only a single input - a GraphQL schema. Satellite's
+          multi-tenant architecture, based on Kubernetes, allows developers to
           create and use as many backends as they need. Satellite is a great fit
-          for new applications where ease of use and speed of deployment is the
-          top priority.
+          for new applications where ease of use and speed of deployment are
+          priorities.
         </p>
 
         <p>
           In this case study, we'll describe both <em>why</em> and
           <em>how</em> we designed and built Satellite. Satellite was born from
-          our desire to make setting up a GraphQL backend easier, and we had to
-          overcome numerous technical challenges to achieve this.
+          our desire to make setting up a GraphQL backend easier. We had to
+          overcome many technical challenges to achieve this.
         </p>
 
         <p>
-          To explain Satellite's design, we'll discuss the general architecture
-          of a modern web application. We'll also describe how challenges faced
-          by Facebook's News Feed API drove the development of GraphQL.
+          To explain Satellite's design, we'll first discuss the general
+          architecture of a modern web application. We'll also describe how
+          challenges faced by Facebook's News Feed API drove the development of
+          GraphQL.
         </p>
 
         <h2 id="web-app-architecture">2) Web App Architecture</h2>
