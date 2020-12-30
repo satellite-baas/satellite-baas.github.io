@@ -1155,7 +1155,7 @@
         <div class="img-wrapper">
           <img
             src="images/diagrams/6_2_3-hypothetical-architecture.svg"
-            alt="A hypothethical architecture for Satellite."
+            alt="A hypothetical architecture for Satellite."
           />
         </div>
 
@@ -1178,15 +1178,16 @@
         </h3>
 
         <p>
-          So far we had only looked at a very simple schema...too simple to make
-          a very interesting application out of.
+          So far, we've only looked at a very simple schema - probably too
+          simple to make an interesting application.
         </p>
 
         <p>
           When we started experimenting with more complicated schema, the
           difficulty in creating the database schema and resolver functions
-          increased significantly. The schema below shows some of the more
-          complex behaviors that can be defined using the GraphQL type system:
+          increased significantly. The schema in the next figure shows some of
+          the more complex behaviors that can be defined using the GraphQL type
+          system:
         </p>
 
         <ul>
@@ -1219,40 +1220,37 @@
         </ul>
 
         <p>
-          A schema like this allows the GraphQL API to handle relationships, one
-          of the key features of GraphQL, so it wasn't something we could
+          A schema like this allows the GraphQL API to handle relationships.
+          That's a key feature of GraphQL, so it wasn't something we could
           ignore. But what would our imagined schema converter look like now?
         </p>
 
         <div class="img-wrapper">
           <img
             src="images/diagrams/6_3-complicated-schema.svg"
-            alt="More complicated converison - the results are uncertain."
+            alt="More complicated conversion - the results are uncertain."
           />
         </div>
 
         <p>
-          For starters, generating the database schema from a GraphQL schema
+          For one thing, generating the database schema from a GraphQL schema
           like this would be more complicated. The schema converter would need
-          to define multiple tables, foreign keys, and constraints in order to
-          make the database work for the data represented by the GraphQL schema.
+          to define multiple tables, foreign keys, and constraints to make the
+          database work for the data represented by the GraphQL schema. Besides
+          more complex database schema generation, we'd also have to think much
+          harder about resolver generation.
         </p>
 
         <p>
-          In addition to the more complex database schema generation, we'd have
-          to think much harder about resolver generation. So far, we've been
-          taking advantage of something called the <i>default resolver</i>.
-          Technically, every field in a GraphQL schema must have a resolver
-          function defined to return a value for that field. With most GraphQL
-          server implementations, the server will fall back to the default
-          resolver if there is not a resolver function explicitly defined [<a
-            href="#footnote-15"
-            >15</a
-          >]. If a specific resolver is not defined, the default resolver simply
-          returns a property from the returned object with the relevant field
-          name. For example, if we were to <em>explicitly</em> define resolvers
-          for every field of the simple schema we were originally considering,
-          the resulting set of functions would look like this:
+          So far, we've been taking advantage of something called the default
+          resolver. According to the GraphQL specification, every field in a
+          GraphQL schema must have a resolver function. If no resolver function
+          is defined for a field, most GraphQL implementations will fall back to
+          the default resolver [<a href="#footnote-15">15</a>]. The default
+          resolver simply returns a property from the returned object with the
+          relevant field name. For example, if we defined resolvers for every
+          field of the simple schema we originally considered, the resulting set
+          of functions would look like this:
         </p>
 
         <div class="img-wrapper">
@@ -1270,40 +1268,40 @@
         <p>
           Clearly, when considering schema with fields that aren't simple scalar
           types, we would no longer be able to rely on the default resolver. Our
-          schema converter would need to be smart enough to know that it must
-          traverse each type recursively to identify non-scalar fields and
-          generate resolver functions for those fields as well. An algorithm
-          like this would actually be similar in concept to how a GraphQL server
-          converts an incoming request into an AST.
+          schema converter would need to be smart enough to traverse each type
+          recursively to identify non-scalar fields and generate resolver
+          functions for those fields. An algorithm like this would actually be
+          similar in concept to how a GraphQL server converts an incoming
+          request into an AST.
         </p>
 
         <p>
-          We were still confident that we could pull this off, but we'd have to
-          "reinvent the wheel" so to speak by parsing the GraphQL schema into a
-          data structure that our schema converter would traverse recursively
-          and generate resolver functions for each scalar data types. Then, the
-          GraphQL server would traverse incoming requests and invoke these
-          functions. So rather than reinventing the wheel, we thought that it
-          would be a good time to take a step back and consider alternatives.
+          Although we were still confident we could pull this off, going this
+          route looked like it would mean reinventing the wheel, so to speak.
+          We'd have to parse the GraphQL schema into a data structure. Then our
+          schema converter would traverse it recursively and generate resolver
+          functions for each scalar data type. Then the GraphQL server would
+          traverse incoming requests and invoke these functions. So rather than
+          reinventing the wheel, we thought it would be a good time to take a
+          step back and consider alternatives.
         </p>
 
         <h3 id="graph-databases">6.4) Graph Databases</h3>
 
         <p>
           Our search for a simpler way to generate resolver functions from a
-          GraphQL schema led us to consider other kinds of databases, and we
-          ultimately ended up at Graph databases.
+          GraphQL schema led us to consider other kinds of databases. Graph
+          databases, in particular, showed promise.
         </p>
 
         <h4>6.4.1) What are Graph Databases?</h4>
 
         <p>
-          Graph databases are databases specialized to handle highly
-          interconnected data [<a href="#footnote-16">16</a>]. They do this by
-          treating their data as a graph - which is similar to how GraphQL
-          treats its data. In fact, some Graph databases even have integrations
-          with GraphQL to generate resolvers, which is exactly what we were
-          looking for.
+          Graph databases are specialized to handle highly interconnected data
+          [<a href="#footnote-16">16</a>]. They do this by treating their data
+          as a graph - which is similar to how GraphQL treats its data. In fact,
+          some Graph databases even have integrations with GraphQL to generate
+          resolvers, which is exactly what we were looking for.
         </p>
 
         <h4>6.4.2) Graph Databases and GraphQL</h4>
@@ -1318,9 +1316,9 @@
         </p>
 
         <p>
-          Dgraph is less well-known that neo4j, but has a native GraphQL
-          integration, meaning you don’t have to install any other addons - you
-          get the GraphQL API directly from the database.
+          Dgraph is less well-known that neo4j, but it has native GraphQL
+          integration. You don’t have to install any other addons - you get the
+          GraphQL API directly from the database.
         </p>
 
         <div class="img-wrapper">
@@ -1352,14 +1350,14 @@
         <p>
           With Dgraph accepting a GraphQL schema as an input, we would no longer
           need a schema converter to generate a database schema and resolvers or
-          a separate application server to serve the API, we were able to remove
+          a separate application server to serve the API. We were able to remove
           those components from our working design.
         </p>
 
         <p>
-          Although the majority of the heavy lifting was done, we still a couple
-          of additional problems to solve before we could get to the final
-          architecture for a single Satellite backend.
+          At this point, the majority of the heavy lifting was done. We still
+          had a few more problems to solve before we could get to the final
+          Satellite backend architecture, though.
         </p>
 
         <h3 id="other-challenges">6.5) Other Challenges</h3>
@@ -1367,14 +1365,13 @@
         <h4>6.5.1) How Does Satellite Backend Administration Work?</h4>
 
         <p>
-          In addition to the GraphQL endpoint, Dgraph exposes administrative
-          endpoints for interacting with its GraphQL schema, such as updating
-          the schema and inspecting the currently loaded schema.  We knew that
-          the front-end developer would need to access these administrative
-          endpoints as they worked with Satellite, but that these endpoints
-          shouldn’t be accessible from the public internet. As it was, we had no
-          way of making only the GraphQL endpoint public to the internet, while
-          keeping the admin endpoint private.
+          Besides the GraphQL endpoint, Dgraph exposes administrative endpoints
+          for interacting with its GraphQL schema. They can be used for updating
+          the schema and inspecting the currently loaded schema. We knew the
+          front-end Satellite user would need to access these administrative
+          endpoints, but they shouldn’t be accessible from the public internet.
+          As it was, we had no way of making only the GraphQL endpoint public to
+          the internet, while keeping the admin endpoint private.
         </p>
 
         <div class="img-wrapper">
@@ -1387,7 +1384,7 @@
         <p>
           Also, we currently have no way to upload or serve static files that a
           front-end developer would need for their web applications. We needed
-          some way to resolver both of these issues before we could declare
+          some way to resolve both of these issues before we could declare
           victory.
         </p>
 
@@ -1399,11 +1396,11 @@
         </p>
 
         <p>
-          The two components we needed were an nginx webserver to serve static
-          files and act as an a reverse proxy to the GraphQL API endpoint of
-          Dgraph, and a NodeJS application to provide a way for the developer to
-          upload their static files and perform administrative actions to
-          Dgraph’s admin endpoint.
+          The first component we needed was a web server to serve static files
+          and act as an a reverse proxy to the GraphQL API endpoint provided by
+          Dgraph. The second was an application to provide a way for the
+          developer to upload their static files. It should also be possible to
+          send administrative actions to Dgraph’s admin endpoint.
         </p>
 
         <div class="img-wrapper">
@@ -1414,12 +1411,12 @@
         </div>
 
         <p>
-          Nginx was an obvious choice for an efficient and battle-tested
-          webserver to act as the internet-facing entry point to a Satellite
-          backend [<a href="#footnote-18">18</a>], and NodeJS running a simple
-          express application worked perfectly for providing a private API that
-          the front-end developer could access to upload their static files and
-          work with the GraphQL schema loaded to Dgraph.
+          Nginx was an obvious choice for an efficient and battle-tested web
+          server to act as the internet-facing entry point to a Satellite
+          backend [<a href="#footnote-18">18</a>]. A simple express application
+          running on NodeJS provides a private API. The front-end developer
+          could access the API to upload their static files and work with the
+          GraphQL schema loaded into Dgraph.
         </p>
 
         <h3 id="the-core-application-final-architecture">
