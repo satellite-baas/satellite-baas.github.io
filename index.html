@@ -1544,7 +1544,382 @@
           store their data.
         </p>
 
-        <h2 id="multi-instance-architecture">7) Multi Instance Architecture</h2>
+        <h2 id="multi-instance-architecture">7) Multi-Instance Architecture</h2>
+
+        <p>
+          At this point, we had a system that was easy to deploy and supported a single Satellite instance. This would work fine for developers who only needed a single backend, but what about developers who wanted to run more than one backend simultaneously? For example, it is often useful for a single application to have multiple versions of its backend to support different versions for staging and production [<a href="#footnote-21"
+          >21</a>]. And it seemed very possible that developers might just want to host more than one application at a time.
+        </p>
+        
+        <p>
+          The question now became: How can we support easy deployment of multiple Satellite backends?
+        </p>
+
+        <h3>7.1) Why Multi-Instance?</h3>
+
+        <p>
+          A multi-instance architecture was the logical choice for Satellite. This would enable two important things. First, it would isolate application instances. Second, it would put the routing and administration logic into their own components and separate them from the core Satellite API. Each backend application would have the same internals as a single instance.
+        </p>
+
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/7_1-multi-instance-concept.svg"
+            alt="Coordinating containers with docker compose."
+          />
+        </div>
+
+        <p>
+          This architecture addresses the challenge of supporting multiple Satellites. It does introduce a number of new challenges however. In the next several sections, we'll explain how we overcame these challenges to achieve the goal of an easy to deploy, multi-instance architecture.
+        </p>
+
+        <h3>7.2) What are the Challenges of a Multi-Instance Architecture?</h3>
+
+        <p>
+          In the single-instance version of Satellite, all three components existed on a single server, and could be started up as a unit using Docker compose. Docker's bridge network connected the Dgraph, Express, and Nginx containers to each other. The Nginx server in each container exposed ports to be accessible to be accessible outside of the bridge network over the public internet, and the Express API exposed ports to be accessible outside of the bridge network on a private network.
+        </p>
+
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/7_2-single-instance-ref.svg"
+            alt="Coordinating containers with docker compose."
+          />
+        </div>
+
+        <p>
+          Thinking about it at a very high level, it seemed like creating a multi-instance architecture could be a matter of simply starting up multiple Docker Compose files. This kind of multi-instance architecture might look like this:
+        </p>
+          
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/7_2-naive-multi-instance.svg"
+            alt="Coordinating containers with docker compose."
+          />
+        </div>
+
+        <p>
+          Although this seems like a straight-forward solution to an apparently simple problem, an architecture like this actually has one critical limitation: One server can only support so many Satellite instances before performance degrades or the system crashes.
+        </p>
+
+        <p>
+          In the next section we'll discuss how can we designed Satellite to perform efficiently and reliably no matter how many Satellite instances are created.
+        </p>
+
+        <h3>7.3) Scaling Satellite</h3>
+
+        <p>
+          To accommodate increasing loads on the system, we could have Satellite scale vertically or horizontally. Scaling vertically requires physically upgrading the host system, which did not seem practical in order to keep Satellite easy to use. Not only that, but the costs of scaling vertically tend to increase exponentially as more power is needed, and there is a limit on how much processing power a single server can practically have [<a href="#footnote-22">22</a>].
+        </p>
+
+        <p>
+          Scaling horizontally was a better solution for Satellite. Horizontal scaling involves replicating and distributing the components of an application across multiple servers. This means that each server can be economically sized, but it complicates communication and routing since backends can live on different host machines.
+        </p>
+
+        <p>
+          As an example, scaling Satellite horizontally with multiple individual instances of Satellite spread across multiple host machines could look like this:
+        </p>
+
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/7_3-naive-horizontal-scaling.svg"
+            alt="Coordinating containers with docker compose."
+          />
+        </div>
+
+        <p>
+          As we can see, with horizontal scaling we had another issue: Randomly distributing the satellite instances might not make the best use of available server resources. To make the best use of resources, the components of a Satellite instance could be deployed onto whichever host machine is the least used. This way, we would save resources and improve performance.
+        </p>
+
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/7_3-better-horizontal-scaling.svg"
+            alt="Coordinating containers with docker compose."
+          />
+        </div>
+
+        <p>
+          In the end, we decided on horizontal scaling and spreading the components of a single instance across servers. This approach offers unlimited scalability and optimized performance.
+        </p>
+
+        <p>
+          We now had a strategy for scaling Satellite to accommodate any number of individual Satellite instances. We still had a number of challenges to overcome to complete the multi-instance design, including:
+
+          <ul>
+            <li>How do we make it easy for a developer to spin up and tear down Satellite instances?</li>
+
+            <li>How do we manage communication between the components of Satellite instances??</li>
+
+            <li>How do we route requests from the internet to the correct Satellite instance?</li>
+
+            <li>How do we make it easy for a developer to perform administrative tasks when they are dealing with multiple Satellite instances? </li>
+          </ul>
+        </p>
+
+        <p>
+          In the next several sections, we'll explain how we solved these problems in order to complete Satellite's multi-instance architecture. We'll start with a logical first step: Spinning up and tearing down Satellite instances.
+        </p>
+
+        <h3>7.4) Spinning Up and Tearing Down Satellite Instances</h3>
+
+        <p>
+          To spin up and tear down any number containerized Satellite instances, we needed a tool to manage them.
+        </p>
+
+        <p>
+          For this purpose, we used a container orchestrator. A container orchestrator is a tool to manage, scale, and maintain containerized applications. It also manages the networks that they use to communicate. We chose Kubernetes for Satellite since it's very popular and all major cloud providers support it.
+        </p>
+
+        <p>
+          Earlier, we described how Docker Compose uses a YAML file to define and configure an application composed of containers. We showed how to use it to define the containers needed for a single Satellite instance.
+        </p>
+
+        <p>
+          Kubernetes works in an analogous way. It allows developers to define a containerized application in a manifest file. A manifest file is can be written in YAML or JSON. The manifest file describes the list of coordinated components that should be deployed and their ideal state. Kubernetes works to maintain that desired state after the manifest is run and the components have been deployed. While Docker Compose is designed to make it easy to start a single containerized application, Kubernetes is designed to make it easy to start any number of containerized applications.
+        </p>
+
+        <p>
+          Kubernetes also provides a CLI for managing deployments of containerized applications. Passing the manifest file as an argument to the Kubernetes CLI allows us to spin up and tear down Satellite backends:
+        </p>
+
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/7_4-k8s-manifest-to-instance.svg"
+            alt="Coordinating containers with docker compose."
+          />
+        </div>
+
+        <p>
+          The components of the deployed Satellite instance are spread across the Kubernetes cluster. The cluster is a group of connected nodes. The nodes are machines, virtual or physical, and a node can either be a master or worker. The nodes contain the application containers. Kubernetes distributes the components of an application in the most efficient way possible, not necessarily on any particular node, meaning that the components of any single Satellite instance may be spread across multiple nodes:
+        </p>
+
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/7_4-k8s-distributed-containers.svg"
+            alt="Coordinating containers with docker compose."
+          />
+        </div>
+
+        <p>
+          Distributing components like this ensures that the resources of each node are used in the most efficient way possible, but complicates communication between the components of each instance. The next section describes how we managed this complication to ensure that each Satellite instance could communicate internally, even if its components were spread across nodes.
+        </p>
+
+        <h3>7.5) Managing Satellite Instance Component Communication</h3>
+
+        <p>
+          To understand how we managed component communication within Satellite instances, first we need to describe a little bit of how Kubernetes handles things internally.
+        </p>
+
+        <p>
+          Kubernetes places containers onto pods. A pod is a Kubernetes object that runs a group of one or more containers. You can imagine a pod as a wrapper around one or more Docker containers. It allows Kubernetes to manage the lifecycle of the containers running inside the pod. In a single Satellite instance, each container (Nginx, Dgraph, and Express API) runs as separate pods:
+        </p>
+
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/7_5-k8s-pods.svg"
+            alt="Coordinating containers with docker compose."
+          />
+        </div>
+
+        <p>
+          Each Pod has its own IP address that enables it to be discovered within a cluster:
+        </p>
+
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/7_5-k8s-pod-to-pod-direct.svg"
+            alt="Coordinating containers with docker compose."
+          />
+        </div>
+
+        <p>
+          But what happens if a pod crashes? Fortunately, Kubernetes will make sure that a new pod is deployed to take its place.  Unfortunately, this new pod will have a different IP address. This means that we could not hard-code the IP addresses of separate components to communicate with:
+        </p>
+
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/7_5-k8s-pod-to-pod-fail.svg"
+            alt="Coordinating containers with docker compose."
+          />
+        </div>
+
+        <p>
+          Another option for pod-to-pod communication is to use services. A service provides a fixed, defined gateway to a Pod. There are several types of services, but the important one here is called ClusterIP service. A ClusterIP service proxies requests to a set of defined Pods according to its configuration in a manifest file.
+        </p>
+
+        <p>
+          To ensure reliable component communication in a Satellite instance, we chose to take advantage of Kubernetes services. Take a look at the diagram below to see how this works. Here, the pod running the Express API is defined as part of the app-server service. Requests from the Nginx pod can be proxied to the Express API pod through the app-server service. The domain name in the request would be the name of the service, app-server.
+        </p>
+
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/7_5-k8s-pod-comms-with-service.svg"
+            alt="Coordinating containers with docker compose."
+          />
+        </div>
+
+        <p>
+          We now had a way for components to communicate with other components within the Kubernetes cluster. But we still had one critical networking challenge to overcome: How do we route requests from the internet to the correct Satellite instance?
+        </p>
+
+        <h3>7.6) Routing Requests to Individual Satellites</h3>
+
+        <p>
+          Kubernetes automatically provisions an external load balancer for deployments. The external load balancer provides an externally-accessible IP address that forwards requests to the correct ports on cluster nodes, which gave us the ability to route requests to the worker nodes easily.
+        </p>
+
+        <p>
+          But how does the load balancer know which Pods to forward requests to in the cluster? Services are the answer here, yet again. A load balancer service must be specified for each Satellite instance and configured to forward to it. The load balancer service for a Satellite instance is used by the external load balancer to forward requests to the correct set of Pods.
+        </p>
+
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/7_5-k8s-single-load-balancer.svg"
+            alt="Coordinating containers with docker compose."
+          />
+        </div>
+
+        <p>
+          There is a problem with this approach, though. This method of forwarding external requests works well with only a few Satellite instances; however, once we have many Satellite instances, this method grows unwieldy. The reason for this is two-fold: not only does each Satellite instance require its own defined load balancer service, but each load balancer service needs its own dedicated external load balancer. Having an external load balancer for each Satellite instance could quickly become resource-intensive.
+        </p>
+
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/7_5-k8s-traefik
+            alt="Coordinating containers with docker compose."
+          />
+        </div>
+
+        <p>
+          At this point, we imagined our ideal setup: one external load balancer that forwarded external requests to a single load balancer service. The single load balancer service would contain the necessary definitions for sending requests to the correct Satellite instance. 
+        </p>
+
+        <p>
+          In order to execute this setup, we used Traefik. Traefik is a reverse proxy that can forward requests based on a set of user-defined routing rules. We deployed Traefik as a Pod within the cluster. This allowed Traefik to use the ClusterIP services for forwarding requests to the correct Pods. 
+        </p>
+
+        <p>
+          In a Satellite system, the external load balancer receives requests and forwards them to the single load balancer service. The load balancer service then forwards requests to Traefik. Traefik routes requests to the correct Satellite instance and Pod through use of the request's subdomain, domain, and path combination. 
+        </p>
+
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/6_7_2-container-coordination.svg"
+            alt="Coordinating containers with docker compose."
+          />
+        </div>
+
+        <p>
+          An additional benefit of using Traefik is that it requests SSL certificates for subdomains automatically. An application may hold sensitive data, so the default method should be to encrypt traffic using HTTPS. Since we are generating the hostname of each Satellite dynamically, manually requesting SSL certificates could be cumbersome and tricky. Traefik automatically requests SSL certificates for new Satellite instances. This creates a slight delay when spinning up a new Satellite, but this is a small price to pay for ensuring secure communication.
+        </p>
+
+        <p>
+          With internal and external networking taken care of, we had all of the underlying functionality established for the multi-instance architecture. The final step was to provide some way for a developer to easily interact with it.
+        </p>
+
+        <h3>7.7) Admin Panel</h3>
+
+        <p>
+          By choosing a multi-instance architecture, we prioritized isolation between Satellites and the separation of routing and administration logic from core backend functionality. With this prioritization came the cost of additional application layers for container orchestration and networking.
+        </p>
+
+        <p>
+          To manage this additional complexity and keep with our goal of making Satellite easy to use, we needed a final layer of abstraction: An intuitive GUI that would allow a developer to spin up, tear down, or perform administrative tasks on their individual Satellite instances.
+        </p>
+
+        <p>
+          In the final sections of this case study, we'll discuss why and how we built each feature of Satellite's admin panel. We'll start with how it enables easy management of a Satellite instance's lifecycle.
+        </p>
+
+        <h4>7.7.1) Satellite Instance Lifecycle Management</h4>
+
+        <p>
+          Using a container orchestrator made it easy to spin up and tear down Satellites. By passing the manifest file that describes the containerized Satellite instance as an argument to the Kubernetes CLI commands, we were able to spin up new instances on demand or tear down existing ones. However, this was not the kind of interface we could expose to frontend developers using our system, as it would require root access to the master node running Satellite. The prospect of multiple frontend developers having access to the master node introduces security concerns for the data held inside of each Satellite instance. Additionally, whoever is administering the Satellite system would need to monitor the cluster frequently and ensure that all operations are done properly on it. Lastly, we did not think that users of Satellite should need to know anything about how to run Kubernetes commands in order to use the system.
+        </p>
+
+        <p>
+          The first step in building an admin panel was allowing users of a Satellite system to register and authenticate at 'admin.domain.com'. Once authenticated, a frontend developer would be authorized to access Satellite management for their Satellites. Upon sign in, frontend developers are presented with a UI that allows them to spin up a new Satellite by specifying a name. The backend of the admin panel receives the request to spin up a new Satellite and runs the Kubernetes CLI commands. 
+        </p>
+
+        <p>
+          [gif of launching new backend] 
+        </p>
+
+        <p>
+          Additionally, frontend developers can tear down a Satellite from the 'Home' route of the admin panel with the click of a single button.
+        </p>
+
+        <p>
+          [gif of tearing down backend]
+        </p>
+
+        <p>
+          We served the admin panel as static files from an Nginx container running in the cluster. We relied on Express as a framework to build the backend that handles Satellite   management requests. A container running Postgres provides the data persistence necessary for managing user accounts for frontend developers and the Satellites they've created.
+        </p>
+
+        <p>
+          Now that we had a way for Satellite instances to be spun up and torn down, we needed a way to allow the developer to easily manage the GraphQL schema of the instance.
+        </p>
+
+        <h4>7.7.2) Schema Management</h4>
+
+        <p>
+          One of the benefits of using Dgraph is the ability to easily update one's GraphQL schema. The challenge presented to us when creating the admin panel was allowing users to easily update and view their current schema for Dgraph. 
+        </p>
+
+        <p>
+          For this challenge, we relied upon Codemirror to provide a syntax-appropriate view of a Satellite's schema. Codemirror allowed us to provide syntax highlighting for user-provided GraphQL schema, which made it clearer and easier to read.
+        </p>
+
+        <p>
+          [screenshot of schema]
+        </p>
+
+        <p>
+          Uploading new schema is handled through uploading a GraphQL schema file. The schema file is uploaded to the admin panel and sent in a POST request to the admin backend. The admin backend extracts the Satellite's ID and uses it to proxy the request to the correct Satellite instance.
+        </p>
+
+        <p>
+          [gif of schema upload]
+        </p>
+
+        <p>
+          Uploading the GraphQL schema is one thing, but next we wanted to provide an easy way to explore the resulting GraphQL API, providing the rich client-side experience that is part of what makes GraphQL so popular.
+        </p>
+
+        <h4>7.6.3) Schema Exploration</h4>
+
+        <p>
+          GraphQL gives developers the ability to introspect their schema and even make queries and mutations against it. We wanted to provide frontend developers these abilities within the admin panel, so that they would have the power to test their schema, make queries against it, and even populate the Dgraph instance with data to power their application.
+        </p>
+
+        <p>
+          For this challenge, we used GraphiQL. GraphiQL is an IDE for GraphQL and makes it easy for frontend developers to test and explore their GraphQL schema. In order to make this work, we needed to make a query to the /graphql endpoint of the currently selected Satellite. This endpoint allows us to make an introspection query to populate the GraphiQL IDE. Our admin panel makes a POST request with the current Satellite's ID to the admin backend, which proxies the request to the Satellite instance.
+        </p>
+
+        <p>
+          [gif of using explorer to populate data]
+        </p>
+
+        <h4>7.7.4) Static File Hosting</h4>
+
+        <p>
+          Our final challenge was giving frontend developers a convenient way to host their frontend static files. A single Satellite instance already provides this feature, so the challenge here was proxying the request to the correct Satellite.
+        </p>
+
+        <p>
+          For this purpose, we refactored the Nginx container in a Satellite instance to accept a .zip file for frontend hosting, while all other files can be uploaded as non .zip files. The .zip file is used to upload multiple files for frontend hosting. If a .zip file is uploaded, the previous static files served by Nginx are replaced.
+        </p>
+
+        <p>
+          [gif of uploading zip file for frontend hosting]
+        </p>
+
+        <p>
+          When a frontend developer uploads a file, a POST request is made with the file as the request's body and the Satellite's ID as a part of the request's path. The admin backend then proxies the request to the correct Satellite.
+        </p>
+
+        <p>
+          With the admin panel complete, we had an intuitive interface providing an abstraction of the complexity of the multi-instance architecture of Satellite. This brought us to the conclusion of Satellite's design. We now had an easy to use GraphQL Backend-as-a-Service that could easily deployed just about anywhere, that could support any number of GraphQL backends!
+        </p>
 
         <section id="footnotes">
           <h2 id="references">8) References</h2>
@@ -1698,6 +2073,19 @@
                 >https://www.backblaze.com/blog/vm-vs-containers/</a
               >
             </li>
+
+            <li id="footnote-21">
+              <a
+                href="https://dltj.org/article/software-development-practice/"
+                target="_blank"
+                >https://dltj.org/article/software-development-practice/</a
+              >
+            </li>
+
+            <li id="footnote-22">
+              Kleppmann, Martin. Designing Data-Intensive Applications: The Big Ideas behind Reliable, Scalable, and Maintainable Systems. First edition, O’Reilly Media, 2017.
+            </li>
+
           </ol>
         </section>
       </section>
