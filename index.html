@@ -1839,17 +1839,23 @@
           The first step in building an admin panel was allowing users of a Satellite system to register and authenticate at 'admin.domain.com'. Once authenticated, a frontend developer would be authorized to access Satellite management for their Satellites. Upon sign in, frontend developers are presented with a UI that allows them to spin up a new Satellite by specifying a name. The backend of the admin panel receives the request to spin up a new Satellite and runs the Kubernetes CLI commands. 
         </p>
 
-        <p>
-          [gif of launching new backend] 
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/gifs/spin-up-satellite.gif"
+            alt="Coordinating containers with docker compose."
+          />
+        </div>
 
         <p>
           Additionally, frontend developers can tear down a Satellite from the 'Home' route of the admin panel with the click of a single button.
         </p>
 
-        <p>
-          [gif of tearing down backend]
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/gifs/destroy-satellite.gif"
+            alt="Coordinating containers with docker compose."
+          />
+        </div>
 
         <p>
           We served the admin panel as static files from an Nginx container running in the cluster. We relied on Express as a framework to build the backend that handles Satellite   management requests. A container running Postgres provides the data persistence necessary for managing user accounts for frontend developers and the Satellites they've created.
@@ -1869,17 +1875,23 @@
           For this challenge, we relied upon Codemirror to provide a syntax-appropriate view of a Satellite's schema. Codemirror allowed us to provide syntax highlighting for user-provided GraphQL schema, which made it clearer and easier to read.
         </p>
 
-        <p>
-          [screenshot of schema]
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/gifs/destroy-satellite.gif"
+            alt="Coordinating containers with docker compose."
+          />
+        </div>
 
         <p>
           Uploading new schema is handled through uploading a GraphQL schema file. The schema file is uploaded to the admin panel and sent in a POST request to the admin backend. The admin backend extracts the Satellite's ID and uses it to proxy the request to the correct Satellite instance.
         </p>
 
-        <p>
-          [gif of schema upload]
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/gifs/add-schema.gif"
+            alt="Coordinating containers with docker compose."
+          />
+        </div>
 
         <p>
           Uploading the GraphQL schema is one thing, but next we wanted to provide an easy way to explore the resulting GraphQL API, providing the rich client-side experience that is part of what makes GraphQL so popular.
@@ -1895,9 +1907,12 @@
           For this challenge, we used GraphiQL. GraphiQL is an IDE for GraphQL and makes it easy for frontend developers to test and explore their GraphQL schema. In order to make this work, we needed to make a query to the /graphql endpoint of the currently selected Satellite. This endpoint allows us to make an introspection query to populate the GraphiQL IDE. Our admin panel makes a POST request with the current Satellite's ID to the admin backend, which proxies the request to the Satellite instance.
         </p>
 
-        <p>
-          [gif of using explorer to populate data]
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/gifs/add-data.gif"
+            alt="Coordinating containers with docker compose."
+          />
+        </div>
 
         <h4>7.7.4) Static File Hosting</h4>
 
@@ -1909,9 +1924,12 @@
           For this purpose, we refactored the Nginx container in a Satellite instance to accept a .zip file for frontend hosting, while all other files can be uploaded as non .zip files. The .zip file is used to upload multiple files for frontend hosting. If a .zip file is uploaded, the previous static files served by Nginx are replaced.
         </p>
 
-        <p>
-          [gif of uploading zip file for frontend hosting]
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/gifs/add-zip.gif"
+            alt="Coordinating containers with docker compose."
+          />
+        </div>
 
         <p>
           When a frontend developer uploads a file, a POST request is made with the file as the request's body and the Satellite's ID as a part of the request's path. The admin backend then proxies the request to the correct Satellite.
