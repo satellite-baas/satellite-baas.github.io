@@ -1564,7 +1564,7 @@
         <div class="img-wrapper">
           <img
             src="images/diagrams/7_1-multi-instance-concept.svg"
-            alt="Coordinating containers with docker compose."
+            alt="Multi-instance architecture concept."
           />
         </div>
 
@@ -1581,7 +1581,7 @@
         <div class="img-wrapper">
           <img
             src="images/diagrams/7_2-single-instance-ref.svg"
-            alt="Coordinating containers with docker compose."
+            alt="Single Satellite instance for rference."
           />
         </div>
 
@@ -1592,7 +1592,7 @@
         <div class="img-wrapper">
           <img
             src="images/diagrams/7_2-naive-multi-instance.svg"
-            alt="Coordinating containers with docker compose."
+            alt="High-level idea of what a multi-instance architecture could be."
           />
         </div>
 
@@ -1621,7 +1621,7 @@
         <div class="img-wrapper">
           <img
             src="images/diagrams/7_3-naive-horizontal-scaling.svg"
-            alt="Coordinating containers with docker compose."
+            alt="Horizontal scaling in an inefficient way."
           />
         </div>
 
@@ -1632,7 +1632,7 @@
         <div class="img-wrapper">
           <img
             src="images/diagrams/7_3-better-horizontal-scaling.svg"
-            alt="Coordinating containers with docker compose."
+            alt="A more efficient way to scale horizontally."
           />
         </div>
 
@@ -1683,7 +1683,7 @@
         <div class="img-wrapper">
           <img
             src="images/diagrams/7_4-k8s-manifest-to-instance.svg"
-            alt="Coordinating containers with docker compose."
+            alt="Creating a Satellite instance from the manifest file."
           />
         </div>
 
@@ -1694,7 +1694,7 @@
         <div class="img-wrapper">
           <img
             src="images/diagrams/7_4-k8s-distributed-containers.svg"
-            alt="Coordinating containers with docker compose."
+            alt="Kubernetes distributing containers across nodes."
           />
         </div>
 
@@ -1715,7 +1715,7 @@
         <div class="img-wrapper">
           <img
             src="images/diagrams/7_5-k8s-pods.svg"
-            alt="Coordinating containers with docker compose."
+            alt="Kubernetes pods on a node."
           />
         </div>
 
@@ -1726,7 +1726,7 @@
         <div class="img-wrapper">
           <img
             src="images/diagrams/7_5-k8s-pod-to-pod-direct.svg"
-            alt="Coordinating containers with docker compose."
+            alt="Kubernetes communication between pods."
           />
         </div>
 
@@ -1737,7 +1737,7 @@
         <div class="img-wrapper">
           <img
             src="images/diagrams/7_5-k8s-pod-to-pod-fail.svg"
-            alt="Coordinating containers with docker compose."
+            alt="Kubernetes communication between pods not working."
           />
         </div>
 
@@ -1752,7 +1752,7 @@
         <div class="img-wrapper">
           <img
             src="images/diagrams/7_5-k8s-pod-comms-with-service.svg"
-            alt="Coordinating containers with docker compose."
+            alt="Communication between pods via the ClusterIP Service."
           />
         </div>
 
@@ -1773,7 +1773,7 @@
         <div class="img-wrapper">
           <img
             src="images/diagrams/7_5-k8s-single-load-balancer.svg"
-            alt="Coordinating containers with docker compose."
+            alt="External communication using a single load balancer."
           />
         </div>
 
@@ -1784,7 +1784,7 @@
         <div class="img-wrapper">
           <img
             src="images/diagrams/7_5-k8s-many-load-balancers.svg"
-            alt="Coordinating containers with docker compose."
+            alt="External communication when there are many load balancers."
           />
         </div>
 
@@ -1803,7 +1803,7 @@
         <div class="img-wrapper">
           <img
             src="images/diagrams/7_5-k8s-traefik.svg"
-            alt="Coordinating containers with docker compose."
+            alt="External communication using Traefik."
           />
         </div>
 
@@ -1842,7 +1842,7 @@
         <div class="img-wrapper">
           <img
             src="images/gifs/spin-up-satellite.gif"
-            alt="Coordinating containers with docker compose."
+            alt="Spinning up a new Satellite instance."
           />
         </div>
 
@@ -1853,7 +1853,7 @@
         <div class="img-wrapper">
           <img
             src="images/gifs/destroy-satellite.gif"
-            alt="Coordinating containers with docker compose."
+            alt="Destroying a satellite instance."
           />
         </div>
 
@@ -1875,12 +1875,9 @@
           For this challenge, we relied upon Codemirror to provide a syntax-appropriate view of a Satellite's schema. Codemirror allowed us to provide syntax highlighting for user-provided GraphQL schema, which made it clearer and easier to read.
         </p>
 
-        <div class="img-wrapper">
-          <img
-            src="images/gifs/destroy-satellite.gif"
-            alt="Coordinating containers with docker compose."
-          />
-        </div>
+        <p>
+          Screenshot of schema image needed!
+        </p>
 
         <p>
           Uploading new schema is handled through uploading a GraphQL schema file. The schema file is uploaded to the admin panel and sent in a POST request to the admin backend. The admin backend extracts the Satellite's ID and uses it to proxy the request to the correct Satellite instance.
@@ -1889,7 +1886,7 @@
         <div class="img-wrapper">
           <img
             src="images/gifs/add-schema.gif"
-            alt="Coordinating containers with docker compose."
+            alt="Uploading a GraphQL schema."
           />
         </div>
 
@@ -1910,7 +1907,7 @@
         <div class="img-wrapper">
           <img
             src="images/gifs/add-data.gif"
-            alt="Coordinating containers with docker compose."
+            alt="Exploring a schema with GraphiQl."
           />
         </div>
 
@@ -1927,7 +1924,7 @@
         <div class="img-wrapper">
           <img
             src="images/gifs/add-zip.gif"
-            alt="Coordinating containers with docker compose."
+            alt="Adding a zip file for static file hosting."
           />
         </div>
 
