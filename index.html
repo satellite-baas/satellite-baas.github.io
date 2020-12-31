@@ -1875,9 +1875,12 @@
           For this challenge, we relied upon Codemirror to provide a syntax-appropriate view of a Satellite's schema. Codemirror allowed us to provide syntax highlighting for user-provided GraphQL schema, which made it clearer and easier to read.
         </p>
 
-        <p>
-          Screenshot of schema image needed!
-        </p>
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/7_7_2-code-mirror.png"
+            alt="Viewing a GraphQL schema using Codemirror."
+          />
+        </div>
 
         <p>
           Uploading new schema is handled through uploading a GraphQL schema file. The schema file is uploaded to the admin panel and sent in a POST request to the admin backend. The admin backend extracts the Satellite's ID and uses it to proxy the request to the correct Satellite instance.
