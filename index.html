@@ -208,34 +208,19 @@
         <h2 id="what-is-satellite">1) What is Satellite?</h2>
 
         <p>
-          Satellite is an open-source GraphQL backend-as-a-service (BaaS). It
-          enables teams to easily deploy and manage GraphQL backends for web
-          applications.
+          Satellite is an open-source GraphQL backend-as-a-service (BaaS). It lets teams easily deploy and manage GraphQL backends for web applications.
         </p>
 
         <p>
-          Satellite abstracts away the complexity of building a GraphQL backend.
-          It sets up the infrastructure and configures the GraphQL server and
-          database. It allows the application developer to define their entire
-          backend using only a single input - a GraphQL schema. Satellite's
-          multi-tenant architecture, based on Kubernetes, allows developers to
-          create and use as many backends as they need. Satellite is a great fit
-          for new applications where ease of use and speed of deployment are
-          priorities.
+          Satellite abstracts away the complexity of building a GraphQL backend. It lets the application developer define their entire backend using only a single input - a GraphQL schema. Satellite's multi-tenant architecture, based on Kubernetes, lets developers create and use as many backends as they need. Satellite is a great fit for new applications where ease of use and quick deployment are priorities.
         </p>
 
         <p>
-          In this case study, we'll describe both <em>why</em> and
-          <em>how</em> we designed and built Satellite. Satellite was born from
-          our desire to make setting up a GraphQL backend easier. We had to
-          overcome many technical challenges to achieve this.
+          In this case study, we'll describe both <em>why</em> and <em>how</em> we designed and built Satellite. Satellite was born from our desire to make setting up a GraphQL backend easier. We overcame many technical challenges to achieve this. 
         </p>
 
         <p>
-          To explain Satellite's design, we'll first discuss the general
-          architecture of a modern web application. We'll also describe how
-          challenges faced by Facebook's News Feed API drove the development of
-          GraphQL.
+          To explain Satellite's design, we'll first discuss the general architecture of a modern web application. We'll also describe how challenges faced by Facebook's News Feed API drove the development of GraphQL.
         </p>
 
         <h2 id="web-app-architecture">2) Web App Architecture</h2>
@@ -243,12 +228,7 @@
         <h3 id="frontend-vs-backend">2.1) Frontend vs Backend</h3>
 
         <p>
-          Web applications can be thought of as having two parts - the frontend
-          and the backend. The frontend is what the user sees when using the
-          application. It is responsible for the application's appearance and
-          for handling user interactions. On the other side of an application is
-          the backend. It handles the business logic and data persistence
-          operations needed to power the frontend.
+          Web applications can be thought of as having two parts - the frontend and the backend. The frontend is what the user sees when using the application. It is responsible for the application's appearance and for handling user interactions. On the other side of an application is the backend. It handles the business logic and data persistence operations needed to power the frontend.
         </p>
 
         <div class="img-wrapper">
@@ -259,14 +239,7 @@
         </div>
 
         <p>
-          Modern applications often completely separate the backend from the
-          frontend. This kind of split architecture allows frontend and backend
-          teams to work independently. It also allows development of different
-          frontend client applications which use the same backend [<a
-            href="#footnote-1"
-            >1</a
-          >]. Given the advantages of this decoupled architecture, we need to
-          think about how the frontend and backend interact and communicate.
+          Modern applications often completely separate the backend from the frontend. This kind of split architecture allows frontend and backend teams to work independently. It also allows development of different frontend client applications which use the same backend [<a href="#footnote-1">1</a>]. Given the advantages of this decoupled architecture, we need to think about how the frontend and backend communicate. 
         </p>
 
         <h3 id="api-s-in-web-applications">
@@ -274,15 +247,7 @@
         </h3>
 
         <p>
-          An API, or Application Programming Interface, provides a well-defined
-          way for computer systems to interact with each other. There are many
-          different types of APIs. They all provide some way for one system to
-          access the functionality of another system. It makes sense, then, for
-          the frontend of a web application to communicate with the backend
-          using an API [<a href="#footnote-2">2</a>]. An API that lets a
-          frontend and backend communicate using HTTP is called a web API. In a
-          web API, the backend produces the API and the frontend client consumes
-          it.
+          An API, or Application Programming Interface, provides a well-defined way for computer systems to interact with each other. There are many different types of APIs. They all provide some way for one system to access the functionality of another system. It makes sense, then, for the frontend of a web application to communicate with the backend using an API [<a href="#footnote-2">2</a>]. An API that lets a frontend and backend communicate using HTTP is called a web API. In a web API, the backend server produces the API and the frontend client consumes it. 
         </p>
 
         <div class="img-wrapper">
@@ -293,12 +258,7 @@
         </div>
 
         <p>
-          Just like there are many different types of APIs, there are many
-          different ways to build a web API. The state-of-the-art for web APIs
-          has evolved over the years, and API designers are always finding
-          better solutions to the challenges they are facing. In the next
-          section, we'll take a look at one recent innovation which has had a
-          significant impact on web API design: Facebook's News Feed API.
+          There are many different ways to build a web API. The state-of-the-art for web APIs has evolved over the years, and API designers are always finding better solutions to the challenges they are facing. In the next section, we'll take a look at one recent innovation which has had a significant impact on web API design: Facebook's News Feed API.
         </p>
 
         <h3 id="facebook-s-news-feed-api">
@@ -306,15 +266,7 @@
         </h3>
 
         <p>
-          This story starts in 2011, when Facebook decided to completely
-          re-write their iOS app. Previously, their mobile app had, essentially,
-          been a wrapper around the Facebook webpage. They determined they
-          needed to create a new, native app to provide the kind of experience
-          they wanted for their mobile users. This kind of app design required
-          the frontend to be separated from the backend, and for the two sides
-          to communicate with an API. This was the first time Facebook had tried
-          to develop and app like this, and they soon hit issues when trying to
-          re-use the existing API for the News Feed feature [<a
+          This story starts in 2011, when Facebook decided to completely re-write their iOS app. Previously, their mobile app had, essentially, been a wrapper around the Facebook webpage. They determined they needed to create a new, native app to provide the kind of experience they wanted for their mobile users. Their design required the frontend to be separated from the backend, and for the two sides to communicate with an API. This was the first time Facebook had tried to develop and app like this. They soon had issues when trying to reuse the existing API for the News Feed feature [<a
             href="#footnote-3"
             >3</a
           >].
@@ -323,13 +275,7 @@
         <h4>2.3.1) Why the Existing API Didn't Work</h4>
 
         <p>
-          For Facebook’s News Feed, it isn’t as simple as retrieving a story and
-          all the information for that particular story. Each story is
-          interconnected, nested, and recursive. The existing APIs weren’t
-          designed to allow developers to deliver a rich, news feed-like
-          experience on mobile. The APIs didn’t have a hierarchical nature or
-          let developers select the exact data they needed. They were, in fact,
-          designed to return HTML back to a web browser.
+          For Facebook’s News Feed, it wasn’t as simple as retrieving a story and all the information for that particular story. Each story is interconnected, nested, and recursive. The existing APIs weren’t designed to allow developers to deliver a rich, news feed-like experience on mobile. They didn’t have a hierarchical nature or let developers select the exact data they needed. They were, in fact, designed to return HTML back to a web browser.
         </p>
 
         <div class="img-wrapper">
@@ -340,25 +286,13 @@
         </div>
 
         <p>
-          This meant that the client application would need to make several
-          round-trips to the API to get the information it wanted. For example,
-          it might have to first get one story, and from that story determine
-          what other stories it needed to request to complete the feed, then
-          keep repeating that process over and over until it got all the
-          information it needed. Not only did this result in many round-trips,
-          but each response would contain a lot of data that wasn’t needed. Both
-          of these factors combined resulted in unacceptable network performance
-          for the new app.
+          This meant that the client application would need to make several round-trips to the API to get the information it wanted. For example, it might have to first get one story, and from it determine what other stories it needed to request to complete the feed. Then it might keep repeating that process over and over until it got all the information it needed. Additionally, each response would contain a lot of data that wasn’t needed. Both of these factors combined resulted in slow network performance for the new app. 
         </p>
 
         <h4>2.3.2) Why Facebook Created GraphQL</h4>
 
         <p>
-          At this point, it was clear to Facebook that they needed to design a
-          better API for the News Feed feature to improve the mobile experience.
-          A quote from Nick Schrock, one of the co-creators of this new API
-          which is now known as GraphQL, highlights their focus on frontend
-          development as they built it:
+          At this point, it was clear to Facebook that they needed to design a better API for their News Feed to improve the mobile experience. A quote from Nick Schrock, one of the co-creators of this new API which is now called GraphQL, highlights their focus on frontend development:
         </p>
 
         <blockquote>
@@ -371,12 +305,7 @@
         </blockquote>
 
         <p>
-          A key feature of GraphQL enables it to power the mobile apps Facebook
-          had envisioned: it allows the front-end client to specify exactly the
-          information it needs for a given request. This eliminates the issues
-          of over-fetching and the need for multiple round trips. This
-          performance improvement is critical for mobile applications which have
-          limited bandwidth and need fast response times.
+          A key feature of GraphQL let it power the mobile apps Facebook had envisioned: it let the frontend client request exactly the data it needs. This eliminates the issue of over-fetching and the need for multiple round trips. This is critical for mobile applications which have limited bandwidth and need fast response times. 
         </p>
 
         <div class="img-wrapper">
@@ -387,64 +316,35 @@
         </div>
 
         <p>
-          One other important aspect of a GraphQL API is that it uses a strongly
-          typed system to describe its capabilities. This allows clients to use
-          a process called introspection to see exactly what they are able to do
-          with the API, making GraphQL effectively self-documenting [<a
-            href="#footnote-4"
-            >4</a
-          >]. This has also lead to the development of many client-side tools.
+          One other important aspect of a GraphQL API is that it uses a strongly typed system to describe its capabilities. This allows clients to use a process called introspection to see exactly what they are able to do with the API, making GraphQL effectively self-documenting [<a href="#footnote-4">4</a>]. This has also lead to the development of many client-side tools.
         </p>
 
         <h4>2.3.3) Widespread Adoption of GraphQL</h4>
 
         <p>
-          Because of its unique features, GraphQL caught on quickly at Facebook,
-          and ended up being used heavily in their mobile application. It was an
-          internal tool from 2012 until 2015; that year, they released an
-          open-source version. Soon after GraphQL was open-sourced, many other
-          companies began using it, including AirBnB, Twitter, Netflix, and
-          Github. It has continued to grow in adoption ever since [<a
-            href="#footnote-5"
-            >5</a
-          >].
+          Because of its unique features, GraphQL caught on quickly at Facebook, and ended up being used heavily in their mobile application. It was an internal tool from 2012 until 2015; that year, they released an open-source version. Soon after GraphQL was open-sourced, many other companies began using it, including AirBnB, Twitter, Netflix, and Github. It has continued to grow in adoption ever since [<a href="#footnote-5">5</a>].
         </p>
 
         <p>
-          Now that we understand the types of problems that GraphQL was created
-          to solve, we can take a closer look at what GraphQL is and how it
-          works.
+          Now that we understand the types of problems that GraphQL was created to solve, we can take a closer look at what GraphQL is and how it works.
         </p>
 
         <h2 id="what-is-graphql">3) What is GraphQL?</h2>
 
         <p>
-          GraphQL is a query language for APIs. In the next section, we'll
-          explain in more depth how it works and what is involved in building a
-          GraphQL application.
+          GraphQL is a query language for APIs. In this section, we'll explain in more depth how it works and what is involved in building a GraphQL application.
         </p>
 
         <h3 id="the-graphql-specification">3.1) The GraphQL Specification</h3>
 
         <p>
-          GraphQL is actually a specification that describes its type system and
-          query language [<a href="#footnote-6">6</a>]. Both of these will be
-          covered in more detail later. For now, keep in mind that this
-          specification can be implemented in any programming language - it's
-          not specific to any one application or architecture. There are, in
-          fact, server-side implementations of the GraphQL specification in
-          almost any programming language you might be interested in. These
-          server-side implementations are called GraphQL servers.
+          GraphQL is actually a specification that describes its type system and query language [<a href="#footnote-6">6</a>]. Both of these will be covered in more detail later. For now, keep in mind that this specification can be implemented in any programming language. It's not specific to any one application or architecture. There are, in fact, server-side implementations of the GraphQL specification in many programming languages. These server-side implementations are called GraphQL servers. 
         </p>
 
         <h3 id="graphql-servers">3.2) GraphQL Servers</h3>
 
         <p>
-          GraphQL servers communicate with clients using standard HTTP. The
-          GraphQL server parses the request into an abstract syntax tree, then
-          walks this tree and determines how to respond to the request. Once the
-          GraphQL server has assembled the request, the request is returned to
-          the client as a JSON object - once again over standard HTTP.
+          GraphQL servers communicate with clients using standard HTTP. The GraphQL server parses the request into an abstract syntax tree, or AST, then walks this tree and determines how to respond to the request. Once the GraphQL server has assembled the request, the request is returned to the client as a JSON object - once again over standard HTTP.
         </p>
 
         <h3 id="interacting-with-a-graphql-api">
@@ -452,11 +352,7 @@
         </h3>
 
         <p>
-          With the GraphQL specification implemented on the server, the frontend
-          can query it. Since the data is defined according to GraphQL's type
-          system, the frontend structures its queries according to those types.
-          In a query to the GraphQL server, the frontend can specify exactly the
-          data it wants. The server will return that data in a JSON object.
+          With the GraphQL specification implemented on the server, the frontend can query it. Since the data is defined according to GraphQL's type system, the frontend structures its queries according to those types. The frontend can then specify exactly the data it wants in a query to the GraphQL server. The server will return that data in a JSON object. 
         </p>
 
         <div class="img-wrapper">
@@ -467,30 +363,22 @@
         </div>
 
         <p>
-          Enabling this kind of interaction for frontend clients worked great
-          for Facebook's News Feed API. How, then, would somebody go about
-          setting up the backend for their own GraphQL API? We'll answer that
-          question in the next section.
+          Enabling this kind of interaction for frontend clients worked great for Facebook's News Feed API. How, then, would somebody go about setting up the backend for their own GraphQL API? We'll answer that question in the next section.
         </p>
 
         <h2 id="graphql-backends">4) GraphQL Backends</h2>
         <p>
-          You should now have an idea of what kind of problems GraphQL was
-          created to solve and a general understanding of how it works. You
-          might even be interested in creating your next application using a
-          GraphQL API. There are things to consider if you do.
+          You should now have an idea of what kind of problems GraphQL was created to solve and a general understanding of how it works. You might even be interested in creating your next application using a GraphQL API. There are things to consider if you do, which we'll explain those things in the next section.
         </p>
 
         <p>
-          First, we'll cover the overall architecture required for a web
-          application backend.
+          First, we'll cover the overall architecture required for a web application backend.
         </p>
 
         <h3 id="backend-architecture">4.1) Backend Architecture</h3>
 
         <p>
-          As a first step in understanding what it takes to build a GraphQL
-          backend, let's take a look at the general setup for a backend:
+          As a first step in understanding what it takes to build a GraphQL backend, let's take a look at the general setup for a backend:
         </p>
 
         <div class="img-wrapper">
@@ -501,57 +389,30 @@
         </div>
 
         <p>
-          A backend is usually built with a 3-tier architecture [<a
-            href="#footnote-7"
-            >7</a
-          >]. The different "tiers" in this kind of architecture serve the
-          following purposes:
+          A backend is usually built with a 3-tier architecture [<a href="#footnote-7">7</a>]. The different "tiers" in this kind of architecture serve the following purposes:
         </p>
 
         <ul>
           <li>
-            <b>Web Server:</b> The web server acts as the internet-facing entry
-            point to the backend. Web servers are highly optimized to handle
-            requests involving <em>static</em> data, such as static file serving
-            and caching. They can typically handle very large volumes of
-            requests for this kind of data. If the web server cannot fulfill
-            requests directly, it acts as a reverse-proxy and forwards requests
-            to the rest of the backend.
+            <b>Web Server:</b>: The web server acts as the internet-facing entry point to the backend. Web servers are highly optimized to handle requests involving <em>static</em> data, such as static file serving and caching. They can typically handle large volumes of requests for this kind of data. If the web server cannot fulfill requests directly, it forwards requests to the rest of the backend. 
           </li>
 
           <li>
-            <b>Application Server:</b> The application server is where requests
-            for <em>dynamic</em> data end up. It handles processing and
-            fulfilling those requests. The application server is where the
-            business logic that powers the application resides. This logic
-            determines what information to send back in response. The
-            application server doesn't persist data itself. If a request needs
-            access to persistent data, the application server will need access
-            to some kind of underlying data store.
+            <b>Application Server:</b>: The application server is where requests for <em>dynamic</em> data end up. It handles processing and fulfilling those requests. The application server is where the business logic that powers the application resides. The application server doesn't persist data itself, though. If a request needs access to persistent data, the application server will need to access some kind of underlying data store. 
           </li>
 
           <li>
-            <b>Database:</b> The database provides long-term data persistence to
-            the application server. Interaction with an application's database
-            must go through the application server.
+            <b>Database:</b>: The database provides long-term data persistence to the application server. Interaction with the database must go through the application server.  
           </li>
         </ul>
 
         <p>
-          With this kind of architecture, we have the foundation for building
-          the backend functionality to support any feature our application might
-          need.
+          This kind of architecture is the foundation for building any feature our application might need.
         </p>
 
         <h3 id="backend-features">4.2) Backend Features</h3>
         <p>
-          Now that we understand what kind of architecture a backend requires,
-          we can start to imagine all the different things that a backend might
-          need to do. There’s a wide range of different tasks an application
-          might need its backend to perform. These include enabling SSL
-          connections, managing realtime connections, providing hosting for
-          frontend assets, and more, as pictured below. These all need specific
-          configuration and programming.
+          Given the basic architecture of a backend, we can start to imagine all the different things that a backend might need to do. These might include enabling SSL connections, managing realtime connections, providing hosting for frontend assets, and more. These all need to be set up and configured. 
         </p>
 
         <div class="img-wrapper">
@@ -562,9 +423,7 @@
         </div>
 
         <p>
-          Any one of these tasks is a topic unto itself. For the backend of a
-          GraphQL application, though, producing the GraphQL API is a subject
-          we'll need to explore further.
+          Any one of these tasks is a topic unto itself. For the backend of a GraphQL application, though, producing the GraphQL API is a subject we'll need to explore further. 
         </p>
 
         <h3 id="what-are-the-challenges-of-a-graphql-api">
@@ -618,23 +477,11 @@
         </h3>
 
         <p>
-          To produce a GraphQL API, we need to run a piece of software called a
-          GraphQL server. As we mentioned earlier, A GraphQL server is
-          specialized software that can receive and respond to GraphQL requests.
-          The behavior of a GraphQL server is defined using two inputs: A
-          GraphQL schema and resolver functions. At a high level, the GraphQL
-          schema defines “what” the GraphQL server can do using the GraphQL type
-          system, and the resolver functions tell it “how” to do it [<a
-            href="#footnote-10"
-            >10</a
-          >].
+          To produce a GraphQL API, we need to run a GraphQL server. As we mentioned earlier, a GraphQL server is software that can receive and respond to GraphQL requests. The behavior of a GraphQL server is defined using two inputs: a GraphQL schema and resolver functions. At a high level, the GraphQL schema defines “what” the GraphQL server can do using the GraphQL type system, and the resolver functions tell it “how” to do it [<a href="#footnote-10">10</a>].
         </p>
 
         <p>
-          A detailed look at a GraphQL server is shown here, where the GraphQL
-          API is defined using a GraphQL schema, and the API invokes the
-          necessary resolver functions to carry out the actions needed to
-          produce the response, such as querying a database:
+          A diagram of a GraphQL server is shown here. A GraphQL schema defines the GraphQL API. Then the API invokes the necessary resolver functions. Finally, the the resolvers carry out the actions needed to produce the response, such as querying a database: 
         </p>
 
         <div class="img-wrapper">
@@ -645,28 +492,17 @@
         </div>
 
         <p>
-          Next, we'll take a look at the GraphQL schema and resolver functions
-          in a little more detail, to better appreciate what goes into creating
-          them.
+          Next, we'll take a look at the GraphQL schema and resolver functions in a little more detail, to better appreciate what goes into creating them. 
         </p>
 
         <h4>4.4.1) GraphQL Schema</h4>
 
         <p>
-          The GraphQL schema defines the functionality available to client
-          applications that connect to the GraphQL server [<a
-            href="#footnote-11"
-            >11</a
-          >]. The schema is made up of types, which have one or more fields.
+          The GraphQL schema declaratively defines the functionality of the GraphQL API [<a href="#footnote-11">11</a>]. The schema is made up of types, and the types have one or more fields. 
         </p>
 
         <p>
-          A basic GraphQL schema is shown here. It has several types - the
-          “Person” type is an object type. Object types make up the “things” of
-          your API - you could think of them as entities, or objects. Each type
-          will also have fields. For the Person here, there is a name and phone
-          field, which are a string and integer. You can think of fields like
-          the properties of your objects.
+          A basic GraphQL schema is shown here. It has several types - the “Person” type is an object type. Object types make up the “things” of your API. Each type will also have fields. For the Person here, there is a name and phone field, which are a string and integer. You can think of fields like the properties of your objects.
         </p>
 
         <div class="img-wrapper">
@@ -677,18 +513,11 @@
         </div>
 
         <p>
-          There are many more types than just objects. Two important ones are
-          the query and mutation types. These describe what actions you should
-          be able to do with your object types. Queries define how to retrieve
-          data, while mutations define how to create or change the data. Here we
-          have a query to find a person by name, and a mutation to create a new
-          person.
+          There are many more types than just objects. Two important ones are the query and mutation types. These describe what actions you can do with your object types. Queries define how to retrieve data, while mutations define how to create or change the data. Here we have a query to find a person by name, and a mutation to create a new person. 
         </p>
 
         <p>
-          Keep in mind that these definitions of queries and mutations don’t say
-          anything about <em>how</em> the API gets the job done - it's only
-          describing what the API should be able to do!
+          Keep in mind that these definitions of queries and mutations don’t say anything about <em>how</em> the API gets the job done. They only describe what the API can do! 
         </p>
 
         <h4>4.4.2) GraphQL Resolvers</h4>
@@ -699,19 +528,11 @@
         </p>
 
         <p>
-          Unlike the schema, which has to follow the requirements of the GraphQL
-          specification, resolvers are flexible. They are just functions, and
-          you can do anything with them that you would do with any other
-          function. The only requirement is that the function needs to return a
-          value which corresponds to the field specified by the schema [<a
-            href="#footnote-12"
-            >12</a
-          >].
+          Unlike the schema, which has to follow the requirements of the GraphQL specification, resolvers are flexible. They are just functions, and you can do anything with them that you would do with any other function. The only requirement is that the function needs to return a value which corresponds to the field specified by the schema [<a href="#footnote-12">12</a>].
         </p>
 
         <p>
-          In this example, the resolvers correspond to the respective query and
-          mutation types that were defined in the GraphQL schema.
+          In this example, the resolvers correspond to the respective query and mutation types that were defined in the GraphQL schema.
         </p>
 
         <div class="img-wrapper">
@@ -722,9 +543,7 @@
         </div>
 
         <p>
-          With the GraphQL schema and resolver functions defined, we have
-          everything we need to initialize the GraphQL server to produce the
-          GraphQL API on the backend.
+          With the GraphQL schema and resolver functions defined, we have everything we need to initialize the GraphQL server to produce the GraphQL API. 
         </p>
 
         <h3 id="how-can-we-reduce-the-complexity-of-a-graphql-backend">
@@ -732,10 +551,7 @@
         </h3>
 
         <p>
-          We can now see the big picture of what goes into creating a GraphQL
-          backend. Besides the architecture and configuration required for a
-          standard backend, there are also the inputs needed to produce the
-          GraphQL API: the schema and resolver functions.
+          We can now see the big picture of what goes into creating a GraphQL backend. Besides the architecture and configuration needed for a standard backend, there are also the inputs needed to define the GraphQL API: the schema and resolver functions.
         </p>
 
         <div class="img-wrapper">
@@ -746,30 +562,19 @@
         </div>
 
         <p>
-          For a front end developer wanting to get a GraphQL application up and
-          running quickly, that’s a lot to think about. Because of this, we
-          wondered if there might be a way to make it easier for front-end
-          developers to get a simple GraphQL backend up and running quickly.
+          For a frontend developer wanting to get a GraphQL application up and running quickly, that’s a lot to think about. Because of this, we wondered if there might be a way to make it easier for frontend developers to get a simple GraphQL backend up and running quickly. 
         </p>
 
         <p>
-          Ideally, the developer wouldn’t have to think about the backend design
-          at all. The standard backend components and configuration should be
-          set up automatically. So should the lower-level GraphQL configuration
-          like defining resolver functions.
+          Ideally, the developer wouldn’t have to think about the backend design at all. The standard backend components and configuration should be set up automatically. So should the lower-level GraphQL configuration, like resolver functions.
         </p>
 
         <p>
-          We found a promising potential solution - something called a
-          backend-as-a-service, or BaaS. A BaaS provides an abstraction over all
-          the functionality and complexity of the backend. It seemed like a good
-          answer to the question of how to minimize the complexity and effort of
-          setting up a GraphQL backend.
+          We found a promising potential solution - something called a backend-as-a-service, or BaaS. A BaaS provides an abstraction over all the functionality and complexity of the backend. It seemed like a good way to simplify setting up a GraphQL backend. 
         </p>
 
         <p>
-          Next, we'll take a look at exactly what a Backend-as-a-service is, and
-          what we found when we evaluated the existing options.
+          Next, we'll take a look at exactly what a Backend-as-a-service is, and what we found when we evaluated the existing options. 
         </p>
 
         <h2 id="backend-as-a-service">5) Backend-as-a-Service</h2>
@@ -779,14 +584,7 @@
         </h3>
 
         <p>
-          A backend-as-a-service encapsulates all the underlying architecture
-          that a backend needs - the web server, app server, and database. It
-          also provides pre-configured features such as SSL certificates,
-          frontend hosting, and data persistence. The functionality of the
-          backend is made available to frontend applications through an API [<a
-            href="#footnote-13"
-            >13</a
-          >].
+          A BaaS encapsulates the underlying architecture that a backend needs - the web server, app server, and database. It also provides pre-configured features like SSL certificates and static frontend hosting. The functionality of the backend is made available to frontend applications through an API [<a href="#footnote-13">13</a>].
         </p>
 
         <div class="img-wrapper">
@@ -797,9 +595,7 @@
         </div>
 
         <p>
-          With a backend as a service, you simply ask for a backend to be
-          created. Then it gives you an endpoint to access all of that backend's
-          functionality.
+          With a BaaS, you simply ask for a backend to be created. Then it gives you an endpoint to access that backend's functionality.
         </p>
 
         <h3 id="why-use-a-baas">
@@ -807,18 +603,11 @@
         </h3>
 
         <p>
-          As we've seen, a backend-as-a-service facilitates frontend
-          development. It abstracts away the complexity of the backend, allowing
-          for faster application development.
+          As we've seen, a BaaS facilitates frontend development. It abstracts away the complexity of the backend, allowing for faster application development. 
         </p>
 
         <p>
-          This abstraction does come with costs, though. For example, the BaaS
-          itself still requires setup and maintenance. Also, with these kinds of
-          services, as you gain more abstraction you sacrifice control. The
-          table below shows how a BaaS compares to two other services which
-          provide abstraction over backend concerns: infrastructure-as-a-service
-          (IaaS) and platform-as-a-service (PaaS).
+          This abstraction does come with costs, though. For example, the BaaS itself still requires setup and maintenance. Also, with these kinds of services, as you gain more abstraction you sacrifice control. The table below shows how a BaaS compares to two other services which provide abstraction over backend concerns: infrastructure-as-a-service (IaaS) and platform-as-a-service (PaaS). 
         </p>
 
         <div class="img-wrapper">
@@ -829,90 +618,49 @@
         </div>
 
         <p>
-          An IaaS provides the lowest level of abstraction. With this option,
-          the developer handles configuring everything from the operating system
-          on up, making it low in abstraction but high in control.
+          An IaaS provides the lowest level of abstraction. The developer configures everything from the operating system on up. That makes it low in abstraction but high in control. 
         </p>
 
         <p>
-          A PaaS provides more abstraction than an IaaS, but less than a BaaS.
-          With a PaaS, the developer has to provide all the application code for
-          the backend, but the platform handles operating system configuration
-          and deployment.
+          A PaaS provides more abstraction than an IaaS, but less than a BaaS. The developer provides all the application code for the backend. The platform handles the operating system configuration and deployment. 
         </p>
 
         <p>
-          With a BaaS, we are at the highest level of abstraction. The developer
-          no longer needs to provide any backend code or handle any backend
-          configuration. But with that high amount of abstraction, they aren't
-          able to control much, if anything, about how the BaaS works
-          internally.
+          At the highest level of abstraction is a BaaS. The developer no longer needs to provide any backend code or handle any backend configuration. But they aren't able to control much, if anything, about how the service works internally.
         </p>
 
         <p>
-          Even considering the trade-offs of using a BaaS, it still seemed like
-          a viable option for making it easier to get a GraphQL backend up and
-          running. Giving up control over the internals of the backend seemed
-          like a reasonable trade-off for an application which prioritizes rapid
-          development.
+          Giving up control over the internals of the backend seemed like a reasonable trade-off for an application which prioritizes rapid development.
         </p>
 
         <p>
-          In the next section, we'll review what we found when we evaluated the
-          GraphQL BaaS options that are currently avaiable.
+          In the next section, we'll review what we found when we evaluated the GraphQL BaaS options that are currently available. 
         </p>
 
         <h3 id="existing-graphql-baas">5.3) Existing GraphQL BaaS</h3>
 
         <p>
-          As you might guess, there are several existing GraphQL BaaS options to
-          chose from. These existing options can be grouped into two general
-          categories: managed services and open-source solutions.
+          As you might guess, there are several existing GraphQL BaaS options to chose from. These can be grouped into two general categories: managed services and open-source solutions.
         </p>
 
         <h4>5.3.1) Managed Services</h4>
 
         <p>
-          There are several managed services available for a GraphQL BaaS. These
-          are paid, proprietary services and are fully supported by the
-          provider. Using these paid services completely abstracts away the
-          complexity of setting up and managing the backend of your application.
-          In general, they are easy to use - with some caveats.
-          <a href="https://aws.amazon.com/amplify/">AWS Amplify</a>, for
-          example, has a close integration with other AWS services. That makes
-          it a great option if you are committed to using AWS services for your
-          entire application. It's possible, although more difficult, to use it
-          for non-AWS services. Since there is no need to deploy anything to use
-          these managed services, they're extremely simple to use.
+          There are several managed services available for a GraphQL BaaS. These are paid, proprietary services and are fully supported by the provider. Using a paid service takes care of all the details of setting up and managing the backend of your application. In general, they are easy to use - with some caveats. <a href="https://aws.amazon.com/amplify/">AWS Amplify</a>, for example, has a close integration with other AWS services. That makes it a great option if you are committed to using AWS services for your entire application. It's possible, but more difficult, to use it with non-AWS services. Since there is no need to deploy anything to use these managed services, they're very simple to use. 
         </p>
 
         <p>
-          These managed services also tend to have a large amount of features.
-          Services like <a href="https://www.8base.com/">8Base</a> and
-          <a href="https://nhost.io/">Nhost</a> provide just about any feature
-          you could ever want from your backend even beyond the GraphQL API.
-          <a href="https://dgraph.io/slash-graphql">Slash GraphQL</a> has
-          comparatively fewer features, although it still has some advanced
-          options like the ability to run custom logic via serverless lambda
-          functions.
+          These managed services also tend to have a many features. Services like <a href="https://www.8base.com/">8Base</a> and <a href="https://nhost.io/">Nhost</a> provide just about any feature you could ever want from your backend even beyond the GraphQL API. <a href="https://dgraph.io/slash-graphql">Slash GraphQL</a> has comparatively fewer features. It does, though, have some advanced options like the ability to run custom logic via serverless lambda functions. 
         </p>
 
         <h4>5.3.2) Open-Source Solutions</h4>
 
         <p>
-          For open-source options, the most popular is probably
-          <a href="https://parseplatform.org/">Parse Platform</a>. Parse is a
-          self-hosted platform that provides a backend with all the features you
-          could need for your application, including a GraphQL API. Unlike the
-          managed services, you can host Parse anywhere you want. It gives you
-          full control over your data and infrastructure.
+          For open-source options, the most popular is probably <a href="https://parseplatform.org/">Parse Platform</a>. Parse is a self-hosted platform that provides a backend with all the features you could need for your application, including a GraphQL API. Unlike the managed services, you can host Parse anywhere you want. It gives you full control over your data and infrastructure. 
         </p>
 
         <p>
-          Another, less well-known GraphQL backend-as-a-service is
-          <a href="https://spaceuptech.com/">Spacecloud</a>. Spacecloud offers a
-          similar wide range of features as the Parse platform and also lets you
-          self-host it wherever you want.
+          Another, less well-known GraphQL BaaS is <a href="https://spaceuptech.com/">Spacecloud</a>. It offers a similar wide range of features as Parse and also lets you self-host it wherever you want. 
         </p>
 
         <h3 id="why-not-use-an-existing-graphql-baas">
@@ -925,35 +673,21 @@
         </p>
 
         <p>
-          Although managed services need minimal effort to deploy and are
-          generally easy to use, they are of course not fully open-source. With
-          these services, you don’t have any control over how your application
-          and its data is hosted. You also run the risk of vendor lock-in if
-          your application ever outgrows the BaaS.
+          Although managed services need minimal effort to deploy and are generally easy to use, they are of course not fully open-source. With these services, you don’t have any control over how your application and its data is hosted. You also run the risk of vendor lock-in if your application ever outgrows the BaaS. 
         </p>
 
         <p>
-          With the existing open source options, you get to maintain control of
-          your data, but have to deal with more complicated deployment and
-          usage. You will need to worry about things like selecting and
-          configuring a database with both Parse and Spacecloud, for example.
-          With their wide range of features and options, it can take quite a bit
-          of time to get started with the existing open source options once they
-          are deployed.
+          With the existing open source options, you maintain control of your data, but have more complicated deployment and usage. You will need to worry about things like selecting and configuring a database with both Parse and Spacecloud, for example. With their wide range of features and options, it can take some time to learn how to use them once they are deployed. 
         </p>
 
         <h3 id="where-does-satellite-fit">5.4) Where Does Satellite Fit?</h3>
 
         <p>
-          After reviewing the existing BaaS options, we saw that there was an
-          opportunity for a self-hosted GraphQL BaaS that is easy to deploy and
-          use. Two main things influenced our idea. One is the simplicity of
-          managed services. The other is the ability to self-host an open-source
-          solution and maintain full control of an application and data.
+          After reviewing the existing BaaS options, we saw that there was an opportunity for a self-hosted GraphQL BaaS that is easy to deploy and use. Two main things influenced our idea. One is the simplicity of managed services. The other is the ability to self-host an open-source solution and maintain full control of an application and data. 
         </p>
 
         <p>
-          The table below shows where Satellite fits compared to the existing
+          The table below shows where Satellite fits compared to some existing
           options:
         </p>
 
@@ -965,35 +699,21 @@
         </div>
 
         <p>
-          Compared to the other GraphQL BaaS options that are available,
-          Satellite has fewer features. We kept Satellite lean to minimize the
-          complexity of deployment and make the essential features of a GraphQL
-          backend intuitive to use. Like other existing open-source options,
-          Satellite is all open source, and you can host it anywhere you’d like.
+          Compared to the other GraphQL BaaS options that are available, Satellite has fewer features. We kept it that way to simplify deployment and ensure that it was intuitive to use. Like other existing open-source options, you can host Satellite anywhere you’d like.
         </p>
 
         <p>
-          Since Satellite doesn’t have a huge amount of features, it isn’t going
-          to be a perfect fit for every application. If your application needs a
-          fully supported, one-stop-shop for all the features that a backend
-          could provide, Satellite won't be a good choice. But for developers
-          who need an open-source solution to quickly get a GraphQL backend
-          running with only the essential features needed to support their web
-          application, Satellite might be a good option.
+          Since Satellite doesn’t have a huge number of features, it won't be a good fit for every application. But if you want an open-source solution to quickly get a GraphQL backend running with only minimal features, Satellite might be a good option.
         </p>
 
         <p>
-          In the next section, we'll describe how we designed Satellite,
-          including the challenges we faced and the solutions we came up with.
+          In the next section, we'll describe how we designed Satellite, including the challenges we faced and the solutions we came up with. 
         </p>
 
         <h2 id="the-core-application">6) The Core Application</h2>
 
         <p>
-          The Satellite core application represents a single instance of a
-          backend. It provides client applications a GraphQL API for accessing
-          the persistent data store and static file serving for front-end
-          hosting.
+          The Satellite core application represents a single backend instance. It provides a GraphQL API for client applications to access and a persistent data store and static file serving for frontend hosting.
         </p>
 
         <div class="img-wrapper">
@@ -1004,19 +724,11 @@
         </div>
 
         <p>
-          These features are made possible using several components under the
-          hood. First is an nginx webserver, used for serving static files and
-          routing incoming requests. Next is a NodeJS Express application
-          server, which provides a way for administrative actions to be made on
-          the Satellite instance. Finally, a Dgraph Graph Database is used to
-          store persistent data.
+          These features are made possible using several components under the hood. First is an Nginx web server, used for serving static files and routing incoming requests. Next is a NodeJS Express application server, which allows administrative actions to be made on the Satellite instance. Finally, a Dgraph graph database is used to store persistent data. 
         </p>
 
         <p>
-          Our priority while designing Satellite was to keep it easy to use. In
-          this rest of this section, we will explain the main challenges we had
-          to overcome to achieve that goal, and how their solutions resulted in
-          this architecture.
+          Our priority while designing Satellite was to keep it easy to use. In this rest of this section, we'll explain the main problems we had to solve to achieve that goal. We'll also explain how solving them led to this architecture. 
         </p>
 
         <h3 id="how-is-an-application-s-data-defined">
@@ -1024,54 +736,33 @@
         </h3>
 
         <p>
-          When we started building Satellite, we faced a question. How do we
-          build a GraphQL backend that works for any application without knowing
-          what kind of data that application will need ahead of time? We needed
-          to build a “generic” GraphQL backend that would work for any
-          application.
+          When we started building Satellite, we faced a question. How do we build a GraphQL backend that works for any application without knowing what kind of data that application will need ahead of time? We needed to build a “generic” GraphQL backend that would work for any application. 
         </p>
 
         <p>
-          To answer that question, first we had to determine the best way to
-          allow a developer to define the structure of their application's data.
+          To answer that question, we had to determine the best way to allow a developer to define the structure of their application's data. 
         </p>
 
         <h4>6.1.1) GraphQL Schema vs. Database Schema</h4>
 
         <p>
-          The backend for a GraphQL application will normally need to deal with
-          interconnected, related data. One way to handle this is to use a
-          relational database with a GraphQL layer over it. The GraphQL queries
-          from the client would get translated to SQL queries by resolver
-          functions. This solution has the drawback of needing two sets of
-          schema - one for the relational database and one for the GraphQL API.
+          The backend for a GraphQL application will normally need to deal with interconnected, related data. One way to handle this is to use a relational database with a GraphQL layer over it. The GraphQL queries from the client would get translated to SQL queries by resolver functions. This solution has the drawback of needing two sets of schema - one for the relational database and one for the GraphQL API. 
         </p>
 
         <p>
-          Requiring an additional database schema in addition to the GraphQL
-          schema adds another piece of configuration that must be provided to
-          the backend, something we wanted to minimize in order to keep
-          Satellite easy to use.
+          Requiring a database schema in addition to the GraphQL schema would add another piece of configuration that must be provided to the backend. That was something we wanted to avoid to keep Satellite simple. 
         </p>
 
         <h4>6.1.2) A Hypothetical Database Schema Generator</h4>
 
         <p>
-          At first, we thought we could come up with a way to generate a
-          relational database schema from a GraphQL schema. This would eliminate
-          the need for two schemas and make it possible to define the structure
-          of the backend's data using only a GraphQL schema.
+          At first, we thought we could come up with a way to generate a relational database schema from a GraphQL schema. This would eliminate the need for two schemas and make it possible to define the structure of the backend's data using only a GraphQL schema. 
         </p>
 
         <p>But what would this look like? Would it even be possible?</p>
 
         <p>
-          In a very simple GraphQL schema, consisting of only a single object
-          type like the one shown below, it's easy enough to see how this could
-          work. For a GraphQL schema with a single object type with a few
-          fields, we could generate a database schema defining a table
-          corresponding to the object. The table would have all the necessary
-          columns to represent the fields of the object.
+          For a simple GraphQL schema, consisting of only a single object type like the one shown below, it's easy enough to see how this could work. We might be able to generate a database schema defining a table with columns corresponding to the object.  
         </p>
 
         <div class="img-wrapper">
@@ -1082,9 +773,7 @@
         </div>
 
         <p>
-          The logic for this hypothetical conversion process should be a simple
-          matter of converting strings. For now, we were ready to proceed to the
-          next challenge.
+          The logic for this hypothetical conversion process should be a simple matter of converting strings. For now, we were ready to proceed to the next step. 
         </p>
 
         <h3 id="how-is-an-application-s-data-accessed">
@@ -1099,61 +788,38 @@
         <h4>6.2.1) Resolver Functions in a GraphQL BaaS</h4>
 
         <p>
-          As we’ve mentioned, making the data available for a GraphQL backend
-          requires a GraphQL server to serve the API. That GraphQL server also
-          needs to contain resolver functions to know how to respond to
-          requests. The challenge is that writing these resolver functions
-          requires the developer to go "under the hood" and edit the backend’s
-          code. To keep Satellite easy to use and preserve the encapsulation of
-          the BaaS, this was going to be a huge problem.
+          As we’ve mentioned, making the data available for a GraphQL backend requires a GraphQL server to serve the API. That GraphQL server also needs to contain resolver functions to know how to respond to requests. The challenge is that writing these resolver functions requires the developer to go "under the hood" and edit the backend’s code. To keep Satellite easy to use and preserve the encapsulation of the BaaS, this was a problem we wanted to avoid. 
         </p>
 
         <h4>6.2.2) A Hypothetical Resolver Function Generator</h4>
 
         <p>
-          As a possible solution, we thought we could take a similar approach as
-          we had for converting the GraphQL schema to a database schema. That
-          approach would be to automatically generate resolver functions. There
-          would be functions for the most common actions you might want to take
-          with your application’s data - creating, reading, updating, and
-          deleting [<a href="#footnote-14">14</a>]. Then the GraphQL server
-          would be initialized with those functions.
+          As a possible solution, we thought we could take a similar approach as we had for converting the GraphQL schema to a database schema. That approach would be to automatically generate resolver functions. There would be functions for the most common actions you might want to take with your application’s data - creating, reading, updating, and deleting [<a href="#footnote-14">14</a>]. Then the GraphQL server would be initialized with those functions. 
         </p>
 
         <p>
-          Once again, would it even be possible to do this? We again considered
-          our very simple GraphQL schema to consider what this resolver function
-          generator might look like:
+          Would it be possible to do this? We again considered our very simple GraphQL schema to consider what this resolver function generator might look like: 
         </p>
 
         <div class="img-wrapper">
           <img
             src="images/diagrams/6_2_2-schema-to-resolvers.png"
-            alt="Generating a resolver functions from a simple GraphQL schema."
+            alt="Generating resolver functions from a simple GraphQL schema."
           />
         </div>
 
         <p>
-          We would need four resolvers for each object type in the schema: one
-          for reading the data with a Query type, and three Mutation types for
-          creating, updating, and deleting. This was starting to get much more
-          complicated, but still seemed doable. Since all the resolvers followed
-          a similar pattern, we should be able to generate the correct function
-          signatures and required database actions to make it work... at least
-          for a very simple schema like this.
+          We would need four resolvers for each object type in the schema: a Query type for reading the data, and three Mutation types for creating, updating, and deleting. This was starting to get much more complicated, but still seemed doable. Since all the resolvers followed a similar pattern, we should be able to generate the correct function signatures and required database actions to make it work... at least for a simple schema like this. 
         </p>
 
         <p>
-          Our imagined schema converter would no longer be a matter of
-          converting strings - now it would need to generate functions, too.
-          But, we still felt confident enough to proceed down this path.
+          Our imagined schema converter would no longer only be a matter of converting strings. Now it would need to generate functions, too. But, we still felt confident enough to proceed down this path. 
         </p>
 
         <h4>6.2.3) The Hypothetical Architecture</h4>
 
         <p>
-          We could now envision a hypothetical architecture for our GraphQL
-          backend, requiring only a GraphQL schema as an input.
+          We could now envision a hypothetical architecture for our GraphQL backend. It would need only a GraphQL schema as an input. 
         </p>
 
         <div class="img-wrapper">
@@ -1164,17 +830,11 @@
         </div>
 
         <p>
-          The GraphQL schema would be provided to the schema converter, which
-          would generate a database schema and create the database. Then it
-          would generate the necessary resolvers to initialize the GraphQL
-          server. Then GraphQL server would produce the GraphQL API that could
-          receive and respond to GraphQL requests from frontend applications.
+          The schema converter would get the GraphQL schema. Then it would generate a database schema and create the database. Next, it would generate the necessary resolvers to initialize the GraphQL server. Finally, the GraphQL server would produce the GraphQL API. It could then receive and respond to GraphQL requests from frontend applications. 
         </p>
 
         <p>
-          But like so many things in software engineering, it turned out to be
-          more complicated than we had assumed. Keep reading to see how we
-          solved the most significant challenge yet.
+          But like so many things in software engineering, it turned out to be more complicated than we had assumed. Keep reading to see how we solved the most significant challenge yet. 
         </p>
 
         <h3 id="what-about-more-complicated-data">
@@ -1182,16 +842,11 @@
         </h3>
 
         <p>
-          So far, we've only looked at a very simple schema - probably too
-          simple to make an interesting application.
+          So far, we've only looked at a very simple schema - probably too simple to make an interesting application. 
         </p>
 
         <p>
-          When we started experimenting with more complicated schema, the
-          difficulty in creating the database schema and resolver functions
-          increased significantly. The schema in the next figure shows some of
-          the more complex behaviors that can be defined using the GraphQL type
-          system:
+          Difficulties arose with more complicated schema, though. Creating the database schema and resolver functions became much harder. The schema in the next figure shows some more complex behaviors that can be defined using the GraphQL type system: 
         </p>
 
         <ul>
@@ -1224,9 +879,7 @@
         </ul>
 
         <p>
-          A schema like this allows the GraphQL API to handle relationships.
-          That's a key feature of GraphQL, so it wasn't something we could
-          ignore. But what would our imagined schema converter look like now?
+          A schema like this allows the GraphQL API to handle relationships. That's a key feature of GraphQL, so it wasn't something we could ignore. But what would our imagined schema converter look like now?
         </p>
 
         <div class="img-wrapper">
@@ -1237,24 +890,11 @@
         </div>
 
         <p>
-          For one thing, generating the database schema from a GraphQL schema
-          like this would be more complicated. The schema converter would need
-          to define multiple tables, foreign keys, and constraints to make the
-          database work for the data represented by the GraphQL schema. Besides
-          more complex database schema generation, we'd also have to think much
-          harder about resolver generation.
+          The schema converter would need to define multiple tables, foreign keys, and constraints. Besides this, we'd also have to think much harder about resolver generation.
         </p>
 
         <p>
-          So far, we've been taking advantage of something called the default
-          resolver. According to the GraphQL specification, every field in a
-          GraphQL schema must have a resolver function. If no resolver function
-          is defined for a field, most GraphQL implementations will fall back to
-          the default resolver [<a href="#footnote-15">15</a>]. The default
-          resolver simply returns a property from the returned object with the
-          relevant field name. For example, if we defined resolvers for every
-          field of the simple schema we originally considered, the resulting set
-          of functions would look like this:
+          So far, we've been taking advantage of something called the default resolver. According to the GraphQL specification, every field in a GraphQL schema needs a resolver. If no resolver function is defined for a field, most GraphQL implementations will fall back to the default resolver [<a href="#footnote-15">15</a>]. The default resolver simply returns a property from the returned object with the relevant field name. For example, if we defined resolvers for every field of the simple schema we considered earlier, the resulting functions would look like this: 
         </p>
 
         <div class="img-wrapper">
@@ -1270,59 +910,33 @@
         </p>
 
         <p>
-          Clearly, when considering schema with fields that aren't simple scalar
-          types, we would no longer be able to rely on the default resolver. Our
-          schema converter would need to be smart enough to traverse each type
-          recursively to identify non-scalar fields and generate resolver
-          functions for those fields. An algorithm like this would actually be
-          similar in concept to how a GraphQL server converts an incoming
-          request into an AST.
+          Clearly, with schema having fields that aren't simple scalar types, we could no longer rely on the default resolver. Our schema converter would need to be smart enough to traverse each type recursively, identify non-scalar fields and generate resolver functions for those fields. An algorithm like this would actually be similar in concept to how a GraphQL server converts an incoming request into an AST. 
         </p>
 
         <p>
-          Although we were still confident we could pull this off, going this
-          route looked like it would mean reinventing the wheel, so to speak.
-          We'd have to parse the GraphQL schema into a data structure. Then our
-          schema converter would traverse it recursively and generate resolver
-          functions for each scalar data type. Then the GraphQL server would
-          traverse incoming requests and invoke these functions. So rather than
-          reinventing the wheel, we thought it would be a good time to take a
-          step back and consider alternatives.
+          Although we were still confident we could pull this off, going this route looked like it would mean reinventing the wheel. So rather than do that, we thought it would be a good time to take a step back and consider alternatives.
         </p>
 
         <h3 id="graph-databases">6.4) Graph Databases</h3>
 
         <p>
-          Our search for a simpler way to generate resolver functions from a
-          GraphQL schema led us to consider other kinds of databases. Graph
-          databases, in particular, showed promise.
+          Our search for a simpler way to generate resolver functions from a GraphQL schema led us to consider other kinds of databases. Graph databases, in particular, showed promise.
         </p>
 
         <h4>6.4.1) What are Graph Databases?</h4>
 
         <p>
-          Graph databases are specialized to handle highly interconnected data
-          [<a href="#footnote-16">16</a>]. They do this by treating their data
-          as a graph - which is similar to how GraphQL treats its data. In fact,
-          some Graph databases even have integrations with GraphQL to generate
-          resolvers, which is exactly what we were looking for.
+          Graph databases are specialized to handle highly interconnected data [<a href="#footnote-16">16</a>]. They do this by treating their data as a graph - which is similar to how GraphQL treats its data. In fact, some Graph databases even have integrations with GraphQL to generate resolvers, which is exactly what we were looking for.
         </p>
 
         <h4>6.4.2) Graph Databases and GraphQL</h4>
 
         <p>
-          Two graph databases with GraphQL integrations are
-          <a href="https://neo4j.com/labs/grandstack-graphql/">neo4j</a> and
-          <a href="https://dgraph.io/">Dgraph</a>.  Neo4j is probably the most
-          widely used graph database [<a href="#footnote-17">17</a>].  It’s
-          GraphQL integration involves using an add-on to the database, which
-          was a more complicated setup than we were hoping for.
+          Two graph databases with GraphQL integrations are <a href="https://neo4j.com/labs/grandstack-graphql/">neo4j</a> and <a href="https://dgraph.io/">Dgraph</a>. Neo4j is the most widely used graph database [<a href="#footnote-17">17</a>]. Its GraphQL integration involves using an add-on to the database, which was a more complicated setup than we were hoping for.
         </p>
 
         <p>
-          Dgraph is less well-known that neo4j, but it has native GraphQL
-          integration. You don’t have to install any other addons - you get the
-          GraphQL API directly from the database.
+          Dgraph is less well-known that neo4j, but it has native GraphQL integration. You don’t have to install any other addons - you get the GraphQL API directly from the database. 
         </p>
 
         <div class="img-wrapper">
@@ -1333,15 +947,13 @@
         </div>
 
         <p>
-          Because of its native GraphQL support, we ultimately chose Dgraph for
-          the database of Satellite, which greatly simplified our architecture.
+          Because of its native GraphQL support, we chose Dgraph for Satellite's database. This greatly simplified our architecture. 
         </p>
 
         <h4>6.4.3) Simplified Architecture</h4>
 
         <p>
-          With Dgraph handling resolver generation and producing the GraphQL
-          API, we could now simplify our hypothetical architecture:
+          Letting Dgraph handle resolver generation and serve the GraphQL API let us simplify our hypothetical architecture: 
         </p>
 
         <div class="img-wrapper">
@@ -1352,16 +964,11 @@
         </div>
 
         <p>
-          With Dgraph accepting a GraphQL schema as an input, we would no longer
-          need a schema converter to generate a database schema and resolvers or
-          a separate application server to serve the API. We were able to remove
-          those components from our working design.
+          With Dgraph accepting a GraphQL schema as an input, we were able to remove two major components from our working design. We would no longer need a schema converter to generate a database schema and resolvers. We also wouldn't need a separate application server to serve the API.
         </p>
 
         <p>
-          At this point, the majority of the heavy lifting was done. We still
-          had a few more problems to solve before we could get to the final
-          Satellite backend architecture, though.
+          At this point, the majority of the heavy lifting was done. We still had a few more problems to solve before we could get to the final Satellite backend architecture, though. 
         </p>
 
         <h3 id="other-challenges">6.5) Other Challenges</h3>
@@ -1369,13 +976,7 @@
         <h4>6.5.1) How Does Satellite Backend Administration Work?</h4>
 
         <p>
-          Besides the GraphQL endpoint, Dgraph exposes administrative endpoints
-          for interacting with its GraphQL schema. They can be used for updating
-          the schema and inspecting the currently loaded schema. We knew the
-          front-end Satellite user would need to access these administrative
-          endpoints, but they shouldn’t be accessible from the public internet.
-          As it was, we had no way of making only the GraphQL endpoint public to
-          the internet, while keeping the admin endpoint private.
+          Besides a GraphQL endpoint, Dgraph exposes administrative endpoints for interacting with its GraphQL schema. They can be used for updating the schema and viewing the currently loaded schema. The frontend Satellite user would need to access these admin endpoints, but they shouldn’t be accessible from the public internet. As it was, we had no way of making only the GraphQL endpoint public to the internet, while keeping the admin endpoint private. 
         </p>
 
         <div class="img-wrapper">
@@ -1386,41 +987,28 @@
         </div>
 
         <p>
-          Also, we currently have no way to upload or serve static files that a
-          front-end developer would need for their web applications. We needed
-          some way to resolve both of these issues before we could declare
-          victory.
+          Also, we currently have no way to upload or serve static files that a front-end developer would need for their web applications. We needed a way to resolve both of these issues before we could declare victory.
         </p>
 
         <h4>6.5.2) Protecting the Administrative Endpoints</h4>
 
         <p>
-          To protect Dgraph's administrative endpoints and deal with static
-          files, we needed a couple more components.
+          To protect Dgraph's administrative endpoints and deal with static files, we needed a couple more components.
         </p>
 
         <p>
-          The first component we needed was a web server to serve static files
-          and act as a reverse proxy to the GraphQL API endpoint that Dgraph
-          provides. We chose Nginx for this since it's an efficient and
-          battle-tested product [<a href="#footnote-18">18</a>].
+          The first component we needed was a web server to serve static files and act as a reverse proxy to the GraphQL API endpoint that Dgraph provides. We chose Nginx for this since it's an efficient and battle-tested product [<a href="#footnote-18">18</a>].
         </p>
 
         <div class="img-wrapper">
           <img
             src="images/diagrams/6_5_2-protecting-endpoints.png"
-            alt="Nginx and NodeJS to separate the administrative endpoints from the public endpoints."
+            alt="Nginx and NodeJS separate the administrative endpoints from the public endpoints."
           />
         </div>
 
         <p>
-          The second thing we needed was an application to provide a way for the
-          developer to upload their static files. They should also be able to
-          send administrative actions to Dgraph’s admin endpoint. We
-          accomplished this by building an express application running on NodeJS
-          to provide a private API. The front-end developer can access the API
-          to upload their static files and work with the GraphQL schema loaded
-          into Dgraph.
+          The second thing we needed was an application to provide a way for the developer to upload their static files. They should also be able to send administrative actions to Dgraph’s admin endpoint. We accomplished this by building an express application running on NodeJS to provide a private API. The front-end developer can access the API to upload their static files and work with the GraphQL schema loaded into Dgraph.
         </p>
 
         <h3 id="the-core-application-final-architecture">
@@ -1428,8 +1016,7 @@
         </h3>
 
         <p>
-          This brings us to the final architecture for the Satellite core
-          application, which we can now see in more detail:
+          This brings us to the final architecture for the Satellite core application, which is shown below:
         </p>
 
         <div class="img-wrapper">
@@ -1440,21 +1027,11 @@
         </div>
 
         <p>
-          The nginx web server acts as a web-facing entry point to the backend.
-          It can reverse-proxy GraphQL requests to Dgraph or serve static files.
-          The NodeJS application provides a private entry-point for the
-          developer to perform administrative actions on their backend like
-          uploading static files or updating their GraphQL schema.
+          The Nginx web server acts as a web-facing entry point to the backend. It can reverse-proxy GraphQL requests to Dgraph or serve static files. The NodeJS application provides a private endpoint for the developer. They can perform actions like uploading static files or updating their GraphQL schema.
         </p>
 
         <p>
-          Satellite's core architecture makes it easy to use, but what about
-          deployment? On one hand, we knew that we couldn't match the simplicity
-          of deployment of a managed service. On the other, we needed to make it
-          as easy as possible to deploy for Satellite to be a viable
-          alternative. Next, we'll discuss why deployment at this stage in
-          Satellite's development was still a huge problem, and what we did to
-          fix it.
+          Satellite's core architecture makes it easy to use, but what about deployment? On one hand, we knew that we couldn't match the simplicity of deployment of a managed service. On the other, we needed to make it as easy as possible to deploy for Satellite to be a viable alternative. Next, we'll discuss why deployment at this stage in Satellite's development was a big problem, and what we did to fix it. 
         </p>
 
         <h3 id="how-do-we-simplify-deployment">
@@ -1462,73 +1039,38 @@
         </h3>
 
         <p>
-          As it stands, to get a Satellite instance running, you’d have to
-          manually download and configure each separate component. The specifics
-          could change depending on which operating system you’re trying to run
-          them on. This would be a very time-consuming and difficult process. We
-          now faced the challenge of packaging all the components needed for a
-          Satellite, plus their dependencies, in a way that made it easy to
-          deploy.
+          As it stands, to get a Satellite instance running, you’d have to manually download and configure each component. The specifics could change depending on which operating system you’re trying to run them on. This would be a very time-consuming and difficult process. We now had the challenge of packaging the components of a Satellite backend, plus their dependencies, in a way that was easy to deploy. 
         </p>
 
         <h4>6.7.1) Containers</h4>
 
         <p>
-          After some investigation, we came to the perfect answer to this
-          challenge: containers.
+          After some investigation, we found a good answer to this: containers.
         </p>
 
         <p>
-          Containers provide a way to package an application with its
-          dependencies in an isolated and consistent way [<a href="#footnote-19"
-            >19</a
-          >]. This means that if you start, for example, a NodeJS container,
-          that container has all the requirements to run NodeJS packaged with
-          it. You no longer have to worry about manually installing it and
-          setting everything up. Containers also provide isolation, meaning that
-          whatever is going on in the container doesn’t interfere with the host
-          system. So if you run a container with one version of Node, it won’t
-          interfere with your host installation of Node.
+          Containers provide a way to package an application with its dependencies in an isolated and consistent way [<a href="#footnote-19">19</a>]. This means that if you start, for example, a NodeJS container, that container has all the requirements to run NodeJS packaged with it. You no longer have to worry about manually installing it and setting everything up. Containers also provide isolation, meaning that whatever is going on in the container doesn’t interfere with the host system. 
         </p>
 
         <div class="img-wrapper">
           <img
             src="images/diagrams/6_7_1-containers.svg"
-            alt="A depiction of how Docker containers interact with the host operating system."
+            alt="How Docker containers interact with the host operating system."
           />
         </div>
 
         <p>
-          Another good thing about containers is that they are lighter weight
-          than some other options like virtual machines [<a href="#footnote-20"
-            >20</a
-          >]. Virtual machines need to run an entire guest operating system,
-          while containers create an isolated environment within the host
-          operating system. Consequently, containers use less resources and are
-          faster to deploy. Since Docker is the most popular way to package
-          applications using containers, we chose to use it to package the
-          components of Satellite.
+          Another good thing about containers is that they are lighter weight than some other options like virtual machines [<a href="#footnote-20">20</a>]. Virtual machines need to run a guest operating system. Containers, though, create an isolated environment within the host operating system. Since Docker is the most popular way to package applications using containers, we chose it to package the components of Satellite.
         </p>
 
         <h4>6.7.2) Container Coordination</h4>
 
         <p>
-          Packaging Satellite using docker containers greatly simplified the
-          deployment of each individual component. But since each Satellite
-          consists of several components, it still required manually starting
-          and stopping each component container.
+          Packaging Satellite using Docker containers greatly simplified the deployment of the individual components. But since a Satellite backend consists of several components, it still required manually starting and stopping each container.
         </p>
 
         <p>
-          Our last optimization for deploying a Satellite was to eliminate this
-          need to start each container individually. We wanted to make it
-          possible to start the application with only a single command.
-          Fortunately, Docker provides a tool called
-          <a href="https://docs.docker.com/compose/">Docker Compose</a>. It's
-          designed specifically for defining and running applications consisting
-          of multiple Docker containers. Compose uses a YAML file to describe
-          the containers you want to run along with their configuration. Then it
-          launches the containers to start the application.
+          Our goal was to make it possible to start the application with only a single command. Fortunately, Docker provides a tool called <a href="https://docs.docker.com/compose/">Docker Compose</a>. It's designed for defining and running applications consisting of multiple Docker containers. Compose uses a YAML file to describe and configure the containers you want to run. Then it launches the containers to start the application. 
         </p>
 
         <div class="img-wrapper">
@@ -1539,29 +1081,23 @@
         </div>
 
         <p>
-          Our Docker Compose configuration for launching a single, containerized
-          Satellite looked something like what is pictured here. As you can see,
-          the compose file also allows for specifying various other options that
-          are required for Satellite to run. It can include things like
-          environment variables and storage volumes used by the containers to
-          store their data.
+          Our Docker Compose configuration for launching a containerized backend looked something like this. As you can see, the compose file can also specify various other options needed for Satellite to run. It can include things like environment variables and storage volumes used by the containers to store their data. 
         </p>
 
         <h2 id="multi-instance-architecture">7) Multi-Instance Architecture</h2>
 
         <p>
-          At this point, we had a system that was easy to deploy and supported a single Satellite instance. This would work fine for developers who only needed a single backend, but what about developers who wanted to run more than one backend simultaneously? For example, it is often useful for a single application to have multiple versions of its backend to support different versions for staging and production [<a href="#footnote-21"
-          >21</a>]. And it seemed very possible that developers might just want to host more than one application at a time.
+          At this point, we had a system that was easy to deploy and supported one Satellite instance. This would work fine for developers who only needed a single backend. But what about developers who wanted to run several backends at once? For example, it's often useful for an application to have multiple versions of its backend. This could be for supporting different versions of the app for staging and production [<a href="#footnote-21">21</a>]. It also seemed very possible that developers might want to host more than one application at a time.
         </p>
         
         <p>
-          The question now became: How can we support easy deployment of multiple Satellite backends?
+          The question now became: how can we support easy deployment of multiple Satellite backends?
         </p>
 
         <h3>7.1) Why Multi-Instance?</h3>
 
         <p>
-          A multi-instance architecture was the logical choice for Satellite. This would enable two important things. First, it would isolate application instances. Second, it would put the routing and administration logic into their own components and separate them from the core Satellite API. Each backend application would have the same internals as a single instance.
+          A multi-instance architecture was the logical choice for Satellite. This would enable two important things. First, it would isolate backend instances from each other. Second, it would put the routing and administration logic into their own components, separate from the backends. Each Satellite backend would have the same internals as a single instance. 
         </p>
 
         <div class="img-wrapper">
@@ -1572,24 +1108,24 @@
         </div>
 
         <p>
-          This architecture addresses the challenge of supporting multiple Satellites. It does introduce a number of new challenges however. In the next several sections, we'll explain how we overcame these challenges to achieve the goal of an easy to deploy, multi-instance architecture.
+          While this architecture addresses how to support multiple backends, it does introduce many new problems. In the next sections, we'll explain how we solved these to achieve the goal of an easy to deploy, multi-instance architecture. 
         </p>
 
         <h3>7.2) What are the Challenges of a Multi-Instance Architecture?</h3>
 
         <p>
-          In the single-instance version of Satellite, all three components existed on a single server, and could be started up as a unit using Docker compose. Docker's bridge network connected the Dgraph, Express, and Nginx containers to each other. The Nginx server in each container exposed ports to be accessible to be accessible outside of the bridge network over the public internet, and the Express API exposed ports to be accessible outside of the bridge network on a private network.
+          In the single-instance version of Satellite, all three components existed on one server. They could be started up as a unit using Docker Compose. Docker's bridge network connected the Dgraph, Express, and Nginx containers to each other. The Nginx server in each container exposed ports that were accessible from the public internet. The Express API exposed ports that were accessible outside of the bridge network on a private network.
         </p>
 
         <div class="img-wrapper">
           <img
             src="images/diagrams/7_2-single-instance-ref.svg"
-            alt="Single Satellite instance for rference."
+            alt="Single Satellite instance for reference."
           />
         </div>
 
         <p>
-          Thinking about it at a very high level, it seemed like creating a multi-instance architecture could be a matter of simply starting up multiple Docker Compose files. This kind of multi-instance architecture might look like this:
+          At a high level, it seemed like creating a multi-instance architecture could be just a matter of starting up multiple Docker Compose files. This kind of multi-instance architecture might look like this:
         </p>
           
         <div class="img-wrapper">
@@ -1600,25 +1136,21 @@
         </div>
 
         <p>
-          Although this seems like a straight-forward solution to an apparently simple problem, an architecture like this actually has one critical limitation: One server can only support so many Satellite instances before performance degrades or the system crashes.
+          This seemed like an easy solution to an apparently simple problem. However, an architecture like this has one critical limitation. One server can only host so many Satellite backends before performance degrades or the system crashes. 
         </p>
 
         <p>
-          In the next section we'll discuss how can we designed Satellite to perform efficiently and reliably no matter how many Satellite instances are created.
+          In the next section, we'll discuss how can we designed Satellite to perform efficiently and reliably, no matter how many backends are created. 
         </p>
 
         <h3>7.3) Scaling Satellite</h3>
 
         <p>
-          To accommodate increasing loads on the system, we could have Satellite scale vertically or horizontally. Scaling vertically requires physically upgrading the host system, which did not seem practical in order to keep Satellite easy to use. Not only that, but the costs of scaling vertically tend to increase exponentially as more power is needed, and there is a limit on how much processing power a single server can practically have [<a href="#footnote-22">22</a>].
+          To accommodate increasing loads on the system, we could have Satellite scale vertically or horizontally. Vertical scaling requires physically upgrading the host system. That didn't seem practical since we wanted to keep Satellite easy to use. Also, the cost of scaling vertically tends to increase exponentially as more power is needed. There is also a practical limit on how much processing power a single server can have [<a href="#footnote-22">22</a>].
         </p>
 
         <p>
-          Scaling horizontally was a better solution for Satellite. Horizontal scaling involves replicating and distributing the components of an application across multiple servers. This means that each server can be economically sized, but it complicates communication and routing since backends can live on different host machines.
-        </p>
-
-        <p>
-          As an example, scaling Satellite horizontally with multiple individual instances of Satellite spread across multiple host machines could look like this:
+          Horizontal scaling was a better solution for Satellite. It involves replicating and distributing the components of an application across multiple servers. This allows each server to be economically sized and allows unlimited scalability. But, it complicates communication and routing since backends can live on different host machines. Having several backends spread across multiple host machines could look like this:
         </p>
 
         <div class="img-wrapper">
@@ -1629,7 +1161,7 @@
         </div>
 
         <p>
-          As we can see, with horizontal scaling we had another issue: Randomly distributing the satellite instances might not make the best use of available server resources. To make the best use of resources, the components of a Satellite instance could be deployed onto whichever host machine is the least used. This way, we would save resources and improve performance.
+          As we can see, with horizontal scaling we had another issue. Randomly distributing the backends might not make the best use of server resources. Instead, the components of a Satellite instance could be deployed onto whichever host machine is the least used. This way, we would save resources and improve performance. 
         </p>
 
         <div class="img-wrapper">
@@ -1640,58 +1172,54 @@
         </div>
 
         <p>
-          In the end, we decided on horizontal scaling and spreading the components of a single instance across servers. This approach offers unlimited scalability and optimized performance.
-        </p>
-
-        <p>
-          We now had a strategy for scaling Satellite to accommodate any number of individual Satellite instances. We still had a number of challenges to overcome to complete the multi-instance design, including:
+          We now had a strategy for scaling Satellite to accommodate any number of individual backends. We still had several challenges to overcome to complete the multi-instance design, including: 
 
           <ul>
-            <li>How do we make it easy for a developer to spin up and tear down Satellite instances?</li>
+            <li>How do we make it easy for a developer to spin up and tear down Satellite backends?</li>
 
-            <li>How do we manage communication between the components of Satellite instances??</li>
+            <li>How do we manage communication between the components within a backend?</li>
 
-            <li>How do we route requests from the internet to the correct Satellite instance?</li>
+            <li>How do we route requests from the internet to the correct backend?</li>
 
-            <li>How do we make it easy for a developer to perform administrative tasks when they are dealing with multiple Satellite instances? </li>
+            <li>How do we make it easy for a developer to perform administrative tasks when they are dealing with multiple backends? </li>
           </ul>
         </p>
 
         <p>
-          In the next several sections, we'll explain how we solved these problems in order to complete Satellite's multi-instance architecture. We'll start with a logical first step: Spinning up and tearing down Satellite instances.
+          In the next few sections, we'll explain how we solved these problems. We'll start with a logical first step: spinning up and tearing down Satellite backends. 
         </p>
 
         <h3>7.4) Spinning Up and Tearing Down Satellite Instances</h3>
 
         <p>
-          To spin up and tear down any number containerized Satellite instances, we needed a tool to manage them.
+          To spin up and tear down any number of containerized Satellite backends, we needed a tool to manage them. 
         </p>
 
         <p>
-          For this purpose, we used a container orchestrator. A container orchestrator is a tool to manage, scale, and maintain containerized applications. It also manages the networks that they use to communicate. We chose Kubernetes for Satellite since it's very popular and all major cloud providers support it.
+          For this, we used a container orchestrator. A container orchestrator is a tool to manage, scale, and maintain containerized applications. It also manages the networks that they use to communicate. We chose Kubernetes for Satellite since it's very popular and all major cloud providers support it. 
         </p>
 
         <p>
-          Earlier, we described how Docker Compose uses a YAML file to define and configure an application composed of containers. We showed how to use it to define the containers needed for a single Satellite instance.
+          Earlier, we described how Docker Compose uses a YAML file to define and configure an application composed of containers. We showed how to use it to define a single Satellite instance. 
         </p>
 
         <p>
-          Kubernetes works in an analogous way. It allows developers to define a containerized application in a manifest file. A manifest file is can be written in YAML or JSON. The manifest file describes the list of coordinated components that should be deployed and their ideal state. Kubernetes works to maintain that desired state after the manifest is run and the components have been deployed. While Docker Compose is designed to make it easy to start a single containerized application, Kubernetes is designed to make it easy to start any number of containerized applications.
+          Kubernetes works in an analogous way. It lets developers define one or more containerized applications in a manifest file. A manifest file is can be written in YAML or JSON. The manifest file describes the list of components to be deployed, how they're coordinated, and their ideal state. Kubernetes works to maintain that desired state after the manifest is run and the components have been deployed. While Docker Compose makes it easy to start a single application made of containers, Kubernetes makes it easy to start any number of those applications. 
         </p>
 
         <p>
-          Kubernetes also provides a CLI for managing deployments of containerized applications. Passing the manifest file as an argument to the Kubernetes CLI allows us to spin up and tear down Satellite backends:
+          Kubernetes also provides a CLI for managing deployments of containerized applications. Passing the manifest file as an argument to the Kubernetes CLI allows us to spin up and tear down Satellite backends: 
         </p>
 
         <div class="img-wrapper">
           <img
             src="images/diagrams/7_4-k8s-manifest-to-instance.png"
-            alt="Creating a Satellite instance from the manifest file."
+            alt="Creating a Satellite backend from the manifest file."
           />
         </div>
 
         <p>
-          The components of the deployed Satellite instance are spread across the Kubernetes cluster. The cluster is a group of connected nodes. The nodes are machines, virtual or physical, and a node can either be a master or worker. The nodes contain the application containers. Kubernetes distributes the components of an application in the most efficient way possible, not necessarily on any particular node, meaning that the components of any single Satellite instance may be spread across multiple nodes:
+          The components of the deployed Satellite backend are spread across the Kubernetes cluster. The cluster is a group of connected nodes. The nodes are machines, virtual or physical, and a node can either be a master or worker. The nodes contain the application containers. Kubernetes distributes the components of an application in the most efficient way possible. This means that the components of any one Satellite backend might live on the same node or be spread across multiple nodes: 
         </p>
 
         <div class="img-wrapper">
@@ -1702,17 +1230,17 @@
         </div>
 
         <p>
-          Distributing components like this ensures that the resources of each node are used in the most efficient way possible, but complicates communication between the components of each instance. The next section describes how we managed this complication to ensure that each Satellite instance could communicate internally, even if its components were spread across nodes.
+          Distributing components like this ensures that the resources of each node are used efficiently. It does complicate communication between the components of each backend, though. The next section will describe how we dealt with this.
         </p>
 
         <h3>7.5) Managing Satellite Instance Component Communication</h3>
 
         <p>
-          To understand how we managed component communication within Satellite instances, first we need to describe a little bit of how Kubernetes handles things internally.
+          To explain how we managed component communication within Satellite backends, first we need to describe a little bit of how Kubernetes handles things internally.
         </p>
 
         <p>
-          Kubernetes places containers onto pods. A pod is a Kubernetes object that runs a group of one or more containers. You can imagine a pod as a wrapper around one or more Docker containers. It allows Kubernetes to manage the lifecycle of the containers running inside the pod. In a single Satellite instance, each container (Nginx, Dgraph, and Express API) runs as separate pods:
+          Kubernetes places containers onto pods. A pod is a Kubernetes object that runs a group of one or more containers. You can imagine a pod as a wrapper around one or more Docker containers. It allows Kubernetes to manage the lifecycle of the containers running inside the pod. In a single Satellite backend, each container (Nginx, Dgraph, and Express API) runs as separate pods: 
         </p>
 
         <div class="img-wrapper">
@@ -1723,7 +1251,7 @@
         </div>
 
         <p>
-          Each Pod has its own IP address that enables it to be discovered within a cluster:
+          Each pod has its own IP address that lets it be discovered within a cluster:
         </p>
 
         <div class="img-wrapper">
@@ -1734,7 +1262,7 @@
         </div>
 
         <p>
-          But what happens if a pod crashes? Fortunately, Kubernetes will make sure that a new pod is deployed to take its place.  Unfortunately, this new pod will have a different IP address. This means that we could not hard-code the IP addresses of separate components to communicate with:
+          If a pod crashes, Kubernetes will make sure that a new pod is deployed to take its place. This new pod will have a different IP address, though. This means that we could not hard-code the IP addresses of separate components: 
         </p>
 
         <div class="img-wrapper">
@@ -1745,11 +1273,11 @@
         </div>
 
         <p>
-          Another option for pod-to-pod communication is to use services. A service provides a fixed, defined gateway to a Pod. There are several types of services, but the important one here is called ClusterIP service. A ClusterIP service proxies requests to a set of defined Pods according to its configuration in a manifest file.
+          Another option for pod-to-pod communication is to use Kubernetes' built-in services. We used one here called ClusterIP. It provides a fixed, defined gateway to a pod. A ClusterIP service proxies requests to a set of other pods according to its configuration in a manifest file. 
         </p>
 
         <p>
-          To ensure reliable component communication in a Satellite instance, we chose to take advantage of Kubernetes services. Take a look at the diagram below to see how this works. Here, the pod running the Express API is defined as part of the app-server service. Requests from the Nginx pod can be proxied to the Express API pod through the app-server service. The domain name in the request would be the name of the service, app-server.
+          To ensure reliable component communication in a Satellite backend, we used Kubernetes services. The diagram below shows how this works. Here, the pod running the Express API is defined as part of the app-server service. Requests from the Nginx pod can be proxied to the Express API pod through the app-server service. The domain name in the request would be the name of the service, app-server. 
         </p>
 
         <div class="img-wrapper">
@@ -1760,17 +1288,17 @@
         </div>
 
         <p>
-          We now had a way for components to communicate with other components within the Kubernetes cluster. But we still had one critical networking challenge to overcome: How do we route requests from the internet to the correct Satellite instance?
+          We now had a way for components to communicate with other components within the Kubernetes cluster. But we still had a critical networking challenge: how do we route requests from the internet to the correct Satellite backend? 
         </p>
 
         <h3>7.6) Routing Requests to Individual Satellites</h3>
 
         <p>
-          Kubernetes automatically provisions an external load balancer for deployments. The external load balancer provides an externally-accessible IP address that forwards requests to the correct ports on cluster nodes, which gave us the ability to route requests to the worker nodes easily.
+          Kubernetes automatically provisions an external load balancer for deployments. The load balancer provides an internet-accessible IP address. It forwards incoming requests to the correct ports on cluster nodes. That makes it easy to route requests to the worker nodes.   
         </p>
 
         <p>
-          But how does the load balancer know which Pods to forward requests to in the cluster? Services are the answer here, yet again. A load balancer service must be specified for each Satellite instance and configured to forward to it. The load balancer service for a Satellite instance is used by the external load balancer to forward requests to the correct set of Pods.
+          But how does the load balancer know which pods to forward requests to in the cluster? Kubernetes' services are the answer here, yet again. Each Satellite backend needs its own load balancer service which is configured to forward to it. The load balancer service for a backend is used by the external load balancer to forward requests to the correct set of pods.
         </p>
 
         <div class="img-wrapper">
@@ -1781,7 +1309,7 @@
         </div>
 
         <p>
-          There is a problem with this approach, though. This method of forwarding external requests works well with only a few Satellite instances; however, once we have many Satellite instances, this method grows unwieldy. The reason for this is two-fold: not only does each Satellite instance require its own defined load balancer service, but each load balancer service needs its own dedicated external load balancer. Having an external load balancer for each Satellite instance could quickly become resource-intensive.
+          There is a problem with this approach, though. This method of forwarding external requests works well with only a few Satellite backends. But once we have many backends, this method grows unwieldy. The reason for this is two-fold. Not only does each backend need its own load balancer service, but each load balancer service needs its own dedicated external load balancer. Having an external load balancer for each Satellite instance would quickly become resource-intensive. 
         </p>
 
         <div class="img-wrapper">
@@ -1792,15 +1320,15 @@
         </div>
 
         <p>
-          At this point, we imagined our ideal setup: one external load balancer that forwarded external requests to a single load balancer service. The single load balancer service would contain the necessary definitions for sending requests to the correct Satellite instance. 
+          At this point, our ideal setup was to have one external load balancer to forward external requests to a single load balancer service. The single load balancer service would be configured to send requests to the correct backends. 
         </p>
 
         <p>
-          In order to execute this setup, we used Traefik. Traefik is a reverse proxy that can forward requests based on a set of user-defined routing rules. We deployed Traefik as a Pod within the cluster. This allowed Traefik to use the ClusterIP services for forwarding requests to the correct Pods. 
+          To do this, we used Traefik. Traefik is a reverse proxy that can forward requests based on a set of user-defined routing rules. We deployed Traefik as a pod within the cluster. This let Traefik use the ClusterIP services to forward requests to the correct pods. 
         </p>
 
         <p>
-          In a Satellite system, the external load balancer receives requests and forwards them to the single load balancer service. The load balancer service then forwards requests to Traefik. Traefik routes requests to the correct Satellite instance and Pod through use of the request's subdomain, domain, and path combination. 
+          In a Satellite deployment, the external load balancer receives requests and forwards them to the single load balancer service. The load balancer service then forwards requests to Traefik. Traefik routes requests to the correct Satellite backend and pod using the request's subdomain, domain, and path.
         </p>
 
         <div class="img-wrapper">
@@ -1811,35 +1339,31 @@
         </div>
 
         <p>
-          An additional benefit of using Traefik is that it requests SSL certificates for subdomains automatically. An application may hold sensitive data, so the default method should be to encrypt traffic using HTTPS. Since we are generating the hostname of each Satellite dynamically, manually requesting SSL certificates could be cumbersome and tricky. Traefik automatically requests SSL certificates for new Satellite instances. This creates a slight delay when spinning up a new Satellite, but this is a small price to pay for ensuring secure communication.
+          In this setup, the hostname of each Satellite backend is dynamically generated. Having to request SSL certificates manually would be cumbersome and tricky. A benefit of using Traefik is that it requests SSL certificates for subdomains automatically. This lets Satellite use HTTPS by default for every new backend. This creates a slight delay when spinning up a new Satellite, though.
         </p>
 
         <p>
-          With internal and external networking taken care of, we had all of the underlying functionality established for the multi-instance architecture. The final step was to provide some way for a developer to easily interact with it.
+          At this point, we had all the functionality for the multi-instance architecture built. The final step was to provide some easy way for a developer to interact with it. 
         </p>
 
         <h3>7.7) Admin Panel</h3>
 
         <p>
-          By choosing a multi-instance architecture, we prioritized isolation between Satellites and the separation of routing and administration logic from core backend functionality. With this prioritization came the cost of additional application layers for container orchestration and networking.
+          Our multi-instance came with the cost of extra application layers for container orchestration and networking.
         </p>
 
         <p>
-          To manage this additional complexity and keep with our goal of making Satellite easy to use, we needed a final layer of abstraction: An intuitive GUI that would allow a developer to spin up, tear down, or perform administrative tasks on their individual Satellite instances.
+          To keep these layers simple to interact with, we needed one more thing: an intuitive GUI. That would let a developer spin up, tear down, or manage their Satellite backends. 
         </p>
 
         <p>
-          In the final sections of this case study, we'll discuss why and how we built each feature of Satellite's admin panel. We'll start with how it enables easy management of a Satellite instance's lifecycle.
+          In the final sections of this case study, we'll discuss why and how we built each feature of Satellite's admin panel. We'll start with how it enables easy management of a Satellite backend's lifecycle. 
         </p>
 
-        <h4>7.7.1) Satellite Instance Lifecycle Management</h4>
+        <h4>7.7.1) Satellite Backend Lifecycle Management</h4>
 
         <p>
-          Using a container orchestrator made it easy to spin up and tear down Satellites. By passing the manifest file that describes the containerized Satellite instance as an argument to the Kubernetes CLI commands, we were able to spin up new instances on demand or tear down existing ones. However, this was not the kind of interface we could expose to frontend developers using our system, as it would require root access to the master node running Satellite. The prospect of multiple frontend developers having access to the master node introduces security concerns for the data held inside of each Satellite instance. Additionally, whoever is administering the Satellite system would need to monitor the cluster frequently and ensure that all operations are done properly on it. Lastly, we did not think that users of Satellite should need to know anything about how to run Kubernetes commands in order to use the system.
-        </p>
-
-        <p>
-          The first step in building an admin panel was allowing users of a Satellite system to register and authenticate at 'admin.domain.com'. Once authenticated, a frontend developer would be authorized to access Satellite management for their Satellites. Upon sign in, frontend developers are presented with a UI that allows them to spin up a new Satellite by specifying a name. The backend of the admin panel receives the request to spin up a new Satellite and runs the Kubernetes CLI commands. 
+          The first step in building an admin panel was allowing users of a Satellite deployment to register and authenticate at 'admin.domain.com'. Once authenticated, a frontend developer would be authorized to manage their backend. Upon sign in, frontend developers are presented with a UI that allows them to spin up a new backend by specifying a name. They can also tear down a backend from the admin panel with the click of a button. 
         </p>
 
         <div class="img-wrapper">
@@ -1849,10 +1373,6 @@
           />
         </div>
 
-        <p>
-          Additionally, frontend developers can tear down a Satellite from the 'Home' route of the admin panel with the click of a single button.
-        </p>
-
         <div class="img-wrapper">
           <img
             src="images/gifs/destroy-satellite.gif"
@@ -1861,21 +1381,21 @@
         </div>
 
         <p>
-          We served the admin panel as static files from an Nginx container running in the cluster. We relied on Express as a framework to build the backend that handles Satellite   management requests. A container running Postgres provides the data persistence necessary for managing user accounts for frontend developers and the Satellites they've created.
+          Using a container orchestrator made it easy to spin up and tear down Satellite backends. We could do this by passing a manifest file for each backend to the Kubernetes CLI. This would, though, require root access to the master node running Satellite. This would introduce security concerns and was not the kind of interface we could expose to frontend developers.  
         </p>
 
         <p>
-          Now that we had a way for Satellite instances to be spun up and torn down, we needed a way to allow the developer to easily manage the GraphQL schema of the instance.
+          An Nginx container running in the cluster serves the admin panel as static files. A containerized Express app handles requests to manage backends. Lastly, a container running Postgres manages user accounts and the backends they've created. 
+        </p>
+
+        <p>
+          Now we had a GUI for Satellite backends to be spun up and torn down. Next, we needed an easy way for developers to manage the GraphQL schema of each backend. 
         </p>
 
         <h4>7.7.2) Schema Management</h4>
 
         <p>
-          One of the benefits of using Dgraph is the ability to easily update one's GraphQL schema. The challenge presented to us when creating the admin panel was allowing users to easily update and view their current schema for Dgraph. 
-        </p>
-
-        <p>
-          For this challenge, we relied upon Codemirror to provide a syntax-appropriate view of a Satellite's schema. Codemirror allowed us to provide syntax highlighting for user-provided GraphQL schema, which made it clearer and easier to read.
+          One of the benefits of using Dgraph is the ability to easily update its GraphQL schema. We built a schema viewer into the admin panel to see Dgraph's schema. It uses Codemirror to provide GraphQL syntax highlighting.  
         </p>
 
         <div class="img-wrapper">
@@ -1886,7 +1406,7 @@
         </div>
 
         <p>
-          Uploading new schema is handled through uploading a GraphQL schema file. The schema file is uploaded to the admin panel and sent in a POST request to the admin backend. The admin backend extracts the Satellite's ID and uses it to proxy the request to the correct Satellite instance.
+          Uploading new schema is done by uploading a schema file in the admin panel. It's sent in a POST request to the admin backend. The admin backend extracts the backend ID and uses it to proxy the request to the correct Satellite backend. 
         </p>
 
         <div class="img-wrapper">
@@ -1897,17 +1417,17 @@
         </div>
 
         <p>
-          Uploading the GraphQL schema is one thing, but next we wanted to provide an easy way to explore the resulting GraphQL API, providing the rich client-side experience that is part of what makes GraphQL so popular.
+          Uploading the GraphQL schema is one thing, but we also wanted it to be easy to explore the resulting GraphQL API. We wanted the rich client-side experience that is part of what makes GraphQL so popular. 
         </p>
 
         <h4>7.6.3) Schema Exploration</h4>
 
         <p>
-          GraphQL gives developers the ability to introspect their schema and even make queries and mutations against it. We wanted to provide frontend developers these abilities within the admin panel, so that they would have the power to test their schema, make queries against it, and even populate the Dgraph instance with data to power their application.
+          GraphQL gives developers the ability to introspect their schema and even make queries and mutations against it. We wanted to let frontend developers do this within the admin panel.  They should be able to test their schema, make queries against it, and even populate the Dgraph instance with data to power their application. 
         </p>
 
         <p>
-          For this challenge, we used GraphiQL. GraphiQL is an IDE for GraphQL and makes it easy for frontend developers to test and explore their GraphQL schema. In order to make this work, we needed to make a query to the /graphql endpoint of the currently selected Satellite. This endpoint allows us to make an introspection query to populate the GraphiQL IDE. Our admin panel makes a POST request with the current Satellite's ID to the admin backend, which proxies the request to the Satellite instance.
+          To do this, we used GraphiQL. GraphiQL is an IDE for GraphQL and makes it easy for frontend developers to test and explore their GraphQL schema. To make this work, we needed to make a query to the /graphql endpoint of the currently selected Satellite. This endpoint allows us to make an introspection query to populate the GraphiQL IDE. Our admin panel makes a POST request with the current backend ID to the admin backend, which proxies the request to the correct backend. 
         </p>
 
         <div class="img-wrapper">
@@ -1920,11 +1440,11 @@
         <h4>7.7.4) Static File Hosting</h4>
 
         <p>
-          Our final challenge was giving frontend developers a convenient way to host their frontend static files. A single Satellite instance already provides this feature, so the challenge here was proxying the request to the correct Satellite.
+          We wanted to give frontend developers a convenient way to host their frontend static files. A single Satellite backend already had this feature, so the challenge became how to proxy the request to the correct backend. 
         </p>
 
         <p>
-          For this purpose, we refactored the Nginx container in a Satellite instance to accept a .zip file for frontend hosting, while all other files can be uploaded as non .zip files. The .zip file is used to upload multiple files for frontend hosting. If a .zip file is uploaded, the previous static files served by Nginx are replaced.
+          To do this, we refactored the Nginx container in a single backend to accept a .zip file for frontend hosting. All other files can be uploaded as non .zip files. If a .zip file is uploaded, the previous static files served by Nginx are replaced. 
         </p>
 
         <div class="img-wrapper">
@@ -1935,11 +1455,11 @@
         </div>
 
         <p>
-          When a frontend developer uploads a file, a POST request is made with the file as the request's body and the Satellite's ID as a part of the request's path. The admin backend then proxies the request to the correct Satellite.
+          When a frontend developer uploads a file, a POST request is made. It includes the file as the request body and the backend ID as a part of the request path. The admin backend then proxies the request to the correct Satellite backend.
         </p>
 
         <p>
-          With the admin panel complete, we had an intuitive interface providing an abstraction of the complexity of the multi-instance architecture of Satellite. This brought us to the conclusion of Satellite's design. We now had an easy to use GraphQL Backend-as-a-Service that could easily deployed just about anywhere, that could support any number of GraphQL backends!
+          With the admin panel complete, we had a simple, intuitive interface. This brought us to the conclusion of Satellite's design. We now had a GraphQL Backend-as-a-Service, easy to use and deploy, that could support any number of GraphQL backends!
         </p>
 
         <section id="footnotes">
