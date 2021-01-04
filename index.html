@@ -212,7 +212,7 @@
         </p>
 
         <p>
-          Satellite abstracts away the complexity of building a GraphQL backend. It lets the application developer define their entire backend using only a single input - a GraphQL schema. Satellite's multi-tenant architecture, based on Kubernetes, lets developers create and use as many backends as they need. Satellite is a great fit for new applications where ease of use and quick deployment are priorities.
+          Satellite abstracts away the complexity of building a GraphQL backend. It lets the application developer define their entire backend using only a single input - a GraphQL schema. Satellite's multi-instance architecture, based on Kubernetes, lets developers create and use as many backends as they need. Satellite is a great fit for new applications where ease of use and quick deployment are priorities.
         </p>
 
         <p>
@@ -220,7 +220,7 @@
         </p>
 
         <p>
-          To explain Satellite's design, we'll first discuss the general architecture of a modern web application. We'll also describe how challenges faced by Facebook's News Feed API drove the development of GraphQL.
+          To explain Satellite's design, we'll first discuss the general architecture of a modern web application.
         </p>
 
         <h2 id="web-app-architecture">2) Web App Architecture</h2>
@@ -228,7 +228,7 @@
         <h3 id="frontend-vs-backend">2.1) Frontend vs Backend</h3>
 
         <p>
-          Web applications can be thought of as having two parts - the frontend and the backend. The frontend is what the user sees when using the application. It is responsible for the application's appearance and for handling user interactions. On the other side of an application is the backend. It handles the business logic and data persistence operations needed to power the frontend.
+          Web applications can be thought of as having two parts - the frontend and the backend. The frontend is what the user sees when using the application. It is responsible for an application's appearance and for handling user interactions. On the other side of an application is the backend. It handles the business logic and data persistence operations needed to power the frontend.
         </p>
 
         <div class="img-wrapper">
@@ -239,7 +239,7 @@
         </div>
 
         <p>
-          Modern applications often completely separate the backend from the frontend. This kind of split architecture allows frontend and backend teams to work independently. It also allows development of different frontend client applications which use the same backend [<a href="#footnote-1">1</a>]. Given the advantages of this decoupled architecture, we need to think about how the frontend and backend communicate. 
+          Modern applications often separate the backend from the frontend. This split architecture allows frontend and backend teams to work independently. It also allows development of different frontend client applications which use the same backend [<a href="#footnote-1">1</a>]. Given the advantages of this decoupled architecture, we need to think about how the frontend and backend communicate. 
         </p>
 
         <h3 id="api-s-in-web-applications">
@@ -266,7 +266,7 @@
         </h3>
 
         <p>
-          This story starts in 2011, when Facebook decided to completely re-write their iOS app. Previously, their mobile app had, essentially, been a wrapper around the Facebook webpage. They determined they needed to create a new, native app to provide the kind of experience they wanted for their mobile users. Their design required the frontend to be separated from the backend, and for the two sides to communicate with an API. This was the first time Facebook had tried to develop and app like this. They soon had issues when trying to reuse the existing API for the News Feed feature [<a
+          This story starts in 2011, when Facebook decided to completely re-write their iOS app. Previously, their mobile app had been a wrapper around the Facebook webpage. They determined they needed to create a new, native app to provide the kind of experience they wanted for their mobile users. Their design required the frontend to be separated from the backend, and for the two sides to communicate with an API. This was the first time Facebook had tried to develop an app like this. They soon had issues when trying to reuse the existing API for the News Feed feature [<a
             href="#footnote-3"
             >3</a
           >].
@@ -275,7 +275,7 @@
         <h4>2.3.1) Why the Existing API Didn't Work</h4>
 
         <p>
-          For Facebook’s News Feed, it wasn’t as simple as retrieving a story and all the information for that particular story. Each story is interconnected, nested, and recursive. The existing APIs weren’t designed to allow developers to deliver a rich, news feed-like experience on mobile. They didn’t have a hierarchical nature or let developers select the exact data they needed. They were, in fact, designed to return HTML back to a web browser.
+          For Facebook’s News Feed, it wasn’t as simple as retrieving a story and all the information for that story. Each story is interconnected, nested, and recursive. The existing APIs weren’t designed to allow developers to deliver a news feed-like experience on mobile. They didn’t have a hierarchical nature or let developers select the exact data they needed. They were, in fact, designed to return HTML back to a web browser.
         </p>
 
         <div class="img-wrapper">
@@ -286,7 +286,7 @@
         </div>
 
         <p>
-          This meant that the client application would need to make several round-trips to the API to get the information it wanted. For example, it might have to first get one story, and from it determine what other stories it needed to request to complete the feed. Then it might keep repeating that process over and over until it got all the information it needed. Additionally, each response would contain a lot of data that wasn’t needed. Both of these factors combined resulted in slow network performance for the new app. 
+          This meant that the client application would need to make several round-trips to the API to get the information it wanted. For example, it might have to first get one story, and from it determine what other stories it needed to request to complete the feed. Then it might keep repeating that process over and over until it got all the information it needed. Additionally, each response would contain a lot of data that wasn’t needed. These factors combined resulted in slow network performance for the new app. 
         </p>
 
         <h4>2.3.2) Why Facebook Created GraphQL</h4>
@@ -305,7 +305,7 @@
         </blockquote>
 
         <p>
-          A key feature of GraphQL let it power the mobile apps Facebook had envisioned: it let the frontend client request exactly the data it needs. This eliminates the issue of over-fetching and the need for multiple round trips. This is critical for mobile applications which have limited bandwidth and need fast response times. 
+          A key feature of GraphQL let it power the mobile apps Facebook had envisioned: letting the frontend client request exactly the data it needs. This eliminates the issue of over-fetching and the need for multiple round trips. This is critical for mobile applications which have limited bandwidth and need fast response times. 
         </p>
 
         <div class="img-wrapper">
@@ -338,13 +338,13 @@
         <h3 id="the-graphql-specification">3.1) The GraphQL Specification</h3>
 
         <p>
-          GraphQL is actually a specification that describes its type system and query language [<a href="#footnote-6">6</a>]. Both of these will be covered in more detail later. For now, keep in mind that this specification can be implemented in any programming language. It's not specific to any one application or architecture. There are, in fact, server-side implementations of the GraphQL specification in many programming languages. These server-side implementations are called GraphQL servers. 
+          GraphQL is actually a specification that describes its type system and query language [<a href="#footnote-6">6</a>]. Both of these will be covered in more detail later. For now, keep in mind that this specification can be implemented in any programming language. It's not specific to one application or architecture. There are server-side implementations of the GraphQL specification in many programming languages. These server-side implementations are called GraphQL servers. 
         </p>
 
         <h3 id="graphql-servers">3.2) GraphQL Servers</h3>
 
         <p>
-          GraphQL servers communicate with clients using standard HTTP. The GraphQL server parses the request into an abstract syntax tree, or AST, then walks this tree and determines how to respond to the request. Once the GraphQL server has assembled the request, the request is returned to the client as a JSON object - once again over standard HTTP.
+          GraphQL servers communicate with clients using HTTP. The GraphQL server parses the request into an abstract syntax tree (AST) then walks the tree and determines how to respond to the request. Once the GraphQL server has assembled the request, the request is returned to the client as a JSON object over HTTP.
         </p>
 
         <h3 id="interacting-with-a-graphql-api">
@@ -363,7 +363,7 @@
         </div>
 
         <p>
-          Enabling this kind of interaction for frontend clients worked great for Facebook's News Feed API. How, then, would somebody go about setting up the backend for their own GraphQL API?
+          Enabling this kind of interaction for frontend clients worked great for Facebook's News Feed API.
         </p>
 
         <h2 id="graphql-backends">4) GraphQL Backends</h2>
@@ -389,16 +389,16 @@
         </div>
 
         <p>
-          A backend is usually built with a 3-tier architecture [<a href="#footnote-7">7</a>]. The different "tiers" in this kind of architecture serve the following purposes:
+          A backend is usually built with a 3-tier architecture [<a href="#footnote-7">7</a>]. The different "tiers" in this architecture serve the following purposes:
         </p>
 
         <ul>
           <li>
-            <b>Web Server:</b>: The web server acts as the internet-facing entry point to the backend. Web servers are highly optimized to handle requests involving <em>static</em> data, such as static file serving and caching. They can typically handle large volumes of requests for this kind of data. If the web server cannot fulfill requests directly, it forwards requests to the rest of the backend. 
+            <b>Web Server:</b>: The web server acts as the internet-facing entry point to the backend. Web servers are optimized to handle requests involving <em>static</em> data, like static file serving and caching. They can typically handle large volumes of requests for this kind of data. If the web server cannot fulfill requests directly, it forwards requests to the backend. 
           </li>
 
           <li>
-            <b>Application Server:</b>: The application server is where requests for <em>dynamic</em> data end up. It handles processing and fulfilling those requests. The application server is where the business logic that powers the application resides. The application server doesn't persist data itself, though. If a request needs access to persistent data, the application server will need to access some kind of underlying data store. 
+            <b>Application Server:</b>: The application server is where requests for <em>dynamic</em> data end up. It handles processing and fulfilling those requests. The application server is where the business logic that powers the application resides. The application server doesn't persist data itself, though. If a request needs access to persistent data, the application server will need to access a data store. 
           </li>
 
           <li>
@@ -469,7 +469,7 @@
 
         <p>
           With this in mind, we are ready to proceed with discussing how one
-          goes about producing a GraphQL API.
+          produces a GraphQL API.
         </p>
 
         <h3 id="how-is-a-graphql-api-produced">
@@ -477,11 +477,11 @@
         </h3>
 
         <p>
-          To produce a GraphQL API, we need to run a GraphQL server. As we mentioned earlier, a GraphQL server is software that can receive and respond to GraphQL requests. The behavior of a GraphQL server is defined using two inputs: a GraphQL schema and resolver functions. At a high level, the GraphQL schema defines “what” the GraphQL server can do using the GraphQL type system, and the resolver functions tell it “how” to do it [<a href="#footnote-10">10</a>].
+          To produce a GraphQL API, we need to run a GraphQL server. As mentioned earlier, a GraphQL server is software that receives and responds to GraphQL requests. The behavior of a GraphQL server is defined using two inputs: a GraphQL schema and resolver functions. A GraphQL schema defines “what” the GraphQL server can do using the GraphQL type system, and resolver functions tell it “how” to do it [<a href="#footnote-10">10</a>].
         </p>
 
         <p>
-          A diagram of a GraphQL server is shown here. A GraphQL schema defines the GraphQL API. Then the API invokes the necessary resolver functions. Finally, the the resolvers carry out the actions needed to produce the response, such as querying a database: 
+          A diagram of a GraphQL server is shown here. A GraphQL schema defines the GraphQL API. Then the API invokes the necessary resolver functions. Finally, the resolvers carry out the actions needed to produce a response, like querying a database: 
         </p>
 
         <div class="img-wrapper">
@@ -491,14 +491,10 @@
           />
         </div>
 
-        <p>
-          Next, we'll take a look at the GraphQL schema and resolver functions in a little more detail, to better appreciate what goes into creating them. 
-        </p>
-
         <h4>4.4.1) GraphQL Schema</h4>
 
         <p>
-          The GraphQL schema declaratively defines the functionality of the GraphQL API [<a href="#footnote-11">11</a>]. The schema is made up of types, and the types have one or more fields. 
+          GraphQL schema declaratively defines the functionality of a GraphQL API [<a href="#footnote-11">11</a>]. Schema is made up of types, and types have one or more fields. 
         </p>
 
         <p>
@@ -513,7 +509,7 @@
         </div>
 
         <p>
-          There are many more types than just objects. Two important ones are the query and mutation types. These describe what actions you can do with your object types. Queries define how to retrieve data, while mutations define how to create or change the data. Here we have a query to find a person by name, and a mutation to create a new person. 
+          There are many more types than just objects. Two important ones are query and mutation types. These describe what actions you can do with your object types. Queries define how to retrieve data and mutations define how to create or change data. Here we have a query to find a person by name, and a mutation to create a new person. 
         </p>
 
         <p>
@@ -528,7 +524,7 @@
         </p>
 
         <p>
-          Unlike the schema, which has to follow the requirements of the GraphQL specification, resolvers are flexible. They are just functions, and you can do anything with them that you would do with any other function. The only requirement is that the function needs to return a value which corresponds to the field specified by the schema [<a href="#footnote-12">12</a>].
+          Unlike the schema, which has to follow the requirements of the GraphQL specification, resolvers are flexible. They are just functions, and you can do anything with them that you would do with any other function. The only requirement is that the function needs to return a value(s) which correspond to the field(s) specified by the schema [<a href="#footnote-12">12</a>].
         </p>
 
         <p>
@@ -543,15 +539,15 @@
         </div>
 
         <p>
-          With the GraphQL schema and resolver functions defined, we have everything we need to initialize the GraphQL server to produce the GraphQL API. 
+          With the GraphQL schema and resolver functions defined, we have everything we need to initialize the GraphQL server and produce a GraphQL API. 
         </p>
 
         <h3 id="how-can-we-reduce-the-complexity-of-a-graphql-backend">
-          4.5) How Can we Reduce the Complexity of a GraphQL Backend?
+          4.5) How Can We Reduce the Complexity of a GraphQL Backend?
         </h3>
 
         <p>
-          We can now see the big picture of what goes into creating a GraphQL backend. Besides the architecture and configuration needed for a standard backend, there are also the inputs needed to define the GraphQL API: the schema and resolver functions.
+          We now see the big picture of what goes into creating a GraphQL backend. Besides the architecture and configuration needed for a typical backend, there are also the inputs needed to define the GraphQL API: schema and resolver functions.
         </p>
 
         <div class="img-wrapper">
@@ -562,15 +558,15 @@
         </div>
 
         <p>
-          For a frontend developer wanting to get a GraphQL application up and running quickly, that’s a lot to think about. Because of this, we wondered if there might be a way to make it easier for frontend developers to get a simple GraphQL backend up and running quickly. 
+          For a frontend developer wanting to get a GraphQL application up and running quickly, that’s a lot to think about. Because of this, we wanted to find a quick and easy way to setup a simple GraphQL backend. 
         </p>
 
         <p>
-          Ideally, the developer wouldn’t have to think about the backend design at all. The standard backend components and configuration should be set up automatically. So should the lower-level GraphQL configuration, like resolver functions.
+          Ideally, the developer wouldn’t have to think about the backend design at all. The standard backend components and configuration should be set up automatically, as should the lower-level GraphQL configuration, like resolver functions.
         </p>
 
         <p>
-          In order to solve the aforementioned problems, we decided to build a backend-as-a-service (BaaS). A BaaS provides an abstraction over all the functionality and complexity of the backend. It seemed like a good way to simplify setting up a GraphQL backend. 
+          In order to solve the aforementioned problems, we decided to build a backend-as-a-service (BaaS). A BaaS provides an abstraction over all the functionality and complexity of the backend.
         </p>
 
         <h2 id="backend-as-a-service">5) Backend-as-a-Service</h2>
@@ -603,7 +599,7 @@
         </p>
 
         <p>
-          This abstraction does come with costs, though. For example, the BaaS itself still requires setup and maintenance. Also, with these kinds of services, as you gain more abstraction you sacrifice control. The table below shows how a BaaS compares to two other services which provide abstraction over backend concerns: infrastructure-as-a-service (IaaS) and platform-as-a-service (PaaS). 
+          This abstraction does come with costs, though. For example, the BaaS itself still requires setup and maintenance. Also, with these kinds of services, you gain abstraction and sacrifice control. The table below shows how a BaaS compares to two other services which provide abstraction over backend concerns: infrastructure-as-a-service (IaaS) and platform-as-a-service (PaaS). 
         </p>
 
         <div class="img-wrapper">
@@ -622,27 +618,27 @@
         </p>
 
         <p>
-          At the highest level of abstraction is a BaaS. The developer no longer needs to provide any backend code or handle any backend configuration. But they aren't able to control much, if anything, about how the service works internally.
+          At the highest level of abstraction is a BaaS. The developer no longer needs to provide any backend code or handle any backend configuration, but they can't control how the service works internally.
         </p>
 
         <p>
-          Giving up control over the internals of the backend seemed like a reasonable trade-off for an application which prioritizes rapid development.
+          Giving up control over the internals of the backend seemed like a reasonable trade-off for an application that requires rapid development.
         </p>
 
         <h3 id="existing-graphql-baas">5.3) Existing GraphQL BaaS</h3>
 
         <p>
-          As you might guess, there are several existing GraphQL BaaS options to chose from. These can be grouped into two general categories: managed services and open-source solutions.
+          There are several existing GraphQL BaaS options to choose from. These can be grouped into two categories: managed services and open-source solutions.
         </p>
 
         <h4>5.3.1) Managed Services</h4>
 
         <p>
-          There are several managed services available for a GraphQL BaaS. These are paid, proprietary services and are fully supported by the provider. Using a paid service takes care of all the details of setting up and managing the backend of your application. In general, they are easy to use - with some caveats. <a href="https://aws.amazon.com/amplify/">AWS Amplify</a>, for example, has a close integration with other AWS services. That makes it a great option if you are committed to using AWS services for your entire application. It's possible, but more difficult, to use it with non-AWS services. Since there is no need to deploy anything to use these managed services, they're very simple to use. 
+          Managed services are paid, proprietary services and are fully supported by a provider. Using a paid service takes care of all the details of setting up and managing backends. In general, they are easy to use - with some caveats. <a href="https://aws.amazon.com/amplify/">AWS Amplify</a>, for example, has a close integration with other AWS services. That makes it a great option if you are committed to using AWS services for your entire application. It's possible, but more difficult, to use it with non-AWS services. Since there is no need to deploy anything to use these managed services, they're very simple to use. 
         </p>
 
         <p>
-          These managed services also tend to have a many features. Services like <a href="https://www.8base.com/">8Base</a> and <a href="https://nhost.io/">Nhost</a> provide just about any feature you could ever want from your backend even beyond the GraphQL API. <a href="https://dgraph.io/slash-graphql">Slash GraphQL</a> has comparatively fewer features. It does, though, have some advanced options like the ability to run custom logic via serverless lambda functions. 
+          These managed services also tend to have many features. Services like <a href="https://www.8base.com/">8Base</a> and <a href="https://nhost.io/">Nhost</a> provide just about any feature you could want from a backend even beyond the GraphQL API. <a href="https://dgraph.io/slash-graphql">Slash GraphQL</a> has comparatively fewer features. It does, though, have some advanced options like the ability to run custom logic via serverless lambda functions. 
         </p>
 
         <h4>5.3.2) Open-Source Solutions</h4>
@@ -661,21 +657,21 @@
 
         <p>
           While the existing GraphQL BaaS options have many useful features,
-          they have their own set of tradeoffs as well.
+          they have their tradeoffs as well.
         </p>
 
         <p>
-          Although managed services need minimal effort to deploy and are generally easy to use, they are of course not fully open-source. With these services, you don’t have any control over how your application and its data is hosted. You also run the risk of vendor lock-in if your application ever outgrows the BaaS. 
+          Although managed services need minimal effort to deploy and are generally easy to use, they are not open-source. With these services, you don’t have any control over how your application and its data are hosted. You also run the risk of vendor lock-in if your application outgrows the BaaS. 
         </p>
 
         <p>
-          With the existing open source options, you maintain control of your data, but have more complicated deployment and usage. You will need to worry about things like selecting and configuring a database with both Parse and Spacecloud, for example. With their wide range of features and options, it can take some time to learn how to use them once they are deployed. 
+          With the existing open source options, you maintain control of your data but have more complicated deployment and usage. You will need to worry about things like selecting and configuring a database with both Parse and Spacecloud, for example. With their wide range of features and options, it can take some time to learn how to use them once they are deployed. 
         </p>
 
         <h3 id="where-does-satellite-fit">5.4) Where Does Satellite Fit?</h3>
 
         <p>
-          After reviewing the existing BaaS options, we saw that there was an opportunity for a self-hosted GraphQL BaaS that is easy to deploy and use. Two main things influenced our idea. One is the simplicity of managed services. The other is the ability to self-host an open-source solution and maintain full control of an application and data. 
+          After reviewing the existing BaaS options, we saw that there was an opportunity for a self-hosted GraphQL BaaS that is easy to deploy and use. Two main things influenced our idea. One is the simplicity of managed services. The other is the ability to self-host an open-source solution and maintain full control of an application and its data. 
         </p>
 
         <p>
@@ -691,11 +687,11 @@
         </div>
 
         <p>
-          Compared to the other GraphQL BaaS options that are available, Satellite has fewer features. We kept it that way to simplify deployment and ensure that it was intuitive to use. Like other existing open-source options, you can host Satellite anywhere you’d like.
+          Compared to the other GraphQL BaaS options, Satellite has fewer features. We kept it that way to simplify deployment and ensure that it was intuitive to use. Like other existing open-source options, you can host Satellite anywhere you’d like.
         </p>
 
         <p>
-          Since Satellite doesn’t have a huge number of features, it won't be a good fit for every application. But if you want an open-source solution to quickly get a GraphQL backend running with only minimal features, Satellite might be a good option.
+          Since Satellite doesn’t have a huge number of features, it won't be a good fit for every application. But if you want an open-source solution to quickly get a GraphQL backend running with minimal features, Satellite might be a good option.
         </p>
 
         <h2 id="the-core-application">6) The Core Application</h2>
