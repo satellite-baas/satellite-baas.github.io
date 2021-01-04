@@ -258,7 +258,7 @@
         </div>
 
         <p>
-          There are many different ways to build a web API. The state-of-the-art for web APIs has evolved over the years, and API designers are always finding better solutions to the challenges they are facing. In the next section, we'll take a look at one recent innovation which has had a significant impact on web API design: Facebook's News Feed API.
+          There are many different ways to build a web API. The state-of-the-art for web APIs has evolved over the years, and API designers are always finding better solutions to the challenges they are facing.
         </p>
 
         <h3 id="facebook-s-news-feed-api">
@@ -363,12 +363,12 @@
         </div>
 
         <p>
-          Enabling this kind of interaction for frontend clients worked great for Facebook's News Feed API. How, then, would somebody go about setting up the backend for their own GraphQL API? We'll answer that question in the next section.
+          Enabling this kind of interaction for frontend clients worked great for Facebook's News Feed API. How, then, would somebody go about setting up the backend for their own GraphQL API?
         </p>
 
         <h2 id="graphql-backends">4) GraphQL Backends</h2>
         <p>
-          You should now have an idea of what kind of problems GraphQL was created to solve and a general understanding of how it works. You might even be interested in creating your next application using a GraphQL API. There are things to consider if you do, which we'll explain those things in the next section.
+          You should now have an idea of what kind of problems GraphQL was created to solve and a general understanding of how it works. You might even be interested in creating your next application using a GraphQL API. There are several factors to consider if you do, though.
         </p>
 
         <p>
@@ -570,11 +570,7 @@
         </p>
 
         <p>
-          We found a promising potential solution - something called a backend-as-a-service, or BaaS. A BaaS provides an abstraction over all the functionality and complexity of the backend. It seemed like a good way to simplify setting up a GraphQL backend. 
-        </p>
-
-        <p>
-          Next, we'll take a look at exactly what a Backend-as-a-service is, and what we found when we evaluated the existing options. 
+          In order to solve the aforementioned problems, we decided to build a backend-as-a-service (BaaS). A BaaS provides an abstraction over all the functionality and complexity of the backend. It seemed like a good way to simplify setting up a GraphQL backend. 
         </p>
 
         <h2 id="backend-as-a-service">5) Backend-as-a-Service</h2>
@@ -631,10 +627,6 @@
 
         <p>
           Giving up control over the internals of the backend seemed like a reasonable trade-off for an application which prioritizes rapid development.
-        </p>
-
-        <p>
-          In the next section, we'll review what we found when we evaluated the GraphQL BaaS options that are currently available. 
         </p>
 
         <h3 id="existing-graphql-baas">5.3) Existing GraphQL BaaS</h3>
@@ -704,10 +696,6 @@
 
         <p>
           Since Satellite doesn’t have a huge number of features, it won't be a good fit for every application. But if you want an open-source solution to quickly get a GraphQL backend running with only minimal features, Satellite might be a good option.
-        </p>
-
-        <p>
-          In the next section, we'll describe how we designed Satellite, including the challenges we faced and the solutions we came up with. 
         </p>
 
         <h2 id="the-core-application">6) The Core Application</h2>
@@ -1084,6 +1072,13 @@
           Our Docker Compose configuration for launching a containerized backend looked something like this. As you can see, the compose file can also specify various other options needed for Satellite to run. It can include things like environment variables and storage volumes used by the containers to store their data. 
         </p>
 
+        <div class="img-wrapper">
+          <img
+            src="images/gifs/dc-spin.gif"
+            alt="Spinning up a Satellite instance."
+          />
+        </div>
+
         <h2 id="multi-instance-architecture">7) Multi-Instance Architecture</h2>
 
         <p>
@@ -1108,7 +1103,7 @@
         </div>
 
         <p>
-          While this architecture addresses how to support multiple backends, it does introduce many new problems. In the next sections, we'll explain how we solved these to achieve the goal of an easy to deploy, multi-instance architecture. 
+          While this architecture addresses how to support multiple backends, it does introduce many new problems. 
         </p>
 
         <h3>7.2) What are the Challenges of a Multi-Instance Architecture?</h3>
@@ -1139,10 +1134,6 @@
           This seemed like an easy solution to an apparently simple problem. However, an architecture like this has one critical limitation. One server can only host so many Satellite backends before performance degrades or the system crashes. 
         </p>
 
-        <p>
-          In the next section, we'll discuss how can we designed Satellite to perform efficiently and reliably, no matter how many backends are created. 
-        </p>
-
         <h3>7.3) Scaling Satellite</h3>
 
         <p>
@@ -1166,7 +1157,7 @@
 
         <div class="img-wrapper">
           <img
-            src="images/diagrams/7_3-better-horizontal-scaling.svg"
+            src="images/diagrams/7_4-k8s-distributed-containers.svg"
             alt="A more efficient way to scale horizontally."
           />
         </div>
@@ -1183,10 +1174,6 @@
 
             <li>How do we make it easy for a developer to perform administrative tasks when they are dealing with multiple backends? </li>
           </ul>
-        </p>
-
-        <p>
-          In the next few sections, we'll explain how we solved these problems. We'll start with a logical first step: spinning up and tearing down Satellite backends. 
         </p>
 
         <h3>7.4) Spinning Up and Tearing Down Satellite Instances</h3>
@@ -1230,7 +1217,7 @@
         </div>
 
         <p>
-          Distributing components like this ensures that the resources of each node are used efficiently. It does complicate communication between the components of each backend, though. The next section will describe how we dealt with this.
+          Distributing components like this ensures that the resources of each node are used efficiently. It does complicate communication between the components of each backend, though.
         </p>
 
         <h3>7.5) Managing Satellite Instance Component Communication</h3>
@@ -1298,7 +1285,11 @@
         </p>
 
         <p>
-          But how does the load balancer know which pods to forward requests to in the cluster? Kubernetes' services are the answer here, yet again. Each Satellite backend needs its own load balancer service which is configured to forward to it. The load balancer service for a backend is used by the external load balancer to forward requests to the correct set of pods.
+          But how does the load balancer know which pods to forward requests to in the cluster? The external load balancer only forwards requests to worker nodes. This means that the worker node must have some way of forwarding an external request to a pod.
+        </p>
+        
+        <p>
+          Kubernetes' services are the answer here. Each Satellite backend needs its own load balancer service, defined on the worker nodes, that is configured to forward to it. The load balancer service for a backend is used by both the external load balancer and worker nodes to forward requests to the correct set of pods.
         </p>
 
         <div class="img-wrapper">
@@ -1354,10 +1345,6 @@
 
         <p>
           To keep these layers simple to interact with, we needed one more thing: an intuitive GUI. That would let a developer spin up, tear down, or manage their Satellite backends. 
-        </p>
-
-        <p>
-          In the final sections of this case study, we'll discuss why and how we built each feature of Satellite's admin panel. We'll start with how it enables easy management of a Satellite backend's lifecycle. 
         </p>
 
         <h4>7.7.1) Satellite Backend Lifecycle Management</h4>
@@ -1673,7 +1660,7 @@
         </li>
 
         <li class="individual">
-          <img src="images/avatars/ilyas-profile.jpg" alt="Ilyas Kussainov" />
+          <img src="images/avatars/ilyas.jpeg" alt="Ilyas Kussainov" />
 
           <h3>Ilyas Kussainov</h3>
 
@@ -1732,7 +1719,7 @@
         </li>
 
         <li class="individual">
-          <img src="images/avatars/lewis-profile.jpg" alt="Lewis Reynolds" />
+          <img src="images/avatars/lewis_profile.jpeg" alt="Lewis Reynolds" />
 
           <h3>Lewis Reynolds</h3>
 
