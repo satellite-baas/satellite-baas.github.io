@@ -1078,11 +1078,11 @@
         <h2 id="multi-instance-architecture">7) Multi-Instance Architecture</h2>
 
         <p>
-          At this point, we had a system that was easy to deploy and supported one Satellite instance. This would work fine for developers who only needed a single backend. But what about developers who wanted to run several backends at once? For example, it's often useful for an application to have multiple versions of its backend. This could be for supporting different versions of the app for staging and production [<a href="#footnote-21">21</a>]. It also seemed very possible that developers might want to host more than one application at a time.
+          At this point, we had a system that was easy to deploy and supported one Satellite instance. This would work fine for developers who needed a single backend. What about developers who wanted to run several backends at once? For example, it's often useful for an application to have multiple versions of its backend. This could be for supporting different versions of the app for staging and production [<a href="#footnote-21">21</a>]. It also seemed very possible that developers might want to host more than one application at a time.
         </p>
         
         <p>
-          The question now became: how can we support easy deployment of multiple Satellite backends?
+          The question then became: how can we support deployment of multiple Satellite backends?
         </p>
 
         <h3>7.1) Why Multi-Instance?</h3>
@@ -1116,7 +1116,7 @@
         </div>
 
         <p>
-          At a high level, it seemed like creating a multi-instance architecture could be just a matter of starting up multiple Docker Compose files. This kind of multi-instance architecture might look like this:
+          At a high level, it seemed like creating a multi-instance architecture could be just a matter of starting up multiple Docker Compose files. That architecture would look like this:
         </p>
           
         <div class="img-wrapper">
@@ -1133,11 +1133,11 @@
         <h3>7.3) Scaling Satellite</h3>
 
         <p>
-          To accommodate increasing loads on the system, we could have Satellite scale vertically or horizontally. Vertical scaling requires physically upgrading the host system. That didn't seem practical since we wanted to keep Satellite easy to use. Also, the cost of scaling vertically tends to increase exponentially as more power is needed. There is also a practical limit on how much processing power a single server can have [<a href="#footnote-22">22</a>].
+          To accommodate increasing loads on the system, we could scale Satellite vertically or horizontally. Vertical scaling requires physically upgrading the host system. That didn't seem practical since we wanted to keep Satellite easy to use. Also, the cost of scaling vertically can increase exponentially over time. There is also a practical limit on how much processing power a single server can have [<a href="#footnote-22">22</a>].
         </p>
 
         <p>
-          Horizontal scaling was a better solution for Satellite. It involves replicating and distributing the components of an application across multiple servers. This allows each server to be economically sized and allows unlimited scalability. But, it complicates communication and routing since backends can live on different host machines. Having several backends spread across multiple host machines could look like this:
+          Horizontal scaling was a better solution for Satellite, as it involves replicating and distributing applications across multiple servers. This allows each server to be economically sized and allows unlimited scalability. But, it complicates communication and routing since backends can live on different host machines. Having several backends spread across multiple host machines could look like this:
         </p>
 
         <div class="img-wrapper">
@@ -1148,7 +1148,7 @@
         </div>
 
         <p>
-          As we can see, with horizontal scaling we had another issue. Randomly distributing the backends might not make the best use of server resources. Instead, the components of a Satellite instance could be deployed onto whichever host machine is the least used. This way, we would save resources and improve performance. 
+          With horizontal scaling we had another issue. Randomly distributing the backends might not make the best use of server resources. Instead, the components of a Satellite instance could be deployed onto whichever host machine is the least used. This way, we would save resources and improve performance. 
         </p>
 
         <div class="img-wrapper">
@@ -1159,7 +1159,7 @@
         </div>
 
         <p>
-          We now had a strategy for scaling Satellite to accommodate any number of individual backends. We still had several challenges to overcome to complete the multi-instance design, including: 
+          At this point, we had a strategy for scaling Satellite to accommodate any number of individual backends. We still had several challenges to overcome in completing the multi-instance design, including: 
 
           <ul>
             <li>How do we make it easy for a developer to spin up and tear down Satellite backends?</li>
@@ -1213,13 +1213,13 @@
         </div>
 
         <p>
-          Distributing components like this ensures that the resources of each node are used efficiently. It does complicate communication between the components of each backend, though.
+          Distributing components like this ensures that the resources of each node are used efficiently but complicates communication between the components of each backend.
         </p>
 
         <h3>7.5) Managing Satellite Instance Component Communication</h3>
 
         <p>
-          To explain how we managed component communication within Satellite backends, first we need to describe a little bit of how Kubernetes handles things internally.
+          To explain how we managed component communication within Satellite backends, first we need to describe how Kubernetes handles containers.
         </p>
 
         <p>
@@ -1296,7 +1296,7 @@
         </div>
 
         <p>
-          There is a problem with this approach, though. This method of forwarding external requests works well with only a few Satellite backends. But once we have many backends, this method grows unwieldy. The reason for this is two-fold. Not only does each backend need its own load balancer service, but each load balancer service needs its own dedicated external load balancer. Having an external load balancer for each Satellite instance would quickly become resource-intensive. 
+          There is a problem with this approach, though. This method of forwarding external requests works well with a few Satellite backends. But once we have many backends, this method grows unwieldy. The reason for this is two-fold. Not only does each backend need its own load balancer service, but each load balancer service needs its own dedicated external load balancer. Having an external load balancer for each Satellite instance would quickly become resource-intensive. 
         </p>
 
         <div class="img-wrapper">
@@ -1364,7 +1364,7 @@
         </div>
 
         <p>
-          Using a container orchestrator made it easy to spin up and tear down Satellite backends. We could do this by passing a manifest file for each backend to the Kubernetes CLI. This would, though, require root access to the master node running Satellite. This would introduce security concerns and was not the kind of interface we could expose to frontend developers.  
+          Using a container orchestrator made it easy to spin up and tear down Satellite backends. We could do this by passing a manifest file for each backend to the Kubernetes CLI. This would, though, require root access to the master node running Satellite. This would introduce security concerns and was not the kind of interface we wanted to expose.  
         </p>
 
         <p>
@@ -1442,7 +1442,7 @@
         </p>
 
         <p>
-          With the admin panel complete, we had a simple, intuitive interface. This brought us to the conclusion of Satellite's design. We now had a GraphQL Backend-as-a-Service, easy to use and deploy, that could support any number of GraphQL backends!
+          With the admin panel complete, we had a simple, intuitive interface. This brought us to the conclusion of Satellite's design. We had created a GraphQL Backend-as-a-Service, easy to use and deploy, that could support any number of GraphQL backends!
         </p>
 
         <section id="footnotes">
