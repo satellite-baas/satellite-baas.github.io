@@ -1080,15 +1080,9 @@
         <p>
           At this point, we had a system that was easy to deploy and supported one Satellite instance. This would work fine for developers who needed a single backend. What about developers who wanted to run several backends at once? For example, it's often useful for an application to have multiple versions of its backend. This could be for supporting different versions of the app for staging and production [<a href="#footnote-21">21</a>]. It's also possible that developers want to host more than one application at a time.
         </p>
-        
-        <p>
-          The question then became: how can we support deployment of multiple Satellite backends?
-        </p>
-
-        <h3>7.1) Why Multi-Instance?</h3>
 
         <p>
-          A multi-instance architecture was the logical choice for Satellite. This would enable two important things. First, it would isolate backend instances from each other. Second, it would put the routing and administration logic into their own components, separate from the backends. Each Satellite backend would have the same internals as a single instance. 
+          The question then became: how can we support deployment of multiple Satellite backends as a part of single framework deployment?
         </p>
 
         <div class="img-wrapper">
@@ -1099,13 +1093,13 @@
         </div>
 
         <p>
-          While this architecture addresses how to support multiple backends, it does introduce many new problems. 
+          In a multi-instance architecture, each Satellite backend runs as a self-contained stack of containers, and those containers are not shared between applications. This type of archtecture would maximize isolation between applications while separating routing and administration logic from the core Satellite API into dedicated components. The backend for each application would be a self-contained environment comprised of the Nginx, Dgraph database, Express API, just like the single-instance deployment.  
         </p>
 
-        <h3>7.2) What are the Challenges of a Multi-Instance Architecture?</h3>
+        <h3>7.1) Challenges of a Multi-Instance Architecture</h3>
 
         <p>
-          In the single-instance version of Satellite, all three components existed on one server. They could be started up as a unit using Docker Compose. Docker's bridge network connected the Dgraph, Express, and Nginx containers to each other. The Nginx server in each container exposed ports that were accessible from the public internet. The Express API exposed ports that were accessible outside of the bridge network on a private network.
+          In the single-instance version of Satellite, all three components existed on one server. They could be started up as a unit using Docker Compose. Docker's bridge network connected the Dgraph, Express, and Nginx containers to each other. The Nginx server in each container exposed ports that were accessible from the public internet.
         </p>
 
         <div class="img-wrapper">
@@ -1127,28 +1121,22 @@
         </div>
 
         <p>
-          This seemed like an easy solution to an apparently simple problem. However, an architecture like this has one critical limitation. One server can only host so many Satellite backends before performance degrades or the system crashes. 
+          As it turns out, implementing a multi-instance architecture introduces a set of new challenges:
+          <ol>
+            <li>A single server can only support so much load before performance begins to degrade or the entire system crashes. How can we design a system that could support increasingly many backends instances while providing consistent and reliable performance?</li>
+            <li>With multiple Satellite backend instances running as a part of one system, we need a way to route incoming requests to the correct backend.</li>
+            <li>Deploying multiple instances would require editing the Docker Compose file every time a backend instance is spun-up, in order to avoid port, naming, and network conflicts. This is error prone, and requires involvement of system administrator. How can we make it easy for front-end developers to spin-up backends?</li>
+          </ol>
         </p>
 
-        <h3>7.3) Scaling Satellite</h3>
+        <h3>7.2) Scaling Satellite</h3>
 
         <p>
-          To accommodate increasing loads on the system, we could scale Satellite vertically or horizontally. Vertical scaling requires physically upgrading the host system. That didn't seem practical since we wanted to keep Satellite easy to use. Also, the cost of scaling vertically can increase exponentially over time. There is also a practical limit on how much processing power a single server can have [<a href="#footnote-22">22</a>].
+          To accommodate increasing loads on the system, we could scale Satellite vertically or horizontally. Vertical scaling refers to adding more resources and capacity to a single server. The drawback of this approach is that the cost of scaling further rises exponentially as more capacity is added. There is also a practical limit on how much processing power a single server can have [<a href="#footnote-22">22</a>].
         </p>
 
         <p>
-          Horizontal scaling was a better solution for Satellite, as it involves replicating and distributing applications across multiple servers. This allows each server to be economically sized and allows unlimited scalability. But, it complicates communication and routing since backends can live on different host machines. Having several backends spread across multiple host machines could look like this:
-        </p>
-
-        <div class="img-wrapper">
-          <img
-            src="images/diagrams/7_3-naive-horizontal-scaling.svg"
-            alt="Horizontal scaling in an inefficient way."
-          />
-        </div>
-
-        <p>
-          With horizontal scaling we had another issue. Randomly distributing the backends might not make the best use of server resources. Instead, the components of a Satellite instance could be deployed onto whichever host machine is the least used. This way, we would save resources and improve performance. 
+          Horizontal scaling was a better solution for Satellite. It involves pooling resources of multiple servers together, and scale the number of machines according to demand. Applications are then spread across multiple servers. This approach is more cost efficient and allows virtually unlimited scalability. But, it complicates communication and routing since backends can now live on different host machines. Having several backends spread across multiple host machines could look like this:
         </p>
 
         <div class="img-wrapper">
@@ -1162,7 +1150,7 @@
           At this point, we had a strategy for scaling Satellite to accommodate any number of individual backends. We still had several challenges to overcome in completing the multi-instance design, including: 
 
           <ul>
-            <li>How do we make it easy for a developer to spin up and tear down Satellite backends?</li>
+            <li>How do we spin up and tear down Satellite backends in a horizontally scaled environment?</li>
 
             <li>How do we manage communication between the components within a backend?</li>
 
@@ -1172,22 +1160,51 @@
           </ul>
         </p>
 
-        <h3>7.4) Spinning Up and Tearing Down Satellite Instances</h3>
+        <h3>7.3) Spinning Up and Tearing Down Satellite Instances</h3>
 
         <p>
-          To spin up and tear down any number of containerized Satellite backends, we needed a tool to manage them. 
+          Horizontal scaling introduces set of issues that did not exist in the single-server setup. As additional servers are added or failed servers are removed, we needed to answer the following questions:
+          <ul>
+            <li>Server discovery – which servers are avilable to us to deploy instnaces on?</li>
+            <li>Which server should host a newly deployed backend?</li>
+            <li>Which server does a particular instance of a backend is running on</li>
+            <li>If a node crashes or container fails, how can we ensure that the backends are recreated?</li>
+          </ul> 
         </p>
 
         <p>
-          For this, we used a container orchestrator. A container orchestrator is a tool to manage, scale, and maintain containerized applications. It also manages the networks that they use to communicate. We chose Kubernetes for Satellite since it's very popular and all major cloud providers support it. 
+          Therefore, to spin up and tear down containerized Satellite backends on demand, we needed a tool to manage them. 
         </p>
+
+        <p>
+          For this, we used a container orchestrator. A container orchestrator is a tool to manage, scale, and maintain containerized applications. Kubernetes is Satellite's container orchestrator of choice, as it is the industry standard and all major cloud providers support it as a managed service. 
+        </p>
+
+        <p>
+          To understand how Kubernetes solves the problems mentioned above, we first need to understand the concept of cluster. A cluster is a group of nodes that operate as a part of the same horizontally scaled environment. The cluster is a group of connected nodes. The nodes are machines, virtual or physical, and a node can either be a master or worker. It is the worker nodes that are responsible actually running containers, while master nodes together make up what is called a control plane, and are responsible for managing the state of the cluster and assigning containers to worker nodes.
+        </p>
+
+        <p>
+          When an application is deployed using Kubernetes, it takes the strain of distributing them across available worker nodes in the cluster, monitoring health of containers and nodes within the cluster, and restarting failed containers. In other words, it abstracts away the challenges involved in scaling horizontally and exposes a single endpoint for declaratively managing our distributed backend applications.
+        </p>
+
+        <p>
+          With Kubernetes, the components of any one Satellite backend might live on the same node or be spread across multiple nodes:
+        </p>
+
+        <div class="img-wrapper">
+          <img
+            src="images/diagrams/7_4-k8s-distributed-containers.svg"
+            alt="Kubernetes distributing containers across nodes."
+          />
+        </div>
 
         <p>
           Earlier, we described how Docker Compose uses a YAML file to define and configure an application composed of containers. We showed how to use it to define a single Satellite instance. 
         </p>
 
         <p>
-          Kubernetes works in an analogous way. It lets developers define one or more containerized applications in a manifest file. A manifest file is can be written in YAML or JSON. The manifest file describes the list of components to be deployed, how they're coordinated, and their ideal state. Kubernetes works to maintain that desired state after the manifest is run and the components have been deployed. While Docker Compose makes it easy to start a single application made of containers, Kubernetes makes it easy to start any number of those applications. 
+          Kubernetes works in an analogous way. It lets developers define one or more containerized applications in a manifest file. A manifest file can be written in YAML or JSON. The manifest file describes the list of components to be deployed, together with their specifications and configurations, which Kubernetes treats as the desired state of the application. Kubernetes is then responsible for starting appropriate containers and distributing them across available nodes, constantly monitoring the current state of the application and ensuring that it matches the desired state. 
         </p>
 
         <p>
@@ -1202,28 +1219,17 @@
         </div>
 
         <p>
-          The components of the deployed Satellite backend are spread across the Kubernetes cluster. The cluster is a group of connected nodes. The nodes are machines, virtual or physical, and a node can either be a master or worker. The nodes contain the application containers. Kubernetes distributes the components of an application in the most efficient way possible. This means that the components of any one Satellite backend might live on the same node or be spread across multiple nodes: 
+          Having distributed individual components of our backends across multiple nodes, how can we ensure that they can communicate with one another? After all, Nginx server and the Dgraph database that belong to the same backend can end up on two different machines.
         </p>
 
-        <div class="img-wrapper">
-          <img
-            src="images/diagrams/7_4-k8s-distributed-containers.svg"
-            alt="Kubernetes distributing containers across nodes."
-          />
-        </div>
-
-        <p>
-          Distributing components like this ensures that the resources of each node are used efficiently but complicates communication between the components of each backend.
-        </p>
-
-        <h3>7.5) Managing Satellite Instance Component Communication</h3>
+        <h3>7.4) Managing Satellite Instance Component Communication</h3>
 
         <p>
           To explain how we managed component communication within Satellite backends, first we need to describe how Kubernetes handles containers.
         </p>
 
         <p>
-          Kubernetes places containers onto pods. A pod is a Kubernetes object that runs a group of one or more containers. You can imagine a pod as a wrapper around one or more Docker containers. It allows Kubernetes to manage the lifecycle of the containers running inside the pod. In a single Satellite backend, each container (Nginx, Dgraph, and Express API) runs as separate pods: 
+          Kubernetes wraps containers into pods. A pod is a Kubernetes object that runs a group of one or more containers. You can imagine a pod as a wrapper around one or more Docker containers. It allows Kubernetes to manage the lifecycle of the containers running inside the pod. In a single Satellite backend, each container (Nginx, Dgraph, and Express API) runs as separate pods: 
         </p>
 
         <div class="img-wrapper">
@@ -1234,7 +1240,7 @@
         </div>
 
         <p>
-          Each pod has its own IP address that lets it be discovered within a cluster:
+          Kubernetes provides a VPC (Virtual Private Network) that spans all pods running in the cluster. Each pod gets its own IP address on that network that lets it communicate with other pods in the cluster:
         </p>
 
         <div class="img-wrapper">
@@ -1245,7 +1251,7 @@
         </div>
 
         <p>
-          If a pod crashes, Kubernetes will make sure that a new pod is deployed to take its place. This new pod will have a different IP address, though. This means that we could not hard-code the IP addresses of separate components: 
+          If a pod crashes or its specification is updated, Kubernetes will make sure that a new pod is deployed to take its place. This new pod will very likely have a different IP address, though. This means that we could not hard-code the IP addresses of separate components, because they are both ephemeral and are not known before the pod is actually deployed: 
         </p>
 
         <div class="img-wrapper">
@@ -1256,7 +1262,7 @@
         </div>
 
         <p>
-          Another option for pod-to-pod communication is to use Kubernetes' built-in services. We used one here called ClusterIP. It provides a fixed, defined gateway to a pod. A ClusterIP service proxies requests to a set of other pods according to its configuration in a manifest file. 
+          The solution is to use Kubernetes' built-in services. They provide a fixed gateway to one or more pods that comporise a specific component of an application. The one that serves our purpose in particular is ClusterIP, which is responsible for internal traffic within cluster. A pod can reach another pod using the latter's service name, instead of its IP address. The name of the service is then resolved by internal DNS to service's IP address. The service, in turn, proxies requests to a set of pods according to its specification in the manifest file. 
         </p>
 
         <p>
@@ -1274,18 +1280,10 @@
           We now had a way for components to communicate with other components within the Kubernetes cluster. But we still had a critical networking challenge: how do we route requests from the internet to the correct Satellite backend? 
         </p>
 
-        <h3>7.6) Routing Requests to Individual Satellites</h3>
+        <h3>7.5) Routing Requests to Individual Satellites</h3>
 
         <p>
-          Kubernetes automatically provisions an external load balancer for deployments. The load balancer provides an internet-accessible IP address. It forwards incoming requests to the correct ports on cluster nodes. That makes it easy to route requests to the worker nodes.   
-        </p>
-
-        <p>
-          But how does the load balancer know which pods to forward requests to in the cluster? The external load balancer only forwards requests to worker nodes. This means that the worker node must have some way of forwarding an external request to a pod.
-        </p>
-        
-        <p>
-          Kubernetes' services are the answer here. Each Satellite backend needs its own load balancer service, defined on the worker nodes, that is configured to forward to it. The load balancer service for a backend is used by both the external load balancer and worker nodes to forward requests to the correct set of pods.
+          Kubernetes provides another type of service, called LoadBalancer service. When included in manifest, it automatically gets the managed Kubernetes service provider to provision an external load balancer for the cluster. The load balancer provides an internet-accessible IP address. It forwards incoming requests to the correct ports on cluster nodes. The service running on the node then ensures that request gets to the appropriate pod.   
         </p>
 
         <div class="img-wrapper">
@@ -1296,7 +1294,7 @@
         </div>
 
         <p>
-          There is a problem with this approach, though. This method of forwarding external requests works well with a few Satellite backends. But once we have many backends, this method grows unwieldy. The reason for this is two-fold. Not only does each backend need its own load balancer service, but each load balancer service needs its own dedicated external load balancer. Having an external load balancer for each Satellite instance would quickly become resource-intensive. 
+          The problem with this approach is that each backend instance's Nginx pod would need its own LoadBalancer service. Beyond single backend this method grows unwieldy. The reason for this is that each LoadBalancer service needs its own dedicated external load balancer. Having an external load balancer for each Satellite instance is prohibitively costly and hard to manage. Also, services' ports cannot conflict with one another, which means all backend instances but one would have to resort to using ports other than standard 80 and 443.
         </p>
 
         <div class="img-wrapper">
@@ -1326,7 +1324,7 @@
         </div>
 
         <p>
-          In this setup, the hostname of each Satellite backend is dynamically generated. Having to request SSL certificates manually would be cumbersome and tricky. A benefit of using Traefik is that it requests SSL certificates for subdomains automatically. This lets Satellite use HTTPS by default for every new backend. This creates a slight delay when spinning up a new Satellite, though.
+          In this setup, the hostname of each Satellite backend is dynamically generated based on the backend's name. Having to request SSL certificates manually would be cumbersome and tricky. We could run a script every time a backend instance is deployed to automatically request SSL certificates. Luckily, we did not have to. A benefit of using Traefik is that it can be configured to request SSL certificates for subdomains automatically. This lets Satellite use HTTPS by default for every new backend. 
         </p>
 
         <p>
@@ -1362,10 +1360,6 @@
             alt="Destroying a satellite instance."
           />
         </div>
-
-        <p>
-          Using a container orchestrator made it easy to spin up and tear down Satellite backends. We could do this by passing a manifest file for each backend to the Kubernetes CLI. This would, though, require root access to the master node running Satellite. This would introduce security concerns and was not the kind of interface we wanted to expose.  
-        </p>
 
         <p>
           An Nginx container running in the cluster serves the admin panel as static files. A containerized Express app handles requests to manage backends. Lastly, a container running Postgres manages user accounts and the backends they've created. 
@@ -1423,11 +1417,7 @@
         <h4>7.7.4) Static File Hosting</h4>
 
         <p>
-          We wanted to give frontend developers a convenient way to host their frontend static files. A single Satellite backend already had this feature, so the challenge became how to proxy the request to the correct backend. 
-        </p>
-
-        <p>
-          To do this, we refactored the Nginx container in a single backend to accept a .zip file for frontend hosting. All other files can be uploaded as non .zip files. If a .zip file is uploaded, the previous static files served by Nginx are replaced. 
+          We wanted to give frontend developers a convenient way to host their frontend static files. The owner of the backend can upload a single .zip file containing all the static assets that they want to be served by their application. 
         </p>
 
         <div class="img-wrapper">
@@ -1438,7 +1428,7 @@
         </div>
 
         <p>
-          When a frontend developer uploads a file, a POST request is made. It includes the file as the request body and the backend ID as a part of the request path. The admin backend then proxies the request to the correct Satellite backend.
+          When a frontend developer uploads a file, the admin backend then uses Kubernetes API to copy the files into the correct instance's Nginx pod.
         </p>
 
         <p>
