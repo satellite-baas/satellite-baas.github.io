@@ -129,6 +129,15 @@ a:hover {
   padding-top: 40px;
 }
 
+#cloud-logos {
+  display: flex;
+  justify-content: space-between;
+}
+
+#cloud-logos span {
+  width: 30%;
+}
+
 main > section {
   margin: 80px 0 100px 0;
   width: 75%;
@@ -196,11 +205,6 @@ img {
   top: 20px;
   right: 33px;
   z-index: 4;
-}
-
-#rocket-logo {
-  padding-top: 0;
-  width: 200px;
 }
 
 #banner-deploy {
